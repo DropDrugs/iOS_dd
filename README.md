@@ -12,3 +12,10 @@
 - tuist generate
 - tuist build
 - tuist graph
+
+### 브랜치 구조
+- main : release 분기마다 merge
+- Dev
+  - DY
+  - HZ
+  - YS
