@@ -7,7 +7,7 @@
 - env
 - version : 4.31.0(mise 통해서 설치)
 
-- 주요 명령어
+- 주요 명령어 (mise exec --)
 - tuist install
 - tuist generate
 - tuist build
