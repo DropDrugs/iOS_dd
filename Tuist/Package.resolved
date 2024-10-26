@@ -1,5 +1,5 @@
 {
-  "originHash" : "64117cfa4ad1959d9f6f36a9cb58cc2c1ad63594013038ad0d329b6336eb12ea",
+  "originHash" : "c664c057fc5e7832691ee16deadb47523e8ada1bb4dc355a519711d47c084d37",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -11,12 +11,30 @@
       }
     },
     {
+      "identity" : "flexlayout",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/layoutBox/FlexLayout.git",
+      "state" : {
+        "revision" : "9b46c098c0471b847e6feee49692ae239633bae3",
+        "version" : "2.0.10"
+      }
+    },
+    {
       "identity" : "moya",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Moya/Moya.git",
       "state" : {
         "revision" : "c263811c1f3dbf002be9bd83107f7cdc38992b26",
         "version" : "15.0.3"
+      }
+    },
+    {
+      "identity" : "pinlayout",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/layoutBox/PinLayout.git",
+      "state" : {
+        "revision" : "8eaa3a15e4dcabaca4c95aea4c0ff0c9b4a67213",
+        "version" : "1.10.5"
       }
     },
     {
