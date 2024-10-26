@@ -28,7 +28,9 @@ let project = Project(
             resources: ["DropDrug/Resources/**"],
             dependencies: [
                 .external(name: "Moya"),
-                .external(name: "SnapKit")
+                .external(name: "SnapKit"),
+                .external(name: "PinLayout"),
+                .external(name: "FlexLayout")
             ]
         ),
         .target(

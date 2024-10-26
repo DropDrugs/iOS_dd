@@ -6,7 +6,9 @@
 
     let packageSettings = PackageSettings(
         productTypes: ["Moya" : .framework,
-                       "SnapKit": .framework
+                       "SnapKit": .framework,
+                       "PinLayout": .framework,
+                       "FlexLayout": .framework
                       ]
     )
 #endif
@@ -15,6 +17,9 @@ let package = Package(
     name: "DropDrug",
     dependencies: [
         .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
-        .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.0.0")
+        .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.0.0"),
+        .package(url: "https://github.com/layoutBox/PinLayout.git", from: "1.10.5"),
+        .package(url: "https://github.com/layoutBox/FlexLayout.git", from: "2.0.10")
+        
     ]
 )
