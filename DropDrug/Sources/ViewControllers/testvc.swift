@@ -8,6 +8,7 @@
 import UIKit
 import Moya
 import SnapKit
+import PinLayout
 
 class testvc: UIViewController {
     
