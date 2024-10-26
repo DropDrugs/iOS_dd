@@ -18,14 +18,14 @@ class TestVC: UIViewController {
         label.text = "DropDrug"
         label.font = UIFont.roRegularFont(ofSize: 12)
         label.textAlignment = .center
-        label.textColor = .black
+        label.textColor = .white
         return label
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "Lightblue")
         
         // 라벨을 뷰에 추가
         view.addSubview(label1)
