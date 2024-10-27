@@ -1,12 +1,15 @@
 // Copyright © 2024 RT4. All rights reserved
 import UIKit
 import PinLayout
+import CoreLocation
 
-class TestVC: UIViewController {
+class TestVC: UIViewController, CLLocationManagerDelegate {
+    var locationManager = CLLocationManager()
+    var userLocation: CLLocationCoordinate2D?
     
     private let label1: UILabel = {
         let label = UILabel()
-        label.text = "Label 1"
+        label.text = "empty"
         label.textAlignment = .center
         //label.font = UIFont.ptdBoldFont(ofSize: 24)
         label.textColor = .black
@@ -30,7 +33,45 @@ class TestVC: UIViewController {
         // 라벨을 뷰에 추가
         view.addSubview(label1)
         view.addSubview(label2)
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        requestLocationPermission()
+        print("권한요청")
     }
+    
+    func requestLocationPermission() {
+        let status = locationManager.authorizationStatus
+        if status == .notDetermined {
+            locationManager.requestWhenInUseAuthorization() // 요청을 명확하게 표시
+        } else if status == .authorizedAlways || status == .authorizedWhenInUse {
+            startLocationUpdates()
+        } else {
+            print("Location services denied.")
+        }
+    }
+    
+    func startLocationUpdates() {
+        locationManager.startUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let geocoder = CLGeocoder()
+        if let location = locationManager.location {
+            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+                if let error = error {
+                    print("Geocoding error: \(error)")
+                    return
+                }
+                if let placemark = placemarks?.first, let address = placemark.locality {
+                    print(address)
+                } else {
+                }
+            }
+        }
+    }
+    
+    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

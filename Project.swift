@@ -33,6 +33,9 @@ let project = Project(
                                    "Pretendard-Thin.otf",
                                    "RussoOne-Regular.ttf"
                     ],
+                    "NSLocationUsageDescription" : "지도 기능을 사용하기 위해서 위치정보 권한이 필요합니다.",
+                    "NSLocationAlwaysUsageDescription" : "지도 기능을 사용하기 위해서 위치정보 권한이 필요합니다.",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "지도 기능을 사용하기 위해서 위치정보 권한이 필요합니다."
                     // 새로운 거 추가
                 ]
             ),

@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
  
         //let viewController = TestVC()
         
-        window?.rootViewController = MainTabBarController()
+        window?.rootViewController = TestVC()
         window?.makeKeyAndVisible()
     }
 }
