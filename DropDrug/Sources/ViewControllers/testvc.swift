@@ -8,7 +8,7 @@ class TestVC: UIViewController {
         let label = UILabel()
         label.text = "Label 1"
         label.textAlignment = .center
-        label.font = UIFont.ptdBoldFont(ofSize: 24)
+        //label.font = UIFont.ptdBoldFont(ofSize: 24)
         label.textColor = .black
         return label
     }()
@@ -16,7 +16,7 @@ class TestVC: UIViewController {
     private let label2: UILabel = {
         let label = UILabel()
         label.text = "DropDrug"
-        label.font = UIFont.roRegularFont(ofSize: 12)
+        //label.font = UIFont.roRegularFont(ofSize: 12)
         label.textAlignment = .center
         label.textColor = .white
         return label
@@ -25,7 +25,7 @@ class TestVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(named: "Lightblue")
+        view.backgroundColor = .white
         
         // 라벨을 뷰에 추가
         view.addSubview(label1)
