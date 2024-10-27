@@ -17,8 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
  
-        let viewController = SignUpVC()
-//        let viewController = OnboardingVC()
+        let viewController = loginVC()
         
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
