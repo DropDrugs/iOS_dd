@@ -1,7 +1,7 @@
 // Copyright © 2024 RT4. All rights reserved
 import UIKit
 
-struct AppFontName {
+public struct AppFontName {
     static let pThin = "Pretendard-Thin"
     static let pRegular = "Pretendard-Regular"
     static let pMedium = "Pretendard-Medium"

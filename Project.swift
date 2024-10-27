@@ -22,6 +22,18 @@ let project = Project(
                             ]
                         ]
                     ],
+                    "UIAppFonts": ["Pretendard-Black.otf",
+                                   "Pretendard-Bold.otf",
+                                   "Pretendard-ExtraBold.otf",
+                                   "Pretendard-ExtraLight.otf",
+                                   "Pretendard-Light.otf",
+                                   "Pretendard-Medium.otf",
+                                   "Pretendard-Regular.otf",
+                                   "Pretendard-SemiBold.otf",
+                                   "Pretendard-Thin.otf",
+                                   "RussoOne-Regular.ttf"
+                    ],
+                    // 새로운 거 추가
                 ]
             ),
             sources: ["DropDrug/Sources/**"],
