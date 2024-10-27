@@ -16,7 +16,7 @@ class OnboardingVC2 : UIViewController {
         let gradientLayer = CAGradientLayer()
 
         gradientLayer.colors = [
-            (UIColor(named: "coralpink") ?? UIColor.systemPink).cgColor,
+            (UIColor(named: "coralpink")?.withAlphaComponent(0.7) ?? UIColor.systemPink.withAlphaComponent(0.7)).cgColor,
             (UIColor(named: "skyblue") ?? UIColor.systemTeal).cgColor
         ]
         
@@ -59,7 +59,7 @@ class OnboardingVC2 : UIViewController {
             }
             
             startButton.snp.makeConstraints { make in
-                make.leading.trailing.equalToSuperview().inset(superViewWidth * 0.1)
+                make.leading.trailing.equalToSuperview().inset(20)
                 make.bottom.equalTo(view.safeAreaLayoutGuide).inset(superViewHeight * 0.05)
                 make.height.equalTo(superViewWidth * 0.15)
             }
