@@ -3,7 +3,7 @@
 import UIKit
 import PinLayout
 
-class InfoMainVCViewController: UIViewController {
+class InfoMainViewController: UIViewController {
     
     private let logoLabelView = LogoLabelView()
 
@@ -19,7 +19,6 @@ class InfoMainVCViewController: UIViewController {
         
         logoLabelView.pin
             .top(view.pin.safeArea.top)
-            .horizontally(0)
             .sizeToFit()
     }
 }
