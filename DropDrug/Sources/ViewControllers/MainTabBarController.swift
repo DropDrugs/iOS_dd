@@ -22,9 +22,8 @@ class MainTabBarController: UITabBarController {
         UITabBar.clearShadow()
         tabBar.layer.applyShadow(color: .gray, alpha: 0.3, x: 0, y: 0, blur: 15)
         
-        self.tabBar.tintColor = UIColor(hue: 0.5361, saturation: 0.71, brightness: 0.96, alpha: 1.0)
-        self.tabBar.unselectedItemTintColor = UIColor(hue: 0.5278, saturation: 0.11, brightness: 0.75, alpha: 1.0)
-        
+        self.tabBar.tintColor = UIColor(named: "skyblue")
+        self.tabBar.unselectedItemTintColor = UIColor(named: "Gray500")
         HomeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(named: "Home")?.withRenderingMode(.alwaysTemplate), tag: 0)
         
         SearchVC.tabBarItem = UITabBarItem(title: "검색", image: UIImage(named: "Search")?.withRenderingMode(.alwaysTemplate), tag: 1)
