@@ -142,7 +142,7 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
             make.height.equalToSuperview().multipliedBy(0.4)
         }
         
-        titleLabel.textColor = UIColor(named: "pink")
+        titleLabel.textColor = Constants.Colors.pink ?? UIColor.systemPink
         titleLabel.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0

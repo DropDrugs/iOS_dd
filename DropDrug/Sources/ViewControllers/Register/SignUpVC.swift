@@ -58,7 +58,7 @@ class CustomLabelTextFieldView: UIView {
         )
         
         validationLabel.text = validationText
-        validationLabel.textColor = UIColor(named: "red")
+        validationLabel.textColor = Constants.Colors.red
         validationLabel.font = UIFont.systemFont(ofSize: 12)
         validationLabel.isHidden = true // Initially hidden
 
@@ -84,7 +84,7 @@ class CustomLabelTextFieldView: UIView {
 class CheckBoxButton: UIButton {
     init(title: String) {
         super.init(frame: .zero)
-        self.setImage(UIImage(systemName: "checkmark.square")?.withTintColor(UIColor(named: "skyblue") ?? .blue, renderingMode: .alwaysOriginal), for: .selected)
+        self.setImage(UIImage(systemName: "checkmark.square")?.withTintColor(Constants.Colors.skyblue ?? .blue, renderingMode: .alwaysOriginal), for: .selected)
         self.setImage(UIImage(systemName: "square")?.withTintColor(UIColor(named: "gray500") ?? .gray, renderingMode: .alwaysOriginal), for: .normal)
         self.setTitle(title, for: .normal)
         self.setTitleColor(UIColor(named: "gray500"), for: .normal)
@@ -133,7 +133,7 @@ class SignUpVC : UIViewController {
     private lazy var loginButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("로그인", for: .normal)
-        button.setTitleColor(UIColor(named: "skyblue"), for: .normal)
+        button.setTitleColor(Constants.Colors.skyblue, for: .normal)
         button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 14)
         button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         return button
@@ -143,7 +143,7 @@ class SignUpVC : UIViewController {
         let label = UILabel()
         label.text = "DropDrug"
         label.font = UIFont.roRegularFont(ofSize: 30)
-        label.textColor = UIColor(named: "skyblue")
+        label.textColor = Constants.Colors.skyblue
         label.textAlignment = .center
         return label
     }()
@@ -164,7 +164,7 @@ class SignUpVC : UIViewController {
     private lazy var termsValidationLabel: UILabel = {
         let label = UILabel()
         label.text = "이용 약관 및 개인정보 수집에 동의해주세요"
-        label.textColor = UIColor(named: "red")
+        label.textColor = Constants.Colors.red
         label.font = UIFont.systemFont(ofSize: 12)
         label.isHidden = true
         return label
@@ -194,7 +194,7 @@ class SignUpVC : UIViewController {
         view.addSubview(signUpButton)
         view.addSubview(termsValidationLabel)
         
-        view.backgroundColor = UIColor(hex: "#F8F8F8")
+        view.backgroundColor = .white
     }
     
     private func setupConstraints() {
@@ -214,7 +214,6 @@ class SignUpVC : UIViewController {
             make.top.equalTo(usernameField.snp.bottom).offset(superViewHeight * 0.005)
             make.centerX.equalToSuperview()
         }
-        
         passwordField.snp.makeConstraints { make in
             make.top.equalTo(emailField.snp.bottom).offset(superViewHeight * 0.005)
             make.centerX.equalToSuperview()
@@ -265,7 +264,7 @@ class SignUpVC : UIViewController {
     }
     
     @objc func loginButtonTapped() {
-        let loginVC = loginVC()
+        let loginVC = LoginVC()
         loginVC.modalPresentationStyle = .fullScreen
         present(loginVC, animated: true, completion: nil)
     }
@@ -290,11 +289,11 @@ class SignUpVC : UIViewController {
     @objc func usernameValidate(){
         if let username = usernameField.text, !username.isEmpty {
             usernameField.validationLabel.isHidden = true
-            usernameField.textField.layer.borderColor = UIColor(named: "skyblue")?.cgColor
+            usernameField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
             isUsernameValid = true
         } else {
             usernameField.validationLabel.isHidden = false
-            usernameField.textField.layer.borderColor = UIColor(named: "red")?.cgColor
+            usernameField.textField.layer.borderColor = Constants.Colors.red?.cgColor
             isUsernameValid = false
         }
         validateInputs()
@@ -305,11 +304,11 @@ class SignUpVC : UIViewController {
 //        이메일 주소 유효성 확인 조건문
         if let email = emailField.text {
             emailField.validationLabel.isHidden = true
-            emailField.textField.layer.borderColor = UIColor(named: "skyblue")?.cgColor
+            emailField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
             isEmailValid = true
         } else {
             emailField.validationLabel.isHidden = false
-            emailField.textField.layer.borderColor = UIColor(named: "red")?.cgColor
+            emailField.textField.layer.borderColor = Constants.Colors.red?.cgColor
             isEmailValid = false
         }
     }
@@ -319,11 +318,11 @@ class SignUpVC : UIViewController {
 //      if let password = passwordField.text, isValidPassword(password) {
 //      패스워드 유효성 확인 조건문
             passwordField.validationLabel.isHidden = true
-            passwordField.textField.layer.borderColor = UIColor(named: "skyblue")?.cgColor
+            passwordField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
             isPasswordValid = true
         } else {
             passwordField.validationLabel.isHidden = false
-            passwordField.textField.layer.borderColor = UIColor(named: "red")?.cgColor
+            passwordField.textField.layer.borderColor = Constants.Colors.red?.cgColor
             isPasswordValid = false
         }
         validateInputs()
@@ -332,11 +331,11 @@ class SignUpVC : UIViewController {
     @objc func confirmPasswordValidate() {
         if let confirmPassword = confirmPasswordField.text, confirmPassword == passwordField.text, !confirmPassword.isEmpty {
             confirmPasswordField.validationLabel.isHidden = true
-            confirmPasswordField.textField.layer.borderColor = UIColor(named: "skyblue")?.cgColor
+            confirmPasswordField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
             isConfirmPasswordValid = true
         } else {
             confirmPasswordField.validationLabel.isHidden = false
-            confirmPasswordField.textField.layer.borderColor = UIColor(named: "red")?.cgColor
+            confirmPasswordField.textField.layer.borderColor = Constants.Colors.red?.cgColor
             isConfirmPasswordValid = false
         }
         validateInputs()
@@ -357,7 +356,7 @@ class SignUpVC : UIViewController {
     @objc func validateInputs() {
         isValid = isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isTermsAgreeValid
         signUpButton.isEnabled = isValid
-        signUpButton.backgroundColor = isValid ? UIColor(named: "skyblue") : UIColor(named: "gray500")
+        signUpButton.backgroundColor = isValid ? Constants.Colors.skyblue : UIColor(named: "gray500")
     }
     
     func isValidEmail(_ email: String) -> Bool {
