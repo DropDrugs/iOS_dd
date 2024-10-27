@@ -4,7 +4,7 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
     
-    private let HomeVC = UINavigationController(rootViewController: TestVC())
+    private let HomeVC = UINavigationController(rootViewController: HomeViewController())
     private let SearchVC = UINavigationController(rootViewController: TestVC())
     private let LocationVC = UINavigationController(rootViewController: TestVC())
     private let InfoVC = UINavigationController(rootViewController: TestVC())

@@ -119,7 +119,7 @@ class TestVC: UIViewController, CLLocationManagerDelegate {
 //                    print("== [추가 거리 정보] subThoroughfare : \(subThoroughfare)") //272-13
                     address = "\(address) \(subThoroughfare)"
                 }
-                print(address)
+//                print(address)
             }
         }
     }
