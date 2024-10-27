@@ -33,6 +33,9 @@ let project = Project(
                                    "Pretendard-Thin.otf",
                                    "RussoOne-Regular.ttf"
                     ],
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "위치 권한을 허용?",
+                    "NSLocationWhenInUseUsageDescription" : "위치 권한을 허용?",
+                    "NSLocationAlwaysUsageDescription" : "위치 권한을 허용?"
                     // 새로운 거 추가
                 ]
             ),
