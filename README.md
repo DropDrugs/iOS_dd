@@ -7,8 +7,53 @@
 - env
 - version : 4.31.0(mise 통해서 설치)
 
-- 주요 명령어
+- 주요 명령어 (mise exec --)
 - tuist install
 - tuist generate
 - tuist build
 - tuist graph
+
+### 브랜치 구조
+- main : release 분기마다 merge
+- Dev
+  - DY
+  - HZ
+  - YS
+
+## 폴더링
+```shell
+├── Derived
+│   ├── InfoPlists
+│   └── Sources
+│       ├── Extensions
+│       └── Fonts
+├── DropDrug
+│   ├── Resources
+│   │   ├── Assets.xcassets
+│   │   └── Preview Content
+│   ├── Sources
+│   │   ├── AppDelegate.swift
+│   │   ├── SceneDelegate.swift
+│   │   ├── Models
+│   │   ├── ViewControllers
+│   │   ├── Protocols
+│   │   └── Views
+│   └── Tests
+│       └── DropDrugTests.swift
+├── DropDrug.xcodeproj
+│   ├── project.pbxproj
+│   ├── project.xcworkspace
+│   ├── xcshareddata
+│   │   └── xcschemes
+│   └── xcuserdata
+├── DropDrug.xcworkspace
+│   ├── contents.xcworkspacedata
+│   ├── xcshareddata
+│   └── xcuserdata
+├── Project.swift
+├── README.md
+└── Tuist
+    ├── Config.swift
+    ├── Package.resolved
+    └── Package.swift
+```
