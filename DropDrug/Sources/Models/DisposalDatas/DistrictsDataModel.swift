@@ -8,7 +8,3 @@ struct DistrictsDataModel: Codable {
     let image : String
     let url : String
 }
-
-var globalDistricts: [DistrictsDataModel] = [
-    
-]

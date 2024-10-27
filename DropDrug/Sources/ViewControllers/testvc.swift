@@ -5,13 +5,12 @@ import CoreLocation
 
 class TestVC: UIViewController, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
-    var userLocation: CLLocationCoordinate2D?
     
     private let label1: UILabel = {
         let label = UILabel()
-        label.text = "empty"
+        label.text = "Label 1"
         label.textAlignment = .center
-        //label.font = UIFont.ptdBoldFont(ofSize: 24)
+        label.font = UIFont.ptdBoldFont(ofSize: 24)
         label.textColor = .black
         return label
     }()
@@ -19,7 +18,7 @@ class TestVC: UIViewController, CLLocationManagerDelegate {
     private let label2: UILabel = {
         let label = UILabel()
         label.text = "DropDrug"
-        //label.font = UIFont.roRegularFont(ofSize: 12)
+        label.font = UIFont.roRegularFont(ofSize: 12)
         label.textAlignment = .center
         label.textColor = .white
         return label
@@ -28,50 +27,13 @@ class TestVC: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "Lightblue")
         
         // 라벨을 뷰에 추가
         view.addSubview(label1)
         view.addSubview(label2)
-        
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        requestLocationPermission()
-        print("권한요청")
+        setupLocationManager()
     }
-    
-    func requestLocationPermission() {
-        let status = locationManager.authorizationStatus
-        if status == .notDetermined {
-            locationManager.requestWhenInUseAuthorization() // 요청을 명확하게 표시
-        } else if status == .authorizedAlways || status == .authorizedWhenInUse {
-            startLocationUpdates()
-        } else {
-            print("Location services denied.")
-        }
-    }
-    
-    func startLocationUpdates() {
-        locationManager.startUpdatingLocation()
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let geocoder = CLGeocoder()
-        if let location = locationManager.location {
-            geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
-                if let error = error {
-                    print("Geocoding error: \(error)")
-                    return
-                }
-                if let placemark = placemarks?.first, let address = placemark.locality {
-                    print(address)
-                } else {
-                }
-            }
-        }
-    }
-    
-    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -87,5 +49,78 @@ class TestVC: UIViewController, CLLocationManagerDelegate {
             .marginTop(16)   // 첫 번째 라벨과의 간격
             .hCenter()       // 수평 중앙 정렬
             .sizeToFit()     // 텍스트에 맞게 사이즈 조절
+    }
+    
+    //MARK: - Location parts
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            self.locationManager.startUpdatingLocation()
+        case .denied, .restricted:
+            print("위치 서비스가 제한 또는 거부되었습니다.")
+            self.locationManager.stopUpdatingLocation()
+        case .notDetermined:
+            print("위치 권한이 아직 결정되지 않았습니다.")
+            self.locationManager.requestWhenInUseAuthorization()
+        @unknown default:
+            print("알 수 없는 권한 상태입니다.")
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else { return }
+        
+        // 위치 정보를 기반으로 주소를 가져옴
+        reverseGeocode(location: location)
+        
+        locationManager.stopUpdatingLocation()
+    }
+    
+    private func reverseGeocode(location: CLLocation) {
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { [weak self] (placemarks, error) in
+            guard let self = self else { return }
+            if let error = error {
+                print("역지오코딩 실패: \(error)")
+                return
+            }
+            
+            if let placemark = placemarks?.first {
+                var address = ""
+
+                
+                if let administrativeArea = placemark.administrativeArea {
+//                    print("== [시/도] administrativeArea : \(administrativeArea)")  //서울특별시, 경기도
+                    address = "\(address) \(administrativeArea) "
+                }
+                
+                if let locality = placemark.locality {
+//                    print("== [도시] locality : \(locality)") //서울시, 성남시, 수원시
+                    address = "\(address) \(locality) "
+                }
+                
+                if let subLocality = placemark.subLocality {
+//                    print("== [추가 도시] subLocality : \(subLocality)") //강남구
+                    address = "\(address) \(subLocality) "
+                }
+                
+                if let thoroughfare = placemark.thoroughfare {
+//                    print("== [상세주소] thoroughfare : \(thoroughfare)") //강남대로106길, 봉은사로2길
+                    address = "\(address) \(thoroughfare) "
+                }
+                
+                if let subThoroughfare = placemark.subThoroughfare {
+//                    print("== [추가 거리 정보] subThoroughfare : \(subThoroughfare)") //272-13
+                    address = "\(address) \(subThoroughfare)"
+                }
+                print(address)
+            }
+        }
     }
 }
