@@ -7,6 +7,7 @@ import MapKit
 class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
     var locationManager = CLLocationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = homeView
@@ -16,11 +17,46 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         
         navigationController?.navigationBar.isHidden = true
     }
+    
     private let homeView: HomeView = {
         let hv = HomeView()
+        hv.resetBtn.addTarget(self, action: #selector(resetBtnTapped), for: .touchUpInside)
+        hv.goToSearchPlaceBtn.addTarget(self, action: #selector(goToSPBtnTapped), for: .touchUpInside)
+        hv.floatingBtn.addTarget(self, action: #selector(didTapFloatingBtn), for: .touchUpInside)
         return hv
     }()
     
+    @objc
+    private func resetBtnTapped() {
+        //print("Reset button tapped")
+        locationManager.stopUpdatingLocation()
+        locationManager.startUpdatingLocation()
+    }
+    
+    @objc
+    private func goToSPBtnTapped() {
+        let vc = TestVC()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+        
+    @objc private func didTapFloatingBtn() {
+        // 눌렸을 때 애니메이션
+        let originalColor = homeView.floatingBtn.backgroundColor
+        let highlightColor = UIColor(named: "Gray700")?.withAlphaComponent(0.7) // 원하는 강조 색상
+        
+        // 버튼 색상을 변경하는 애니메이션
+        UIView.animate(withDuration: 0.1, animations: {
+            self.homeView.floatingBtn.backgroundColor = highlightColor // 색상 변경
+        }) { _ in
+            // 애니메이션이 끝난 후 원래 색상으로 돌아오기
+            UIView.animate(withDuration: 0.1) {
+                self.homeView.floatingBtn.backgroundColor = originalColor // 원래 색상으로 되돌리기
+            }
+        }
+        let vc = TestVC()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+        
     private func configureLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest

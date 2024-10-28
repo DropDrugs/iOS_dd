@@ -20,6 +20,38 @@ class HomeView: UIView {
     public var points = 100
     public var name = "김드롭"
     public var presentLocation = "기본 주소"
+    
+    public lazy var floatingBtn: UIButton = {
+        let fb = UIButton()
+        fb.backgroundColor = UIColor(named: "Gray900")
+        fb.layer.cornerRadius = 20
+        fb.layer.shadowColor = UIColor.black.cgColor
+        fb.layer.shadowOpacity = 0.3
+        fb.layer.shadowOffset = CGSize(width: 0, height: 5)
+        fb.layer.shadowRadius = 5
+        
+        var configuration = UIButton.Configuration.plain()
+        // 이미지 설정
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .medium) // 원하는 크기와 굵기
+        configuration.image = UIImage(systemName: "plus", withConfiguration: imageConfig)?
+            .withRenderingMode(.alwaysOriginal)
+            .withTintColor(.white)
+        configuration.imagePlacement = .leading
+        configuration.imagePadding = 8
+
+        // 타이틀 속성 설정
+        let attributes: AttributeContainer = AttributeContainer([
+            .font: UIFont.ptdSemiBoldFont(ofSize: 14), .foregroundColor: UIColor.white])
+        configuration.attributedTitle = AttributedString("의약품 드롭하기", attributes: attributes)
+        configuration.titleAlignment = .center
+        
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8) // 여백 설정
+
+        // 버튼 설정
+        fb.configuration = configuration
+        
+        return fb
+    }()
 
     public lazy var mapView: MKMapView = {
         let m = MKMapView()
@@ -122,6 +154,7 @@ class HomeView: UIView {
         addSubview(starter)
         addSubview(point)
         addSubview(locationBackground)
+        addSubview(floatingBtn)
         locationBackground.addSubview(mapView)
         locationBackground.addSubview(location)
         locationBackground.addSubview(resetBtn)
@@ -150,6 +183,13 @@ class HomeView: UIView {
         locationBackground.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalTo(safeAreaLayoutGuide)
             make.height.equalTo(safeAreaLayoutGuide.snp.height).multipliedBy(0.25)
+        }
+        
+        floatingBtn.snp.makeConstraints { make in
+            make.centerX.equalTo(safeAreaLayoutGuide)
+            make.bottom.equalTo(locationBackground.snp.top).offset(-32)
+            make.width.equalTo(146)
+            make.height.equalTo(40)
         }
         
         mapView.snp.makeConstraints { make in
