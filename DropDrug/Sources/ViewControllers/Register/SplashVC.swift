@@ -33,7 +33,7 @@ class SplashVC : UIViewController {
 //    }
     
     func setupViews() {
-        view.backgroundColor = UIColor(named: "skyblue")
+        view.backgroundColor = Constants.Colors.skyblue
         view.addSubview(titleLabel)
         
     }
