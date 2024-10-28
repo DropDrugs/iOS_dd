@@ -16,7 +16,7 @@ class OnboardingVC2 : UIViewController {
         let gradientLayer = CAGradientLayer()
 
         gradientLayer.colors = [
-            (UIColor(named: "coralpink")?.withAlphaComponent(0.7) ?? UIColor.systemPink.withAlphaComponent(0.7)).cgColor,
+            (Constants.Colors.coralpink?.withAlphaComponent(0.7) ?? UIColor.systemPink.withAlphaComponent(0.7)).cgColor,
             (Constants.Colors.skyblue ?? UIColor.systemTeal).cgColor
         ]
         
