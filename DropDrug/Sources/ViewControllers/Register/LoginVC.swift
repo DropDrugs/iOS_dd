@@ -3,10 +3,10 @@
 import UIKit
 import SnapKit
 
-class loginVC : UIViewController {
+class LoginVC : UIViewController {
     private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")
     private lazy var passwordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")
+        let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: " ")
         field.textField.isSecureTextEntry = true
         return field
     }()
@@ -16,7 +16,7 @@ class loginVC : UIViewController {
         let label = UILabel()
         label.text = "로그인"
         label.font = UIFont.ptdSemiBoldFont(ofSize: 22)
-        label.textColor = UIColor(named: "skyblue")
+        label.textColor = Constants.Colors.skyblue
         label.textAlignment = .center
         return label
     }()
@@ -54,7 +54,7 @@ class loginVC : UIViewController {
         
         view.addSubview(loginButton)
         
-        view.backgroundColor = UIColor(hex: "#F8F8F8")
+        view.backgroundColor = .white
     }
     
     private func setupConstraints() {
@@ -96,8 +96,6 @@ class loginVC : UIViewController {
     }
     
     // MARK: - Actions
-
-    
     @objc func loginButtonTapped() {
         if isValid {
             //로그인 버튼 클릭시 함수 추가 필요
@@ -128,7 +126,7 @@ class loginVC : UIViewController {
     @objc func validateInputs() {
         isValid = isFormValid && isTermsAgreeValid
         loginButton.isEnabled = isValid
-        loginButton.backgroundColor = isValid ? UIColor(named: "skyblue") : UIColor(named: "gray500")
+        loginButton.backgroundColor = isValid ? Constants.Colors.skyblue : UIColor(named: "gray500")
     }
     
     func isValidEmail(_ email: String) -> Bool {

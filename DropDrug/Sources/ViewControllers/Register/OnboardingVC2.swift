@@ -6,7 +6,7 @@ import SnapKit
 class OnboardingVC2 : UIViewController {
     
     override func viewDidLoad() {
-        view.backgroundColor = UIColor(named: "skyblue")
+        view.backgroundColor = Constants.Colors.skyblue
             super.viewDidLoad()
             setupGradientBackground()
             setupUI()
@@ -17,7 +17,7 @@ class OnboardingVC2 : UIViewController {
 
         gradientLayer.colors = [
             (UIColor(named: "coralpink")?.withAlphaComponent(0.7) ?? UIColor.systemPink.withAlphaComponent(0.7)).cgColor,
-            (UIColor(named: "skyblue") ?? UIColor.systemTeal).cgColor
+            (Constants.Colors.skyblue ?? UIColor.systemTeal).cgColor
         ]
         
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
@@ -43,7 +43,7 @@ class OnboardingVC2 : UIViewController {
             
             let startButton = UIButton(type: .system)
             startButton.setTitle("시작하기", for: .normal)
-            startButton.setTitleColor(UIColor(named: "skyblue"), for: .normal)
+            startButton.setTitleColor(Constants.Colors.skyblue, for: .normal)
             startButton.backgroundColor = .white
             startButton.layer.cornerRadius = 30
             startButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
