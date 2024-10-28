@@ -33,12 +33,21 @@ struct Constants {
     static let commonDisposalInfoList : [CommonDisposalDataModel] = []
     
     struct Colors {
-        static let black = UIColor(named: "Black")
-        static let coralPink = UIColor(named: "CoralPink")
-        static let gray800 = UIColor(named: "Gray800")
-        static let lightblue = UIColor(named: "Lightblue")
-        static let pink = UIColor(named: "Pink")
-        static let red = UIColor(named: "Red")
+        static let black = UIColor(named: "black")
+        static let coralpink = UIColor(named: "coralpink")
+        static let gray0 = UIColor(named: "gray0")
+        static let gray100 = UIColor(named: "gray100")
+        static let gray200 = UIColor(named: "gray200")
+        static let gray300 = UIColor(named: "gray300")
+        static let gray400 = UIColor(named: "gray400")
+        static let gray500 = UIColor(named: "gray500")
+        static let gray600 = UIColor(named: "gray600")
+        static let gray700 = UIColor(named: "Gray700")
+        static let gray800 = UIColor(named: "gray800")
+        static let gray900 = UIColor(named: "Gray900")
+        static let lightblue = UIColor(named: "lightblue")
+        static let pink = UIColor(named: "pink")
+        static let red = UIColor(named: "red")
         static let skyblue = UIColor(named: "skyblue")
     }
 }

@@ -47,11 +47,11 @@ class CustomLabelTextFieldView: UIView {
         textField.font = UIFont.systemFont(ofSize: 16)
         textField.backgroundColor = .white
         
-        textField.layer.borderColor = UIColor(named: "gray300")?.cgColor
+        textField.layer.borderColor = Constants.Colors.gray300?.cgColor
         textField.layer.borderWidth = 1.0  // 원하는 테두리 두께로 설정
         textField.layer.cornerRadius = 8.0  // 테두리에 둥근 모서리를 주고 싶을 때 설정
 
-        let placeholderColor = UIColor(named: "gray500")
+        let placeholderColor = Constants.Colors.gray500
         textField.attributedPlaceholder = NSAttributedString(
             string: textFieldPlaceholder,
             attributes: [NSAttributedString.Key.foregroundColor: placeholderColor ?? UIColor.systemGray]
@@ -85,9 +85,9 @@ class CheckBoxButton: UIButton {
     init(title: String) {
         super.init(frame: .zero)
         self.setImage(UIImage(systemName: "checkmark.square")?.withTintColor(Constants.Colors.skyblue ?? .blue, renderingMode: .alwaysOriginal), for: .selected)
-        self.setImage(UIImage(systemName: "square")?.withTintColor(UIColor(named: "gray500") ?? .gray, renderingMode: .alwaysOriginal), for: .normal)
+        self.setImage(UIImage(systemName: "square")?.withTintColor(Constants.Colors.gray500 ?? .gray, renderingMode: .alwaysOriginal), for: .normal)
         self.setTitle(title, for: .normal)
-        self.setTitleColor(UIColor(named: "gray500"), for: .normal)
+        self.setTitleColor(Constants.Colors.gray500 ?? .gray , for: .normal)
         self.titleLabel?.font = UIFont.ptdRegularFont(ofSize: 13)
         
         self.imageView?.translatesAutoresizingMaskIntoConstraints = false
@@ -95,15 +95,13 @@ class CheckBoxButton: UIButton {
         
         if let imageView = self.imageView, let titleLabel = self.titleLabel {
             imageView.snp.makeConstraints { make in
-                make.leading.equalToSuperview().offset(10)
                 make.centerY.equalToSuperview()
                 make.width.equalTo(20)
                 make.height.equalTo(20)
             }
             titleLabel.snp.makeConstraints { make in
-                make.leading.equalTo(imageView.snp.trailing).offset(8)
                 make.trailing.equalToSuperview().inset(10)
-                make.centerY.equalToSuperview()
+                make.centerY.equalTo(imageView)
             }
         }
         self.contentHorizontalAlignment = .left
@@ -155,7 +153,7 @@ class SignUpVC : UIViewController {
         button.setTitle("회원가입", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 16)
-        button.backgroundColor = UIColor.systemGray
+        button.backgroundColor = Constants.Colors.gray600
         button.layer.cornerRadius = 30
         button.addTarget(self, action: #selector(signUpButtonTapped), for: .touchUpInside)
         return button
@@ -356,7 +354,7 @@ class SignUpVC : UIViewController {
     @objc func validateInputs() {
         isValid = isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isTermsAgreeValid
         signUpButton.isEnabled = isValid
-        signUpButton.backgroundColor = isValid ? Constants.Colors.skyblue : UIColor(named: "gray500")
+        signUpButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
     }
     
     func isValidEmail(_ email: String) -> Bool {

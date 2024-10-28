@@ -126,7 +126,7 @@ class LoginVC : UIViewController {
     @objc func validateInputs() {
         isValid = isFormValid && isTermsAgreeValid
         loginButton.isEnabled = isValid
-        loginButton.backgroundColor = isValid ? Constants.Colors.skyblue : UIColor(named: "gray500")
+        loginButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
     }
     
     func isValidEmail(_ email: String) -> Bool {
