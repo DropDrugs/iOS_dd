@@ -9,7 +9,7 @@ class MainTabBarController: UITabBarController {
     private let LocationVC = UINavigationController(rootViewController: TestVC())
     private let InfoVC = UINavigationController(rootViewController: TestVC())
     private let MyVC = UINavigationController(rootViewController: TestVC())
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
