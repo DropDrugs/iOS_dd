@@ -3,6 +3,10 @@
 import UIKit
 
 struct Constants {
+    struct NetworkManager {
+        static let baseURL = "http://13.125.191.198:8080/"
+    }
+    
     static let seoulDistrictsList: [DistrictsDataModel] = [
             DistrictsDataModel(name: "강남구", image: "강남구", url: "https://www.gangnam.go.kr/board/waste/list.do?mid=ID02_011109#collapse21"),
             DistrictsDataModel(name: "강동구", image: "강동구", url: "https://www.gangdong.go.kr/web/newportal/contents/gdp_005_004_010_001"),
