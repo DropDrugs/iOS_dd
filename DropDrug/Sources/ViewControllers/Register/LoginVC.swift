@@ -2,8 +2,13 @@
 
 import UIKit
 import SnapKit
+import Moya
+import KeychainSwift
 
 class LoginVC : UIViewController {
+    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken
+    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
+    
     private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: " ")
@@ -99,6 +104,15 @@ class LoginVC : UIViewController {
     @objc func loginButtonTapped() {
         if isValid {
             //로그인 버튼 클릭시 함수 추가 필요
+            let loginRequest = UserLoginRequest(email: emailField.textField.text!, password: passwordField.textField.text!)
+            callLoginAPI(loginRequest) { isSuccess in
+                if isSuccess {
+                    // TODO : 화면 이동
+                    // 홈화면으로 이동하는 함수 만들어서 호출 부탁합니다.
+                } else {
+                    print("로그인 실패")
+                }
+            }
         }
     }
     

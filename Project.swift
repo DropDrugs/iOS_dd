@@ -48,7 +48,8 @@ let project = Project(
                 .external(name: "Moya"),
                 .external(name: "SnapKit"),
                 .external(name: "PinLayout"),
-                .external(name: "FlexLayout")
+                .external(name: "FlexLayout"),
+                .external(name: "KeychainSwift")
             ]
         ),
         .target(
