@@ -85,7 +85,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         }
         
         // 위치 업데이트 중지
-//        locationManager.stopUpdatingLocation()
+        locationManager.stopUpdatingLocation()
     }
     
     private func reverseGeocode(location: CLLocation, completion: @escaping (String?) -> Void) {
