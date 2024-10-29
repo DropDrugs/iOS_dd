@@ -35,7 +35,10 @@ let project = Project(
                     ],
                     "NSLocationAlwaysAndWhenInUseUsageDescription" : "위치 권한을 허용?",
                     "NSLocationWhenInUseUsageDescription" : "위치 권한을 허용?",
-                    "NSLocationAlwaysUsageDescription" : "위치 권한을 허용?"
+                    "NSLocationAlwaysUsageDescription" : "위치 권한을 허용?",
+                    "NSAppTransportSecurity" : [
+                        "NSAllowsArbitraryLoads" : true
+                    ],
                     // 새로운 거 추가
                 ]
             ),
