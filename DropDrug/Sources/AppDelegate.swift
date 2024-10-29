@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         
-        let viewController = TestVC()
+        let viewController = SplashVC()
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
  

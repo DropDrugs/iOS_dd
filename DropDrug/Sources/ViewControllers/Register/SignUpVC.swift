@@ -2,115 +2,7 @@
 
 import UIKit
 import SnapKit
-
-class PaddedTextField: UITextField {
-    var padding: UIEdgeInsets
-    
-    init(padding: UIEdgeInsets) {
-        self.padding = padding
-        super.init(frame: .zero)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: padding)
-    }
-    
-    override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: padding)
-    }
-    
-    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: padding)
-    }
-}
-
-class CustomLabelTextFieldView: UIView {
-    let textField: PaddedTextField
-    let validationLabel: UILabel
-
-    var text: String? {
-        return textField.text
-    }
-
-    init(textFieldPlaceholder: String, validationText: String) {
-        self.textField = PaddedTextField(padding: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
-        self.validationLabel = UILabel()
-
-        super.init(frame: .zero)
-        
-        textField.placeholder = textFieldPlaceholder
-        textField.borderStyle = .none
-        textField.font = UIFont.systemFont(ofSize: 16)
-        textField.backgroundColor = .white
-        
-        textField.layer.borderColor = Constants.Colors.gray300?.cgColor
-        textField.layer.borderWidth = 1.0  // 원하는 테두리 두께로 설정
-        textField.layer.cornerRadius = 8.0  // 테두리에 둥근 모서리를 주고 싶을 때 설정
-
-        let placeholderColor = Constants.Colors.gray500
-        textField.attributedPlaceholder = NSAttributedString(
-            string: textFieldPlaceholder,
-            attributes: [NSAttributedString.Key.foregroundColor: placeholderColor ?? UIColor.systemGray]
-        )
-        
-        validationLabel.text = validationText
-        validationLabel.textColor = Constants.Colors.red
-        validationLabel.font = UIFont.systemFont(ofSize: 12)
-        validationLabel.isHidden = true // Initially hidden
-
-        addSubview(textField)
-        addSubview(validationLabel)
-
-        validationLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview()
-        }
-        textField.snp.makeConstraints { make in
-            make.top.equalTo(validationLabel.snp.bottom).offset(5)
-            make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(superViewWidth * 0.13)
-            make.width.equalTo(superViewWidth * 0.9)
-        }
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class CheckBoxButton: UIButton {
-    init(title: String) {
-        super.init(frame: .zero)
-        self.setImage(UIImage(systemName: "checkmark.square")?.withTintColor(Constants.Colors.skyblue ?? .blue, renderingMode: .alwaysOriginal), for: .selected)
-        self.setImage(UIImage(systemName: "square")?.withTintColor(Constants.Colors.gray500 ?? .gray, renderingMode: .alwaysOriginal), for: .normal)
-        self.setTitle(title, for: .normal)
-        self.setTitleColor(Constants.Colors.gray500 ?? .gray , for: .normal)
-        self.titleLabel?.font = UIFont.ptdRegularFont(ofSize: 13)
-        
-        self.imageView?.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLabel?.translatesAutoresizingMaskIntoConstraints = false
-        
-        if let imageView = self.imageView, let titleLabel = self.titleLabel {
-            imageView.snp.makeConstraints { make in
-                make.centerY.equalToSuperview()
-                make.width.equalTo(20)
-                make.height.equalTo(20)
-            }
-            titleLabel.snp.makeConstraints { make in
-                make.trailing.equalToSuperview().inset(10)
-                make.centerY.equalTo(imageView)
-            }
-        }
-        self.contentHorizontalAlignment = .left
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
+import Moya
 
 class SignUpVC : UIViewController {
     
@@ -253,11 +145,22 @@ class SignUpVC : UIViewController {
     }
     
     // MARK: - Actions
-
     
+    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
+        
     @objc func signUpButtonTapped() {
         if isValid {
             //회원가입 버튼 클릭시 함수 추가 필요
+            let signUpRequest = UserLoginRequest(email: emailField.textField.text!, password: passwordField.textField.text!)
+            callSignUpAPI(signUpRequest) { isSuccess in
+                if isSuccess {
+                    self.loginButtonTapped()
+                } else {
+                    print("회원 가입 실패")
+                }
+            }
+            
+            // TODO : 닉네임 패치 api 호출 추가 필요
         }
     }
     
