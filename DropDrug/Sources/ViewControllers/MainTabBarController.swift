@@ -7,7 +7,7 @@ class MainTabBarController: UITabBarController {
     private let HomeVC = UINavigationController(rootViewController: HomeViewController())
     private let SearchVC = UINavigationController(rootViewController: TestVC())
     private let LocationVC = UINavigationController(rootViewController: TestVC())
-    private let InfoVC = UINavigationController(rootViewController: TestVC())
+    private let InfoVC = UINavigationController(rootViewController: InfoMainViewController())
     private let MyVC = UINavigationController(rootViewController: TestVC())
     
     override func viewDidLoad() {
