@@ -201,7 +201,7 @@ class SignUpVC : UIViewController {
     }
     
     @objc func emailValidate(){
-//        if let email = emailField.text, isValidEmail(email) {
+//        if let email = emailField.text, ValidationUtility.isValidEmail(email) {
 //        이메일 주소 유효성 확인 조건문
         if let email = emailField.text {
             emailField.validationLabel.isHidden = true
@@ -215,9 +215,9 @@ class SignUpVC : UIViewController {
     }
     
     @objc func passwordValidate(){
-        if let password = passwordField.text {
-//      if let password = passwordField.text, isValidPassword(password) {
+//      if let password = passwordField.text, ValidationUtility.isValidPassword(password) {
 //      패스워드 유효성 확인 조건문
+        if let password = passwordField.text {
             passwordField.validationLabel.isHidden = true
             passwordField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
             isPasswordValid = true
@@ -258,17 +258,5 @@ class SignUpVC : UIViewController {
         isValid = isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isTermsAgreeValid
         signUpButton.isEnabled = isValid
         signUpButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
-    }
-    
-    func isValidEmail(_ email: String) -> Bool {
-        let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegex)
-        return emailPred.evaluate(with: email)
-    }
-    
-    func isValidPassword(_ password: String) -> Bool {
-        let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=?.,<>]).{8,15}$"
-        let passwordTest = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
-        return passwordTest.evaluate(with: password)
     }
 }
