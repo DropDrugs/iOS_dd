@@ -53,7 +53,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 self.homeView.floatingBtn.backgroundColor = originalColor // 원래 색상으로 되돌리기
             }
         }
-        let vc = TestVC()
+        let vc = SelectDropTypeVC()
         navigationController?.pushViewController(vc, animated: true)
     }
         

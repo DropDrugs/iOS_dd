@@ -3,7 +3,7 @@
 import UIKit
 import SnapKit
 
-class SelectDropTypeVC : UIViewController, UICollectionViewDataSource {
+class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     private var collectionView: UICollectionView!
     
@@ -31,8 +31,10 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource {
         button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         return button
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupView()
     }
     
@@ -43,6 +45,7 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource {
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.register(KindCollectionViewCell.self, forCellWithReuseIdentifier: "KindCell")
         collectionView.backgroundColor = .white
         collectionView.isScrollEnabled = false
@@ -54,9 +57,11 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource {
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
+        
         backButton.snp.makeConstraints { make in
             make.left.top.equalTo(view.safeAreaLayoutGuide).offset(16)
         }
+        
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalTo(backButton)
             make.leading.equalTo(backButton.snp.trailing).offset(16)
@@ -105,8 +110,53 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource {
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Alert 창 띄우기
+        let alert = UIAlertController(title: "실천 사진 인증", message: "실시간 사진 인증을 하시겠습니까?", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "No", style: .cancel) { [weak self] _ in
+            self?.moveToMainScreen()
+        })
+        
+        alert.addAction(UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
+            self?.presentCamera()
+        })
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func presentCamera() {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            print("카메라를 사용할 수 없습니다.")
+            return
+        }
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .camera
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let selectedImage = info[.editedImage] as? UIImage {
+            // 선택된 이미지를 처리하는 코드 추가
+            print("이미지를 선택했습니다: \(selectedImage)")
+        }
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
     // MARK: Actions
     @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    private func moveToMainScreen() {
         navigationController?.popViewController(animated: true)
     }
     
