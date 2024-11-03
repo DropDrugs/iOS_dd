@@ -135,6 +135,7 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
         
         textOverlayView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
         textOverlayView.layer.cornerRadius = 10
+        textOverlayView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
         contentView.addSubview(textOverlayView)
         textOverlayView.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
