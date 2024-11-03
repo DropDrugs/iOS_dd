@@ -2,8 +2,13 @@
 
 import UIKit
 import SnapKit
+import Moya
+import KeychainSwift
 
 class LoginVC : UIViewController {
+    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken
+    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
+    
     private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: " ")
@@ -98,11 +103,25 @@ class LoginVC : UIViewController {
     // MARK: - Actions
     @objc func loginButtonTapped() {
         if isValid {
-            //로그인 버튼 클릭시 함수 추가 필요
+            let loginRequest = UserLoginRequest(email: emailField.textField.text!, password: passwordField.textField.text!)
+            callLoginAPI(loginRequest) { isSuccess in
+                if isSuccess {
+                    self.proceedLoginSuccessful()
+                } else {
+                    print("로그인 실패")
+                }
+            }
         }
     }
     
+    func proceedLoginSuccessful() {
+            let tabBarController = MainTabBarController()
+            tabBarController.modalPresentationStyle = .fullScreen
+            present(tabBarController, animated: true, completion: nil)
+    }
+    
     @objc func termsTapped() {
+        // TODO : 아이디 저장 api?
         emailSaveCheckBox.isSelected.toggle()
         if emailSaveCheckBox.isSelected {
             isTermsAgreeValid = true
@@ -119,7 +138,7 @@ class LoginVC : UIViewController {
     @objc func checkFormValidity() {
         let email = emailField.textField.text ?? ""
         let password = passwordField.textField.text ?? ""
-        isFormValid = (isValidEmail(email)) && (isValidPassword(password))
+        isFormValid = (ValidationUtility.isValidEmail(email)) && (ValidationUtility.isValidPassword(password))
         validateInputs()
     }
     
@@ -127,17 +146,5 @@ class LoginVC : UIViewController {
         isValid = isFormValid
         loginButton.isEnabled = isValid
         loginButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
-    }
-    
-    func isValidEmail(_ email: String) -> Bool {
-        let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegex)
-        return emailPred.evaluate(with: email)
-    }
-    
-    func isValidPassword(_ password: String) -> Bool {
-        let passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=?.,<>]).{8,15}$"
-        let passwordTest = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
-        return passwordTest.evaluate(with: password)
     }
 }

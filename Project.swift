@@ -33,9 +33,10 @@ let project = Project(
                                    "Pretendard-Thin.otf",
                                    "RussoOne-Regular.ttf"
                     ],
-                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "위치 권한을 허용?",
-                    "NSLocationWhenInUseUsageDescription" : "위치 권한을 허용?",
-                    "NSLocationAlwaysUsageDescription" : "위치 권한을 허용?",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
+                    "NSLocationWhenInUseUsageDescription" : "위치 권한을 앱 활성 시에만 허용하시겠습니까?",
+                    "NSLocationAlwaysUsageDescription" : "위치 권한을 항상 허용하시겠습니까?",
+                    "NSCameraUsageDescription" : "카메라 사용 권한을 허용하시겠습니까?",
                     "NSAppTransportSecurity" : [
                         "NSAllowsArbitraryLoads" : true
                     ],
@@ -48,7 +49,8 @@ let project = Project(
                 .external(name: "Moya"),
                 .external(name: "SnapKit"),
                 .external(name: "PinLayout"),
-                .external(name: "FlexLayout")
+                .external(name: "FlexLayout"),
+                .external(name: "KeychainSwift")
             ]
         ),
         .target(

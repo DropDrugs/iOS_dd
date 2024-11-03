@@ -2,6 +2,7 @@
 
 import UIKit
 import Moya
+import KeychainSwift
 
 extension SignUpVC {
     func setupDTO(_ emailString: String, _ pwString: String) -> UserLoginRequest {
@@ -13,13 +14,34 @@ extension SignUpVC {
             switch result {
             case .success(let response):
                 do {
-                    let data = try response.map(IdResponse.self)
+                    _ = try response.map(IdResponse.self)
                     completion(true)
                 } catch {
                     print("Failed to map data : \(error)")
                     completion(false)
                 }
             case .failure(let error):
+                print("Request failed: \(error.localizedDescription)")
+                completion(false)
+            }
+        }
+    }
+}
+
+extension LoginVC {
+    func callLoginAPI(_ userParameter: UserLoginRequest, completion: @escaping (Bool) -> Void) {
+        provider.request(.postLogin(param: userParameter)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let data = try response.map(TokenDto.self)
+                    LoginVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    completion(true)
+                } catch {
+                    print("Failed to map data : \(error)")
+                    completion(false)
+                }
+            case .failure(let error) :
                 print("Request failed: \(error.localizedDescription)")
                 completion(false)
             }

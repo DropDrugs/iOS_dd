@@ -34,7 +34,14 @@ struct Constants {
             DistrictsDataModel(name: "중구", image: "중구", url: "https://www.junggu.seoul.kr/content.do?cmsid=15918"),
             DistrictsDataModel(name: "중랑구", image: "중랑구", url: "https://dong.jungnang.go.kr/dong/bbs/view/B0000002/31788?menuNo=500012")
         ]
-    static let commonDisposalInfoList : [CommonDisposalDataModel] = []
+    static let commonDisposalInfoList : [CommonDisposalDataModel] = [
+        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
+        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
+        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
+        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
+        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
+        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88")
+    ]
     
     struct Colors {
         static let black = UIColor(named: "black")
