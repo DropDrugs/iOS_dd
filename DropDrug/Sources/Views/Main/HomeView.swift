@@ -9,7 +9,7 @@ class HomeView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor(named: "Lightblue")
+        self.backgroundColor = Constants.Colors.lightblue
         self.addComponenets()
     }
     
@@ -23,7 +23,7 @@ class HomeView: UIView {
     
     public lazy var floatingBtn: UIButton = {
         let fb = UIButton()
-        fb.backgroundColor = UIColor(named: "Gray900")
+        fb.backgroundColor = Constants.Colors.gray900
         fb.layer.cornerRadius = 20
         fb.layer.shadowColor = UIColor.black.cgColor
         fb.layer.shadowOpacity = 0.3
@@ -72,7 +72,7 @@ class HomeView: UIView {
         let l = UILabel()
         l.text = "DropDrug"
         l.font = UIFont.roRegularFont(ofSize: 26)
-        l.textColor = UIColor(named: "skyblue")
+        l.textColor = Constants.Colors.skyblue
         return l
     }()
     
@@ -81,7 +81,7 @@ class HomeView: UIView {
         b.backgroundColor = .white
         b.layer.cornerRadius = 20
         let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
-        attributedString.addAttributes([.foregroundColor: UIColor(named: "Gray700") ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
         attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
         b.setAttributedTitle(attributedString, for: .normal)
         return b
@@ -93,14 +93,14 @@ class HomeView: UIView {
         b.layer.cornerRadius = 20
         b.setTitle("\(points) P", for: .normal)
         b.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 14)
-        b.setTitleColor(UIColor(named: "Gray700"), for: .normal)
+        b.setTitleColor(Constants.Colors.gray700, for: .normal)
         return b
     }()
     
     public lazy var location: UILabel = {
         let l = UILabel()
         l.text = "현 위치"
-        l.textColor = UIColor(named: "Gray700")
+        l.textColor = Constants.Colors.gray700
         l.font = UIFont.ptdRegularFont(ofSize: 13)
         return l
     }()
@@ -116,7 +116,7 @@ class HomeView: UIView {
         let l = UILabel()
         l.text = presentLocation
         l.numberOfLines = 0
-        l.textColor = UIColor(named: "Gray900")
+        l.textColor = Constants.Colors.gray900
         l.font = UIFont.ptdRegularFont(ofSize: 16)
         return l
     }()
@@ -135,7 +135,7 @@ class HomeView: UIView {
 
         // 타이틀 속성 설정
         let attributes: AttributeContainer = AttributeContainer([
-            .font: UIFont.ptdSemiBoldFont(ofSize: 14), .foregroundColor: UIColor(named: "skyblue") ?? .blue])
+            .font: UIFont.ptdSemiBoldFont(ofSize: 14), .foregroundColor: Constants.Colors.skyblue ?? .blue])
         configuration.attributedTitle = AttributedString("내 주변 드롭 장소 탐색", attributes: attributes)
         configuration.titleAlignment = .center
         
@@ -182,7 +182,7 @@ class HomeView: UIView {
         
         locationBackground.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(safeAreaLayoutGuide.snp.height).multipliedBy(0.25)
+            make.height.equalTo(safeAreaLayoutGuide.snp.height).multipliedBy(0.22)
         }
         
         floatingBtn.snp.makeConstraints { make in

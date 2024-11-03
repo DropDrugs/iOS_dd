@@ -28,9 +28,9 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     
     @objc
     private func resetBtnTapped() {
-        //print("Reset button tapped")
-        locationManager.stopUpdatingLocation()
+        print("Reset button tapped")
         locationManager.startUpdatingLocation()
+        locationManager.stopUpdatingLocation()
     }
     
     @objc
