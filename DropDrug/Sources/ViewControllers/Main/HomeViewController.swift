@@ -95,7 +95,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 completion(nil)
                 return
             }
-            print(self.processString(placemark.description))
+//            print(self.processString(placemark.description))
             var strAddr = ""
             var address = ""
             for i in self.processString(placemark.description) {
