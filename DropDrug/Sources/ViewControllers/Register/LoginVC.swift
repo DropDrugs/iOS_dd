@@ -138,7 +138,8 @@ class LoginVC : UIViewController {
     @objc func checkFormValidity() {
         let email = emailField.textField.text ?? ""
         let password = passwordField.textField.text ?? ""
-        isFormValid = (ValidationUtility.isValidEmail(email)) && (ValidationUtility.isValidPassword(password))
+//        isFormValid = (ValidationUtility.isValidEmail(email)) && (ValidationUtility.isValidPassword(password))
+        isFormValid = !email.isEmpty && !password.isEmpty
         validateInputs()
     }
     
