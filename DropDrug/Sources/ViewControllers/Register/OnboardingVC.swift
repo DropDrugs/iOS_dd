@@ -18,13 +18,13 @@ class OnboardingVC: UIViewController, UICollectionViewDelegate, UICollectionView
     private var collectionView: UICollectionView!
     private var pageControl = UIPageControl()
     
-    private let skipBtn = UIButton()
+    private let controlBtn = UIButton()
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        setupCollectionView()
-        setupPageControl()
-    }
+            super.viewDidLoad()
+            setupCollectionView()
+            setupPageControl()
+        }
     
     func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
@@ -57,14 +57,24 @@ class OnboardingVC: UIViewController, UICollectionViewDelegate, UICollectionView
                 make.centerX.equalToSuperview()
             }
         
-        skipBtn.setTitle("skip", for: .normal)
-        skipBtn.setTitleColor(.lightGray, for: .normal)
-        skipBtn.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
-        view.addSubview(skipBtn)
-        skipBtn.snp.makeConstraints { make in
-                make.centerY.equalTo(pageControl.snp.centerY)
+        controlBtn.setTitle("Skip", for: .normal)
+        controlBtn.setTitleColor(.lightGray, for: .normal)
+        controlBtn.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
+        view.addSubview(controlBtn)
+        updateSkipOrNextButtonConstraints(isLastPage: false)
+    }
+    
+    func updateSkipOrNextButtonConstraints(isLastPage: Bool) {
+        controlBtn.snp.remakeConstraints { make in
+            make.centerY.equalTo(pageControl.snp.centerY)
+            if isLastPage {
+                make.trailing.equalToSuperview().offset(-superViewWidth * 0.05)
+            } else {
                 make.leading.equalToSuperview().offset(superViewWidth * 0.05)
             }
+        }
+        
+        view.layoutIfNeeded()
     }
     
     @objc func pageControlTapped(_ sender: UIPageControl) {
@@ -98,69 +108,23 @@ class OnboardingVC: UIViewController, UICollectionViewDelegate, UICollectionView
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageIndex = Int(scrollView.contentOffset.x / view.frame.width)
         pageControl.currentPage = pageIndex
-    }
-}
-
-class OnboardingCollectionViewCell: UICollectionViewCell {
-    
-    private let imageView = UIImageView()
-    private let textOverlayView = UIView()
-    private let titleLabel = UILabel()
-    private let descriptionLabel = UILabel()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupLayout()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configure(with page: OnboardingPage) {
-        titleLabel.text = page.title
-        descriptionLabel.text = page.description
-        imageView.image = UIImage(named: page.imageName)
-    }
-    
-    private func setupLayout() {
-        contentView.backgroundColor = .black
         
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        contentView.addSubview(imageView)
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        if pageIndex == 0 && scrollView.contentOffset.x < 0 {
+                scrollView.contentOffset.x = 0
+            }
+        if pageIndex == pages.count - 1 {
+            let maxOffsetX = CGFloat(pages.count - 1) * view.frame.width
+            if scrollView.contentOffset.x > maxOffsetX {
+                scrollView.contentOffset.x = maxOffsetX
+            }
         }
         
-        textOverlayView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-        textOverlayView.layer.cornerRadius = 10
-        textOverlayView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
-        contentView.addSubview(textOverlayView)
-        textOverlayView.snp.makeConstraints { make in
-            make.bottom.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
-            make.height.equalToSuperview().multipliedBy(0.4)
-        }
-        
-        titleLabel.textColor = Constants.Colors.pink ?? UIColor.systemPink
-        titleLabel.font = UIFont.ptdSemiBoldFont(ofSize: 22)
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 0
-        textOverlayView.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(textOverlayView.snp.top).offset(superViewHeight * 0.04)
-            make.leading.trailing.equalToSuperview()
-        }
-        
-        descriptionLabel.textColor = .white
-        descriptionLabel.font = UIFont.ptdRegularFont(ofSize: 16)
-        descriptionLabel.textAlignment = .center
-        descriptionLabel.numberOfLines = 0
-        textOverlayView.addSubview(descriptionLabel)
-        descriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(superViewHeight * 0.04)
-            make.leading.trailing.equalToSuperview().inset(superViewWidth * 0.1)
+        if pageIndex == pages.count - 1 {
+            controlBtn.setTitle("Next", for: .normal)
+            updateSkipOrNextButtonConstraints(isLastPage: true)
+        } else {
+            controlBtn.setTitle("Skip", for: .normal)
+            updateSkipOrNextButtonConstraints(isLastPage: false)
         }
     }
 }
