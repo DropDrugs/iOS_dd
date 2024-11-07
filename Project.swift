@@ -75,6 +75,7 @@ let project = Project(
                 .external(name: "FirebaseAuth"),
                 .external(name: "FirebaseCore"),
                 .external(name: "FirebaseMessaging"),
+                .external(name: "FirebaseFirestore"),
             ]
         ),
         .target(

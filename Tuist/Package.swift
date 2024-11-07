@@ -19,7 +19,7 @@
                        "FirebaseCore" : .staticLibrary,
                        "FirebaseAuth" : .staticLibrary,
                        "FirebaseMessaging" : .staticLibrary,
-                       "FirebaseStore" : .staticLibrary
+                       "FirebaseFirestore" : .staticLibrary
                       ]
     )
 #endif

@@ -47,6 +47,7 @@ class SelectLoginType : UIViewController {
     }()
     
     // 애플 로그인 버튼
+    let appleLoginButton = ASAuthorizationAppleIDButton(type: .default, style: .black)
     
     lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -71,6 +72,7 @@ class SelectLoginType : UIViewController {
     override func viewDidLoad() {
         view.backgroundColor = Constants.Colors.skyblue
         super.viewDidLoad()
+        configureAppleButton()
         setupGradientBackground()
         setupUI()
         setupConstraints()
@@ -83,6 +85,7 @@ class SelectLoginType : UIViewController {
 //                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 40, height: 40))
 //                    googleLoginButton.setImage(resizedImage, for: .normal)
 //                }
+        
         func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
             let renderer = UIGraphicsImageRenderer(size: targetSize)
             return renderer.image { _ in
@@ -126,7 +129,7 @@ class SelectLoginType : UIViewController {
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(superViewWidth * 0.1)
         }
-        googleLoginButton.snp.makeConstraints { make in
+        appleLoginButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(superViewHeight * 0.68)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(superViewWidth * 0.15)
@@ -211,4 +214,57 @@ class SelectLoginType : UIViewController {
         loginVC.modalPresentationStyle = .fullScreen
         present(loginVC, animated: true, completion: nil)
     }
+    
+    private func configureAppleButton() {
+        appleLoginButton.addTarget(self, action: #selector(handleAuthorizationAppleIDButtonPress), for: .touchUpInside)
+    }
+}
+
+extension SelectLoginType : ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+    @objc
+    func handleAuthorizationAppleIDButtonPress() {
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+        
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+    
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        switch authorization.credential {
+        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+            let userIdentifier = appleIDCredential.user
+            let fullName = appleIDCredential.fullName
+            
+            if let identityToken = appleIDCredential.identityToken,
+               let identityTokenString = String(data: identityToken, encoding: .utf8) {
+                // post appleLogin
+//                postAppleLogin(token: identityTokenString) { isSuccess in
+//                    if isSuccess {
+//                        self.goToNextView()
+//                    } else {
+//                        print("로그인 실패")
+//                        Toaster.shared.makeToast("400 Bad Request", .short)
+//                    }
+//                }
+            }
+            
+        case let passwordCredential as ASPasswordCredential:
+            // Sign in using an existing iCloud Keychain credential.
+            let username = passwordCredential.user
+            let password = passwordCredential.password
+            
+//            print("username: \(username)")
+//            print("password: \(password)")
+        default:
+            break
+        }
+    
 }
