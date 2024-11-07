@@ -37,7 +37,8 @@ class KakaoAuthVM: ObservableObject {
     
     // 토큰을 안전하게 저장
     private func saveToken(_ token: String) {
-        UserDefaults.standard.set(token, forKey: "kakaoToken")
+//        UserDefaults.standard.set(token, forKey: "kakaoToken")
+        //TO DO : keychain에 token 저장
         oauthToken = token
     }
     
