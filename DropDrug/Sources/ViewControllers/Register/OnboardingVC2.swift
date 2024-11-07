@@ -2,9 +2,9 @@
 
 import UIKit
 import SnapKit
-import GoogleSignIn
-import FirebaseAuth
-import FirebaseCore
+//import GoogleSignIn
+//import FirebaseAuth
+//import FirebaseCore
 
 class OnboardingVC2 : UIViewController {
     
@@ -17,22 +17,24 @@ class OnboardingVC2 : UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 22)
         return label
     }()
-//    let googleLoginButton: UIButton = {
-//        let button = UIButton()
-//        button.backgroundColor = UIColor(hex: "f2f2f2")
-//        button.setTitle("구글로 시작하기", for: .normal)
-//        button.setTitleColor(.black.withAlphaComponent(0.7), for: .normal)
-//        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-//        button.layer.cornerRadius = superViewWidth * 0.075
+    
+    let googleLoginButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = UIColor(hex: "f2f2f2")
+        button.setTitle("구글로 시작하기", for: .normal)
+        button.setTitleColor(.black.withAlphaComponent(0.7), for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.layer.cornerRadius = superViewWidth * 0.075
 //        button.addTarget(OnboardingVC2.self, action: #selector(googleButtonTapped), for: .touchUpInside)
-//        return button
-//    }()
-    let googleLoginButton: GIDSignInButton = {
-        let button = GIDSignInButton()
-        button.colorScheme = .light
-        button.style = .wide
         return button
     }()
+    
+//    let googleLoginButton: GIDSignInButton = {
+//        let button = GIDSignInButton()
+//        button.colorScheme = .light
+//        button.style = .wide
+//        return button
+//    }()
     let kakaoLoginButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(hex: "#FEE500")
@@ -74,10 +76,10 @@ class OnboardingVC2 : UIViewController {
                     let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 24, height: 24))
                     kakaoLoginButton.setImage(resizedImage, for: .normal)
                 }
-//        if let image = UIImage(named: "google_logo")?.withRenderingMode(.alwaysOriginal) {
-//                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 40, height: 40))
-//                    googleLoginButton.setImage(resizedImage, for: .normal)
-//                }
+        if let image = UIImage(named: "google_logo")?.withRenderingMode(.alwaysOriginal) {
+                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 40, height: 40))
+                    googleLoginButton.setImage(resizedImage, for: .normal)
+                }
         func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
             let renderer = UIGraphicsImageRenderer(size: targetSize)
             return renderer.image { _ in
@@ -166,28 +168,29 @@ class OnboardingVC2 : UIViewController {
 //            }
         }
     }
-    @objc private func googleButtonTapped() {
-        // Google login setup
-        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
-        let config = GIDConfiguration(clientID: clientID)
-        
-        GIDSignIn.sharedInstance.signIn(withPresenting: self) {signInResult, error in
-            guard error == nil else { return }
-            guard let result = signInResult,
-                  let token = result.user.idToken?.tokenString else { return }
-            
-            let user = result.user
-            let fullName = user.profile?.name
-            let accesstoken = result.user.accessToken.tokenString
-            let refreshtoken = result.user.refreshToken.tokenString
-            
-            print(user)
-            print(fullName as Any)
-            print("accesstoken : \(accesstoken)")
-            print("refreshtoken: \(refreshtoken)")
-        }
-        
-    }
+    
+//    @objc private func googleButtonTapped() {
+//        // Google login setup
+//        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+//        let config = GIDConfiguration(clientID: clientID)
+//        
+//        GIDSignIn.sharedInstance.signIn(withPresenting: self) {signInResult, error in
+//            guard error == nil else { return }
+//            guard let result = signInResult,
+//                  let token = result.user.idToken?.tokenString else { return }
+//            
+//            let user = result.user
+//            let fullName = user.profile?.name
+//            let accesstoken = result.user.accessToken.tokenString
+//            let refreshtoken = result.user.refreshToken.tokenString
+//            
+//            print(user)
+//            print(fullName as Any)
+//            print("accesstoken : \(accesstoken)")
+//            print("refreshtoken: \(refreshtoken)")
+//        }
+//        
+//    }
     
     @objc func startTapped() {
         let SignUpVC = SignUpVC()

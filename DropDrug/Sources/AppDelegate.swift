@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-import GoogleSignIn
-import FirebaseCore
-import FirebaseMessaging
+//import GoogleSignIn
+//import FirebaseCore
+//import FirebaseMessaging
 
 
 @main
@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-        FirebaseApp.configure()
+//        FirebaseApp.configure()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         
@@ -33,13 +33,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func application(
-        _ app: UIApplication,
-        open url: URL,
-        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
-    ) -> Bool {
-        return GIDSignIn.sharedInstance.handle(url)
-    }
-    
+//    func application(
+//        _ app: UIApplication,
+//        open url: URL,
+//        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+//    ) -> Bool {
+//        return GIDSignIn.sharedInstance.handle(url)
+//    }
     
 }

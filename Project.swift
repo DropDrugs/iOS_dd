@@ -61,7 +61,7 @@ let project = Project(
                 .external(name: "KakaoSDKCert"),
                 .external(name: "KakaoSDKCertCore"),
                 .external(name: "KakaoSDKCommon"),
-                .external(name: "GoogleSignIn"),
+//                .external(name: "GoogleSignIn"),
                 .external(name: "FirebaseAuth"),
                 .external(name: "FirebaseCore"),
                 .external(name: "FirebaseMessaging"),
