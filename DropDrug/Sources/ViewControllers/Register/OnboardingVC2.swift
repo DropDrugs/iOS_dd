@@ -3,6 +3,8 @@
 import UIKit
 import SnapKit
 import GoogleSignIn
+import FirebaseAuth
+import FirebaseCore
 
 class OnboardingVC2 : UIViewController {
     
@@ -72,10 +74,10 @@ class OnboardingVC2 : UIViewController {
                     let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 24, height: 24))
                     kakaoLoginButton.setImage(resizedImage, for: .normal)
                 }
-        if let image = UIImage(named: "google_logo")?.withRenderingMode(.alwaysOriginal) {
-                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 40, height: 40))
-                    googleLoginButton.setImage(resizedImage, for: .normal)
-                }
+//        if let image = UIImage(named: "google_logo")?.withRenderingMode(.alwaysOriginal) {
+//                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 40, height: 40))
+//                    googleLoginButton.setImage(resizedImage, for: .normal)
+//                }
         func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
             let renderer = UIGraphicsImageRenderer(size: targetSize)
             return renderer.image { _ in
@@ -169,26 +171,22 @@ class OnboardingVC2 : UIViewController {
         guard let clientID = FirebaseApp.app()?.options.clientID else { return }
         let config = GIDConfiguration(clientID: clientID)
         
-        GIDSignIn.sharedInstance.signIn(withPresenting: self) { [weak self] signInResult, _ in
-            guard let self = self,
-                  let result = signInResult,
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) {signInResult, error in
+            guard error == nil else { return }
+            guard let result = signInResult,
                   let token = result.user.idToken?.tokenString else { return }
             
+            let user = result.user
+            let fullName = user.profile?.name
             let accesstoken = result.user.accessToken.tokenString
             let refreshtoken = result.user.refreshToken.tokenString
             
-            // Keychain store
-//            LoginViewController.keychain.set(accesstoken, forKey: "GoogleAccessToken")
-//            LoginViewController.keychain.set(refreshtoken, forKey: "GoogleRefreshToken")
-            
-            // Use tokens as needed
-            guard let fcmToken = self.fcmToken else {
-                print("FCM token not available")
-                return
-            }
-            let oauthData = self.assignGoogleLoginData(aToken: accesstoken, fcmToken: fcmToken, idToken: token)
-            // Further OAuth handling
+            print(user)
+            print(fullName as Any)
+            print("accesstoken : \(accesstoken)")
+            print("refreshtoken: \(refreshtoken)")
         }
+        
     }
     
     @objc func startTapped() {

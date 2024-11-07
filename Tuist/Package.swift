@@ -16,11 +16,11 @@
                        "KakaoSDKCertCore": .staticLibrary,
                        "KakaoSDKCommon": .staticLibrary,
                        "GoogleSignIn" : .staticLibrary,
-//                       "kakao-ios-sdk" : .staticLibrary,
-//                       "FirebaseCore" : .framework,
-                       "FirebaseAuth" : .framework,
-//                       "FirebaseMessaging" : .staticLibrary,
-//                       "firebase-ios-sdk" : .staticLibrary
+                       "FirebaseCore" : .staticLibrary,
+                       "FirebaseAuth" : .staticLibrary,
+                       "FirebaseMessaging" : .staticLibrary,
+                       "FirebaseStore" : .staticLibrary,
+                       
                       ]
     )
 #endif
