@@ -40,6 +40,10 @@ let project = Project(
                     "NSAppTransportSecurity" : [
                         "NSAllowsArbitraryLoads" : true
                     ],
+                    "CFBundleURLTypes" : [
+                        "CFBundleTypeRole" : "Editor",
+                        "CFBundleURLSchemes" : ["com.googleusercontent.apps.793354407959-u9dhnjv92uuntv276pktnucura72o3j0"]
+                    ]
                     // 새로운 거 추가
                 ]
             ),
@@ -50,7 +54,23 @@ let project = Project(
                 .external(name: "SnapKit"),
                 .external(name: "PinLayout"),
                 .external(name: "FlexLayout"),
-                .external(name: "KeychainSwift")
+                .external(name: "KeychainSwift"),
+                .external(name: "KakaoSDK"),
+                .external(name: "KakaoSDKAuth"),
+                .external(name: "KakaoSDKCert"),
+                .external(name: "KakaoSDKCertCore"),
+                .external(name: "KakaoSDKCommon"),
+//                .external(name: "GoogleSignIn-iOS"),
+                .external(name: "GoogleSignIn"),
+//                .package(product: "KakaoSDK"),
+//                .package(product: "KakaoSDKAuth"),
+//                .package(product: "KakaoSDKCert"),
+//                .package(product: "KakaoSDKCertCore"),
+//                .package(product: "KakaoSDKCommon"),
+                .package(product: "FirebaseAuth"),
+//                .external(name: "kakao-ios-sdk")
+//                .sdk(name: "kakao-ios-sdk", type: .library),
+//                .xcframework(path: <#T##Path#>, status: <#T##LinkingStatus#>, condition: <#T##PlatformCondition?#>)
             ]
         ),
         .target(

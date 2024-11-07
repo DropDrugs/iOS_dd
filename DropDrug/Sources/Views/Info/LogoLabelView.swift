@@ -28,8 +28,8 @@ class LogoLabelView: UIView {
         
         // PinLayout을 사용해 왼쪽에서 20포인트 띄우기
         label.pin
-            .top(20)
-            .left(20)
+            .top()
+            .left()
             .sizeToFit()
     }
 }

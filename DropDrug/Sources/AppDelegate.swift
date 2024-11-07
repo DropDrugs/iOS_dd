@@ -7,11 +7,22 @@
 
 import Foundation
 import UIKit
+import GoogleSignIn
+import FirebaseCoreInternal
+
  
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
  
     var window: UIWindow?
+    
+    func application(
+            _ app: UIApplication,
+            open url: URL,
+            options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+        ) -> Bool {
+            return GIDSignIn.sharedInstance.handle(url)
+    }
  
     func application(
         _ application: UIApplication,

@@ -35,12 +35,8 @@ struct Constants {
             DistrictsDataModel(name: "중랑구", image: "중랑구", url: "https://dong.jungnang.go.kr/dong/bbs/view/B0000002/31788?menuNo=500012")
         ]
     static let commonDisposalInfoList : [CommonDisposalDataModel] = [
-        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
-        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
-        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
-        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
-        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
-        CommonDisposalDataModel(name: "서울시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88")
+        CommonDisposalDataModel(name: "서울특별시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
+        CommonDisposalDataModel(name: "세종특별자치시", url: "https://www.sejong.go.kr/recycle/sub03_04_02.do;jsessionid=07F33847FC24393EEC5EA67FF3E3BFAC.portal1")
     ]
     
     struct Colors {

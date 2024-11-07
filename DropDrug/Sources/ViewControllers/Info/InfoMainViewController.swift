@@ -6,6 +6,8 @@ import SnapKit
 class InfoMainViewController: UIViewController {
     
     private let logoLabelView = LogoLabelView()
+    private let subLabel1View = SubLabelView()
+    private let subLabel2View = SubLabelView()
     
     var commonPageCollectionView: UICollectionView!
     let layout = UICollectionViewFlowLayout()
@@ -14,16 +16,22 @@ class InfoMainViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .white
-        
+        setNavigationBar()
         setCollectionView()
         setCollectionViewLayout()
-        
         setComponentsLayout()
     }
     
+    func setNavigationBar() {
+        self.navigationController?.isNavigationBarHidden = true
+    }
+    
     func setComponentsLayout() {
-        view.addSubview(logoLabelView)
-        view.addSubview(commonPageCollectionView)
+        subLabel1View.text = "공통 폐기 방법"
+        subLabel2View.text = "서울특별시 구 별 폐기 방법"
+        [logoLabelView, commonPageCollectionView, subLabel1View, subLabel2View].forEach {
+            view.addSubview($0)
+        }
         setLayout()
     }
     
@@ -42,15 +50,24 @@ class InfoMainViewController: UIViewController {
     
     func setLayout() {
         logoLabelView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.leading.trailing.equalToSuperview().inset(10)
-            make.height.equalTo(44)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        subLabel1View.snp.makeConstraints { make in
+            make.top.equalTo(logoLabelView.snp.bottom).offset(33)
+            make.leading.trailing.equalToSuperview().inset(20)
         }
         
         commonPageCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(logoLabelView.snp.bottom).offset(20)
+            make.top.equalTo(subLabel1View.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(180)
+        }
+        
+        subLabel2View.snp.makeConstraints { make in
+            make.top.equalTo(commonPageCollectionView.snp.bottom).offset(33)
+            make.leading.trailing.equalToSuperview().inset(20)
         }
     }
 }
