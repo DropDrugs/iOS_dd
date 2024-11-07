@@ -8,7 +8,8 @@
 import Foundation
 import UIKit
 import GoogleSignIn
-import FirebaseCoreInternal
+import KakaoSDKCommon
+//import FirebaseCoreInternal
 
  
 @main
@@ -28,6 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
+        KakaoSDK.initSDK(appKey: "%{KAKAO_NATIVE_APP_KEY}")
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         
         let viewController = SplashVC()

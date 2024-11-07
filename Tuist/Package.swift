@@ -18,7 +18,7 @@
                        "GoogleSignIn" : .staticLibrary,
 //                       "kakao-ios-sdk" : .staticLibrary,
 //                       "FirebaseCore" : .framework,
-                       "FirebaseAuth" : .framework,
+//                       "FirebaseAuth" : .framework,
 //                       "FirebaseMessaging" : .staticLibrary,
 //                       "firebase-ios-sdk" : .staticLibrary
                       ]

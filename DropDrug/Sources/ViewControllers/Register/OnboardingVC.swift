@@ -84,9 +84,9 @@ class OnboardingVC: UIViewController, UICollectionViewDelegate, UICollectionView
     }
     
     @objc func skipTapped() {
-        let OnboardingVC2 = OnboardingVC2()
-        OnboardingVC2.modalPresentationStyle = .fullScreen
-        present(OnboardingVC2, animated: true, completion: nil)
+        let SelectLoginType = SelectLoginType()
+        SelectLoginType.modalPresentationStyle = .fullScreen
+        present(SelectLoginType, animated: true, completion: nil)
     }
     
     // MARK: - UICollectionView DataSource
