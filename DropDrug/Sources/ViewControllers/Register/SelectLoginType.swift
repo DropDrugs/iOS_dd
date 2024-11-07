@@ -10,7 +10,7 @@ import KeychainSwift
 
 class SelectLoginType : UIViewController {
     
-    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken
+    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, KakaoAccessToken, KakaoRefreshToken
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     

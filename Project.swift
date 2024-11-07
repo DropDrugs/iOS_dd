@@ -59,6 +59,7 @@ let project = Project(
             ),
             sources: ["DropDrug/Sources/**"],
             resources: ["DropDrug/Resources/**"],
+            entitlements: "DropDrug/DropDrug.entitlements",
             dependencies: [
                 .external(name: "Moya"),
                 .external(name: "SnapKit"),

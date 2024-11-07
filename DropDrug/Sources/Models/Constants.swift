@@ -4,7 +4,7 @@ import UIKit
 
 struct Constants {
     struct NetworkManager {
-        static let baseURL = "http://13.125.191.198:8080/"
+        static let baseURL = "http://54.180.45.153:8080/"
     }
     
     static let seoulDistrictsList: [DistrictsDataModel] = [
