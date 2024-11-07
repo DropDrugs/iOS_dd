@@ -2,7 +2,7 @@
 
 import UIKit
 import SnapKit
-//import GoogleSignIn
+
 import AuthenticationServices
 import KakaoSDKUser
 
@@ -27,15 +27,9 @@ class SelectLoginType : UIViewController {
         button.setTitleColor(.black.withAlphaComponent(0.7), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.layer.cornerRadius = superViewWidth * 0.075
-        button.addTarget(self, action: #selector(googleButtonTapped), for: .touchUpInside)
+//        button.addTarget(OnboardingVC2.self, action: #selector(googleButtonTapped), for: .touchUpInside)
         return button
     }()
-//    let googleLoginButton: GIDSignInButton = {
-//        let button = GIDSignInButton()
-//        button.colorScheme = .light
-//        button.style = .wide
-//        return button
-//    }()
     let kakaoLoginButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(hex: "#FEE500")
@@ -175,33 +169,28 @@ class SelectLoginType : UIViewController {
             }
         }
     }
-    
-    @objc private func googleButtonTapped() {
+//    @objc private func googleButtonTapped() {
 //        // Google login setup
 //        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
 //        let config = GIDConfiguration(clientID: clientID)
-//        
-//        GIDSignIn.sharedInstance.signIn(withPresenting: self) { [weak self] signInResult, _ in
-//            guard let self = self,
-//                  let result = signInResult,
+//
+//        GIDSignIn.sharedInstance.signIn(withPresenting: self) {signInResult, error in
+//            guard error == nil else { return }
+//            guard let result = signInResult,
 //                  let token = result.user.idToken?.tokenString else { return }
 //            
+//            let user = result.user
+//            let fullName = user.profile?.name
 //            let accesstoken = result.user.accessToken.tokenString
 //            let refreshtoken = result.user.refreshToken.tokenString
 //            
-//            // Keychain store
-////            LoginViewController.keychain.set(accesstoken, forKey: "GoogleAccessToken")
-////            LoginViewController.keychain.set(refreshtoken, forKey: "GoogleRefreshToken")
-//            
-//            // Use tokens as needed
-//            guard let fcmToken = self.fcmToken else {
-//                print("FCM token not available")
-//                return
-//            }
-//            let oauthData = self.assignGoogleLoginData(aToken: accesstoken, fcmToken: fcmToken, idToken: token)
-//            // Further OAuth handling
+//            print(user)
+//            print(fullName as Any)
+//            print("accesstoken : \(accesstoken)")
+//            print("refreshtoken: \(refreshtoken)")
 //        }
-    }
+//        
+//    }
     
     @objc func startTapped() {
         let SignUpVC = SignUpVC()

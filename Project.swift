@@ -43,6 +43,7 @@ let project = Project(
                     ],
                     "CFBundleURLTypes" : [
                         "CFBundleTypeRole" : "Editor",
+                        "CFBundleURLName" : "googleLogin",
                         "CFBundleURLSchemes" : ["com.googleusercontent.apps.793354407959-u9dhnjv92uuntv276pktnucura72o3j0"]
                     ],
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink"]
@@ -62,8 +63,10 @@ let project = Project(
                 .external(name: "KakaoSDKCert"),
                 .external(name: "KakaoSDKCertCore"),
                 .external(name: "KakaoSDKCommon"),
-//                .external(name: "GoogleSignIn-iOS"),
-                .external(name: "GoogleSignIn"),
+//                .external(name: "GoogleSignIn"),
+                .external(name: "FirebaseAuth"),
+                .external(name: "FirebaseCore"),
+                .external(name: "FirebaseMessaging"),
             ]
         ),
         .target(
