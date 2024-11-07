@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-
+import KakaoSDKCommon
 //import GoogleSignIn
 //import FirebaseCore
 //import FirebaseMessaging
@@ -22,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
+        KakaoSDK.initSDK(appKey: "%{KAKAO_NATIVE_APP_KEY}")
 //        FirebaseApp.configure()
         
         window = UIWindow(frame: UIScreen.main.bounds)
