@@ -6,7 +6,11 @@ import SnapKit
 import AuthenticationServices
 import KakaoSDKUser
 
+import KeychainSwift
+
 class SelectLoginType : UIViewController {
+    
+    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
@@ -30,6 +34,7 @@ class SelectLoginType : UIViewController {
 //        button.addTarget(OnboardingVC2.self, action: #selector(googleButtonTapped), for: .touchUpInside)
         return button
     }()
+    
     let kakaoLoginButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(hex: "#FEE500")
@@ -40,6 +45,9 @@ class SelectLoginType : UIViewController {
         button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         return button
     }()
+    
+    // 애플 로그인 버튼
+    
     lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("E-mail로 시작하기", for: .normal)
