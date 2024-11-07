@@ -42,9 +42,16 @@ let project = Project(
                         "NSAllowsArbitraryLoads" : true
                     ],
                     "CFBundleURLTypes" : [
+                        [
                         "CFBundleTypeRole" : "Editor",
                         "CFBundleURLName" : "googleLogin",
                         "CFBundleURLSchemes" : ["com.googleusercontent.apps.793354407959-u9dhnjv92uuntv276pktnucura72o3j0"]
+                        ],
+                        [
+                        "CFBundleTypeRole" : "Editor",
+                        "CFBundleURLName" : "kakaologin",
+                        "CFBundleURLSchemes" : ["kakao74177ce7b14b89614c47ac7d51464b95"]
+                        ],
                     ],
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink"]
                     // 새로운 거 추가

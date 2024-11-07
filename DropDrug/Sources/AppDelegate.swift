@@ -22,7 +22,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-        KakaoSDK.initSDK(appKey: "%{KAKAO_NATIVE_APP_KEY}")
+        if let kakaoAPIkey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_NATIVE_APP_KEY") as? String {
+            KakaoSDK.initSDK(appKey: "\(kakaoAPIkey)")
+        }
+        
 //        FirebaseApp.configure()
         
         window = UIWindow(frame: UIScreen.main.bounds)
