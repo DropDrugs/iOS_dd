@@ -9,6 +9,7 @@ class LogoLabelView: UIView {
         let label = UILabel()
         label.text = "DropDrug"
         label.textAlignment = .center
+        label.numberOfLines = 0
         label.font = UIFont.roRegularFont(ofSize: 26)
         label.textColor = Constants.Colors.skyblue
         return label
