@@ -2,11 +2,17 @@
 
 import UIKit
 import SnapKit
-//import GoogleSignIn
-//import FirebaseAuth
-//import FirebaseCore
 
-class OnboardingVC2 : UIViewController {
+import AuthenticationServices
+import KakaoSDKUser
+
+import KeychainSwift
+
+class SelectLoginType : UIViewController {
+    
+    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken
+    
+    lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
     lazy var mainLabel: UILabel = {
         let label = UILabel()
@@ -29,12 +35,6 @@ class OnboardingVC2 : UIViewController {
         return button
     }()
     
-//    let googleLoginButton: GIDSignInButton = {
-//        let button = GIDSignInButton()
-//        button.colorScheme = .light
-//        button.style = .wide
-//        return button
-//    }()
     let kakaoLoginButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(hex: "#FEE500")
@@ -42,9 +42,12 @@ class OnboardingVC2 : UIViewController {
         button.setTitleColor(UIColor(hex: "#191919"), for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.layer.cornerRadius = superViewWidth * 0.075
-        button.addTarget(OnboardingVC2.self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         return button
     }()
+    
+    // 애플 로그인 버튼
+    
     lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("E-mail로 시작하기", for: .normal)
@@ -76,10 +79,10 @@ class OnboardingVC2 : UIViewController {
                     let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 24, height: 24))
                     kakaoLoginButton.setImage(resizedImage, for: .normal)
                 }
-        if let image = UIImage(named: "google_logo")?.withRenderingMode(.alwaysOriginal) {
-                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 40, height: 40))
-                    googleLoginButton.setImage(resizedImage, for: .normal)
-                }
+//        if let image = UIImage(named: "google_logo")?.withRenderingMode(.alwaysOriginal) {
+//                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 40, height: 40))
+//                    googleLoginButton.setImage(resizedImage, for: .normal)
+//                }
         func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
             let renderer = UIGraphicsImageRenderer(size: targetSize)
             return renderer.image { _ in
@@ -146,34 +149,39 @@ class OnboardingVC2 : UIViewController {
     
     @objc func kakaoButtonTapped() {
         Task {
-//            if await kakaoAuthVM.KakaoLogin() {
-//                DispatchQueue.main.async {
-//                    UserApi.shared.me() { [weak self] (user, error) in
-//                        guard let self = self else { return }
-//                        if let error = error {
-//                            print(error)
-//                            return
-//                        }
-//                        let userID = user?.id ?? nil
-//                        let userEmail = user?.kakaoAccount?.email ?? ""
-//
+            if await kakaoAuthVM.KakaoLogin() {
+                DispatchQueue.main.async {
+                    UserApi.shared.me() { [weak self] (user, error) in
+                        guard self != nil else { return }
+                        if let error = error {
+                            print(error)
+                            print("에러가어디서 ")
+                            return
+                        }
+                        let userName = user?.kakaoAccount?.name
+                        let userEmail = user?.kakaoAccount?.email
+//                        let userProfile = user?.kakaoAccount?.profile?.profileImageUrl
+                                    
+                        print("이름: \(userName)")
+                        print("이메일: \(userEmail)")
+//                        print("프로필: \(userProfile)")
+
 //                        userInfo["providerId"] = userID
 //                        userInfo["email"] = userEmail
 //                        print(userInfo)
-//                        // TODO :하단 kakao login api 호출 함수 작성
-//                    }
-//                }
-//            } else {
-//                print("Login failed.")
-//            }
+                        // TODO :하단 kakao login api 호출 함수 작성
+                    }
+                }
+            } else {
+                print("Login failed.")
+            }
         }
     }
-    
 //    @objc private func googleButtonTapped() {
 //        // Google login setup
 //        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
 //        let config = GIDConfiguration(clientID: clientID)
-//        
+//
 //        GIDSignIn.sharedInstance.signIn(withPresenting: self) {signInResult, error in
 //            guard error == nil else { return }
 //            guard let result = signInResult,

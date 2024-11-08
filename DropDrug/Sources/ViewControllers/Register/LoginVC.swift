@@ -3,10 +3,11 @@
 import UIKit
 import SnapKit
 import Moya
-import KeychainSwift
+
+// TODO : 토큰 저장 매니저 따로 만들기
 
 class LoginVC : UIViewController {
-    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken
+
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     
     private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")

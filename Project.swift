@@ -33,6 +33,7 @@ let project = Project(
                                    "Pretendard-Thin.otf",
                                    "RussoOne-Regular.ttf"
                     ],
+                    "KAKAO_NATIVE_APP_KEY" : "74177ce7b14b89614c47ac7d51464b95",
                     "NSLocationAlwaysAndWhenInUseUsageDescription" : "위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationWhenInUseUsageDescription" : "위치 권한을 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationAlwaysUsageDescription" : "위치 권한을 항상 허용하시겠습니까?",
@@ -41,10 +42,18 @@ let project = Project(
                         "NSAllowsArbitraryLoads" : true
                     ],
                     "CFBundleURLTypes" : [
+                        [
                         "CFBundleTypeRole" : "Editor",
                         "CFBundleURLName" : "googleLogin",
                         "CFBundleURLSchemes" : ["com.googleusercontent.apps.793354407959-u9dhnjv92uuntv276pktnucura72o3j0"]
-                    ]
+                        ],
+                        [
+                        "CFBundleTypeRole" : "Editor",
+                        "CFBundleURLName" : "kakaologin",
+                        "CFBundleURLSchemes" : ["kakao74177ce7b14b89614c47ac7d51464b95"]
+                        ],
+                    ],
+                    "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink"]
                     // 새로운 거 추가
                 ]
             ),
