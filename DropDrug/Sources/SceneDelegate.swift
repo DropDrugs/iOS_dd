@@ -17,7 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
  
-        let viewController = SelectLoginType()
+        let viewController = MainTabBarController()
+
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
     }
