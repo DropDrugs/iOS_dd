@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "서대문구.svg",
+      "filename" : "서대문구.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "서대문구@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "서대문구@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -2,9 +2,18 @@
 
 import UIKit
 import SnapKit
+import SafariServices
 
 class InfoMainViewController: UIViewController {
     
+    let sortedCommonList = Constants.commonDisposalInfoList.sorted { fir, sec in
+        return fir.name < sec.name
+    }
+    
+    let sortedSeoulList = Constants.seoulDistrictsList.sorted { fir, sec in
+        return fir.name < sec.name
+    }
+
     public lazy var logoLabelView: UILabel = {
         let label = UILabel()
         label.text = "DropDrug"
@@ -36,6 +45,7 @@ class InfoMainViewController: UIViewController {
         label.textColor = Constants.Colors.gray900
         return label
     }()
+    
     //private let subLabel2View = SubLabelView()
     public lazy var subLabel2View: UILabel = {
         let label = UILabel()
@@ -143,7 +153,7 @@ class InfoMainViewController: UIViewController {
         seoulPageCollectionView.snp.makeConstraints { make in
             make.top.equalTo(subLabel2View.snp.bottom).offset(12)
             make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(742)
+            make.height.equalTo(1000)
             make.bottom.equalToSuperview().offset(-15)
         }
         
@@ -154,12 +164,29 @@ class InfoMainViewController: UIViewController {
 }
 
 extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        var urlString : String = ""
+        if collectionView.tag == 0 {
+            urlString = Constants.commonDisposalInfoList[indexPath.row].url
+        }
+        else if collectionView.tag == 1 {
+            urlString = Constants.seoulDistrictsList[indexPath.row].url
+        }
+        if let url = URL(string: urlString) {
+            let safariVC = SFSafariViewController(url: url)
+            present(safariVC, animated: true, completion: nil)
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.tag == 0 {
             return Constants.commonDisposalInfoList.count
         }
         else if collectionView.tag == 1 {
-            return SeoulModel.list().count
+            return Constants.seoulDistrictsList.count
         }
         return 0
     }
@@ -170,7 +197,7 @@ extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDe
                 return KindCollectionViewCell()
             }
             
-            cell.configure(backgroundImg: Constants.commonDisposalInfoList[indexPath.row].name, name: Constants.commonDisposalInfoList[indexPath.row].name)
+            cell.configure(backgroundImg: sortedCommonList[indexPath.row].name, name: sortedCommonList[indexPath.row].name)
             
             return cell
         }
@@ -179,10 +206,8 @@ extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDe
                 return SeoulCollectionViewCell()
             }
             
-            let list = SeoulModel.list()
-            
-            cell.image.image = UIImage(named: list[indexPath.row].image)
-            cell.name.text = list[indexPath.row].name
+            cell.image.image = UIImage(named: sortedSeoulList[indexPath.row].image)
+            cell.name.text = sortedSeoulList[indexPath.row].name
             
             return cell
         }

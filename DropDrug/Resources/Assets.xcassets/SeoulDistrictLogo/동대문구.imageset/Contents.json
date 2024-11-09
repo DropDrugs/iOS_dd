@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "동대문구.svg",
+      "filename" : "동대문구.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "동대문구@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "동대문구@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

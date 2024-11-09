@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "종로구.svg",
+      "filename" : "종로구.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "종로구@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "종로구@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

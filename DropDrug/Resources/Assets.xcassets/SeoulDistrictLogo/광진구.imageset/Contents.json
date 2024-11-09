@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "광진구.svg",
+      "filename" : "광진구.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "광진구@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "광진구@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
