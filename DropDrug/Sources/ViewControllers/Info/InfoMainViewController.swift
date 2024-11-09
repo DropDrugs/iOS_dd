@@ -61,8 +61,16 @@ class InfoMainViewController: UIViewController {
     
     lazy var seoulPageCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        let screenWidth = UIScreen.main.bounds.width
+        let itemsPerRow: CGFloat = 4
+        let totalSpacing = (screenWidth / (itemsPerRow * 2 - 1))*0.6
+        let itemWidth = (screenWidth - totalSpacing * 3)/4
+        
+        layout.itemSize = CGSize(width: itemWidth, height: itemWidth) // 셀 크기 설정
+        layout.minimumInteritemSpacing = totalSpacing * 0.5 // 셀 사이의 간격 설정
+        layout.minimumLineSpacing = totalSpacing * 0.3 // 줄 사이의 간격 설정 (1:2 비율)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: totalSpacing * 0.3, bottom: 0, right: totalSpacing * 0.5) // 좌우 여백 설정
+        
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
@@ -153,7 +161,7 @@ class InfoMainViewController: UIViewController {
         seoulPageCollectionView.snp.makeConstraints { make in
             make.top.equalTo(subLabel2View.snp.bottom).offset(12)
             make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(1000)
+            make.height.equalTo(850)
             make.bottom.equalToSuperview().offset(-15)
         }
         
@@ -219,7 +227,11 @@ extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDe
             return CGSize(width: 160, height: 160) // 아이템 크기 설정
         }
         else if collectionView.tag == 1 {
-            return CGSize(width: 84, height: 106)
+            let screenWidth = UIScreen.main.bounds.width
+            let itemsPerRow: CGFloat = 4
+            let totalSpacing = (screenWidth / (itemsPerRow * 2 - 1))*0.6
+            let itemWidth = (screenWidth - totalSpacing * 3)/4
+            return CGSize(width: itemWidth, height: itemWidth * 1.25) // 원하는 높이 비율로 설정
         }
         return CGSize()
     }
