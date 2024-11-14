@@ -2,9 +2,14 @@
 
 import UIKit
 import CoreLocation
+import Moya
 import MapKit
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+    
+    let provider = MoyaProvider<HomeAPI>(plugins: [ BearerTokenPlugin() ])
+    
+    var selectedCharacterNum: Int = 0
     
     var locationManager = CLLocationManager()
     
@@ -134,5 +139,27 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         self.homeView.mapView.setRegion(region, animated: true)
     }
     
-    
+    func getHomeInfo(completion: @escaping (Bool) -> Void) {
+        provider.request(.getHomeInfo) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let responseData = try JSONDecoder().decode(APIResponseHomeResponse.self, from: response.data)
+                    self.homeView.name = responseData.result.nickname
+                    self.homeView.points = responseData.result.point
+                    self.selectedCharacterNum = responseData.result.selectedChar
+                    completion(true)
+                } catch {
+                    print("Failed to decode response: \(error)")
+                    completion(false)
+                }
+            case.failure(let error):
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
+                completion(false)
+            }
+        }
+    }
 }

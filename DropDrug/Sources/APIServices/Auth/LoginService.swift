@@ -54,5 +54,4 @@ extension LoginService: TargetType {
     var headers: [String : String]? {
         return ["Content-Type": "application/json"]
     }
-    
 }
