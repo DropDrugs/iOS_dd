@@ -3,7 +3,9 @@
 import UIKit
 import SnapKit
 
+import CryptoKit
 import AuthenticationServices
+import FirebaseAuth
 import KakaoSDKUser
 
 import KeychainSwift
@@ -13,6 +15,7 @@ class SelectLoginTypeVC : UIViewController {
     static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, KakaoAccessToken, KakaoRefreshToken
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
+    fileprivate var currentNonce: String?
     
     lazy var mainLabel: UILabel = {
         let label = UILabel()
@@ -24,18 +27,6 @@ class SelectLoginTypeVC : UIViewController {
         return label
     }()
     
-//    let googleLoginButton: UIButton = {
-//        let button = UIButton()
-//        button.backgroundColor = UIColor(hex: "f2f2f2")
-//        button.setTitle("구글로 시작하기", for: .normal)
-//        button.setTitleColor(.black.withAlphaComponent(0.7), for: .normal)
-//        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-//        button.layer.cornerRadius = superViewWidth * 0.075
-////        button.addTarget(OnboardingVC2.self, action: #selector(googleButtonTapped), for: .touchUpInside)
-//        return button
-//    }()
-//    }()
-    
     let kakaoLoginButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(hex: "#FEE500")
@@ -46,9 +37,7 @@ class SelectLoginTypeVC : UIViewController {
         button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         return button
     }()
-    
-    // 애플 로그인 버튼
-//    let appleLoginButton = ASAuthorizationAppleIDButton(type: .default, style: .black)
+//    let appleLoginButton = ASAuthorizationAppleIDButton()
     
     lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -74,18 +63,13 @@ class SelectLoginTypeVC : UIViewController {
         view.backgroundColor = Constants.Colors.skyblue
         super.viewDidLoad()
         setupUI()
-//        configureAppleButton()
         setupGradientBackground()
         setupConstraints()
         
         if let image = UIImage(named: "kakao_logo")?.withRenderingMode(.alwaysOriginal) {
-                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 24, height: 24))
-                    kakaoLoginButton.setImage(resizedImage, for: .normal)
-                }
-//        if let image = UIImage(named: "google_logo")?.withRenderingMode(.alwaysOriginal) {
-//                    let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 40, height: 40))
-//                    googleLoginButton.setImage(resizedImage, for: .normal)
-//                }
+            let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 24, height: 24))
+            kakaoLoginButton.setImage(resizedImage, for: .normal)
+        }
         
         func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
             let renderer = UIGraphicsImageRenderer(size: targetSize)
@@ -118,37 +102,44 @@ class SelectLoginTypeVC : UIViewController {
         
     private func setupUI() {
         let subviews = [mainLabel, kakaoLoginButton, signUpButton, loginButton]
-        // 구글 버튼 임시 제거
         subviews.forEach { view.addSubview($0) }
     }
     
     private func setupConstraints() {
-        let superViewHeight = UIScreen.main.bounds.height
-        let superViewWidth = UIScreen.main.bounds.width
-        
         mainLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(superViewHeight * 0.45)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(superViewWidth * 0.1)
         }
-//        appleLoginButton.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(superViewHeight * 0.68)
-//            make.leading.trailing.equalToSuperview().inset(20)
-//            make.height.equalTo(superViewWidth * 0.15)
-//        }
         kakaoLoginButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(superViewHeight * 0.76)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(superViewWidth * 0.15)
         }
         signUpButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(superViewHeight * 0.84)
+            make.top.equalToSuperview().offset(superViewHeight * 0.68)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(superViewWidth * 0.15)
         }
         loginButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(superViewHeight * 0.92)
             make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        setupAppleLoginButton()
+    }
+    
+    func setupAppleLoginButton() {
+        let appleButton = ASAuthorizationAppleIDButton()
+        appleButton.addTarget(self, action: #selector(handleAppleLogin), for: .touchUpInside)
+        appleButton.cornerRadius =  superViewWidth * 0.075
+        self.view.addSubview(appleButton)
+        
+        // SnapKit을 사용하는 경우 위치 설정
+        appleButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(superViewHeight * 0.84)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(superViewWidth * 0.15)
         }
     }
     
@@ -160,7 +151,6 @@ class SelectLoginTypeVC : UIViewController {
                         guard self != nil else { return }
                         if let error = error {
                             print(error)
-                            print("에러가어디서 ")
                             return
                         }
                         let userName = user?.kakaoAccount?.name
@@ -191,18 +181,18 @@ class SelectLoginTypeVC : UIViewController {
 //            guard error == nil else { return }
 //            guard let result = signInResult,
 //                  let token = result.user.idToken?.tokenString else { return }
-//            
+//
 //            let user = result.user
 //            let fullName = user.profile?.name
 //            let accesstoken = result.user.accessToken.tokenString
 //            let refreshtoken = result.user.refreshToken.tokenString
-//            
+//
 //            print(user)
 //            print(fullName as Any)
 //            print("accesstoken : \(accesstoken)")
 //            print("refreshtoken: \(refreshtoken)")
 //        }
-//        
+//
 //    }
     
     @objc func startTapped() {
@@ -217,56 +207,126 @@ class SelectLoginTypeVC : UIViewController {
         present(loginVC, animated: true, completion: nil)
     }
     
-    private func configureAppleButton() {
-//        appleLoginButton.addTarget(self, action: #selector(handleAuthorizationAppleIDButtonPress), for: .touchUpInside)
+    @objc func handleAppleLogin() {
+        startSignInWithAppleFlow()
     }
 }
 
-extension SelectLoginTypeVC : ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
-    @objc
-    func handleAuthorizationAppleIDButtonPress() {
+extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
+    func startSignInWithAppleFlow() {
+        let nonce = randomNonceString()
+        currentNonce = nonce
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = [.fullName, .email]
+        request.nonce = sha256(nonce)
         
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
         authorizationController.delegate = self
         authorizationController.presentationContextProvider = self
         authorizationController.performRequests()
     }
-   
-    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return self.view.window!
+    
+    func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        var randomBytes = [UInt8](repeating: 0, count: length)
+        let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
+        if errorCode != errSecSuccess {
+            fatalError(
+                "Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)"
+            )
+        }
+        let charset: [Character] =
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        let nonce = randomBytes.map { byte in
+            // Pick a random character from the set, wrapping around if needed.
+            charset[Int(byte) % charset.count]
+        }
+        return String(nonce)
     }
     
-//    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-//        switch authorization.credential {
-//        case let appleIDCredential as ASAuthorizationAppleIDCredential:
-//            let userIdentifier = appleIDCredential.user
-//            let fullName = appleIDCredential.fullName
-//            
-//            if let identityToken = appleIDCredential.identityToken,
-//               let identityTokenString = String(data: identityToken, encoding: .utf8) {
-//                // post appleLogin
-//                //                postAppleLogin(token: identityTokenString) { isSuccess in
-//                //                    if isSuccess {
-//                //                        self.goToNextView()
-//                //                    } else {
-//                //                        print("로그인 실패")
-//                //                        Toaster.shared.makeToast("400 Bad Request", .short)
-//                //                    }
-//                //                }
+    func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        let hashString = hashedData.compactMap {
+            String(format: "%02x", $0)
+        }.joined()
+        
+        return hashString
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        switch authorization.credential {
+        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+            let userIdentifier = appleIDCredential.user
+            let fullName = appleIDCredential.fullName
+            print(userIdentifier)
+            print("\(fullName)")
+            
+            SelectLoginTypeVC.keychain.set(userIdentifier, forKey: "appleUserID")
+            
+            if let identityToken = appleIDCredential.identityToken,
+               let identityTokenString = String(data: identityToken, encoding: .utf8) {
+                print(fullName ?? "none")
+                print(identityTokenString)
+            }
+            
+        case let passwordCredential as ASPasswordCredential:
+            // Sign in using an existing iCloud Keychain credential.
+            let username = passwordCredential.user
+            let password = passwordCredential.password
+            
+            print("username: \(username)")
+            print("password: \(password)")
+        default:
+            break
+        }
+        
+//        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+//            guard let nonce = currentNonce else {
+//                fatalError("Invalid state: A login callback was received, but no login request was sent.")
 //            }
-//            
-//        case let passwordCredential as ASPasswordCredential:
-//            // Sign in using an existing iCloud Keychain credential.
-//            let username = passwordCredential.user
-//            let password = passwordCredential.password
-//            
-//            //            print("username: \(username)")
-//            //            print("password: \(password)")
-//        default:
-//            break
+//            guard let appleIDToken = appleIDCredential.identityToken else {
+//                print("Unable to fetch identity token")
+//                return
+//            }
+//            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+//                print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+//                return
+//            }
+//
+//            guard let fullName = appleIDCredential.fullName else {
+//                print("Unable to fetch full name")
+//                return
+//            }
+//
+//
+//            // Initialize a Firebase credential, including the user's full name.
+//            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: fullName)
+//
+//            // Sign in with Firebase.
+//            Auth.auth().signIn(with: credential) { authResult, error in
+//                if let error = error {
+//                    print("Error Apple sign in: \(error.localizedDescription)")
+//                    return
+//                }
+//
+//                print("애플 로그인 성공")
+//                let mainTabBarVC = MainTabBarController()
+//                self.navigationController?.pushViewController(mainTabBarVC, animated: true)
+//            }
 //        }
-//    }
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        // Handle error.
+        print("Sign in with Apple errored: \(error)")
+    }
+    
+}
+
+extension SelectLoginTypeVC: ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window ?? UIWindow()
+    }
 }
