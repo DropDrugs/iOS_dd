@@ -8,7 +8,7 @@ import KakaoSDKUser
 
 import KeychainSwift
 
-class SelectLoginType : UIViewController {
+class SelectLoginTypeVC : UIViewController {
     
     static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, KakaoAccessToken, KakaoRefreshToken
     
@@ -24,16 +24,17 @@ class SelectLoginType : UIViewController {
         return label
     }()
     
-    let googleLoginButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = UIColor(hex: "f2f2f2")
-        button.setTitle("구글로 시작하기", for: .normal)
-        button.setTitleColor(.black.withAlphaComponent(0.7), for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.layer.cornerRadius = superViewWidth * 0.075
-//        button.addTarget(OnboardingVC2.self, action: #selector(googleButtonTapped), for: .touchUpInside)
-        return button
-    }()
+//    let googleLoginButton: UIButton = {
+//        let button = UIButton()
+//        button.backgroundColor = UIColor(hex: "f2f2f2")
+//        button.setTitle("구글로 시작하기", for: .normal)
+//        button.setTitleColor(.black.withAlphaComponent(0.7), for: .normal)
+//        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+//        button.layer.cornerRadius = superViewWidth * 0.075
+////        button.addTarget(OnboardingVC2.self, action: #selector(googleButtonTapped), for: .touchUpInside)
+//        return button
+//    }()
+//    }()
     
     let kakaoLoginButton: UIButton = {
         let button = UIButton()
@@ -47,7 +48,7 @@ class SelectLoginType : UIViewController {
     }()
     
     // 애플 로그인 버튼
-    let appleLoginButton = ASAuthorizationAppleIDButton(type: .default, style: .black)
+//    let appleLoginButton = ASAuthorizationAppleIDButton(type: .default, style: .black)
     
     lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -72,9 +73,9 @@ class SelectLoginType : UIViewController {
     override func viewDidLoad() {
         view.backgroundColor = Constants.Colors.skyblue
         super.viewDidLoad()
-        configureAppleButton()
-        setupGradientBackground()
         setupUI()
+//        configureAppleButton()
+        setupGradientBackground()
         setupConstraints()
         
         if let image = UIImage(named: "kakao_logo")?.withRenderingMode(.alwaysOriginal) {
@@ -116,24 +117,25 @@ class SelectLoginType : UIViewController {
     }
         
     private func setupUI() {
-        view.addSubview(mainLabel)
-        view.addSubview(googleLoginButton)
-        view.addSubview(kakaoLoginButton)
-        view.addSubview(signUpButton)
-        view.addSubview(loginButton)
+        let subviews = [mainLabel, kakaoLoginButton, signUpButton, loginButton]
+        // 구글 버튼 임시 제거
+        subviews.forEach { view.addSubview($0) }
     }
     
     private func setupConstraints() {
+        let superViewHeight = UIScreen.main.bounds.height
+        let superViewWidth = UIScreen.main.bounds.width
+        
         mainLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(superViewHeight * 0.45)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(superViewWidth * 0.1)
         }
-        appleLoginButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(superViewHeight * 0.68)
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(superViewWidth * 0.15)
-        }
+//        appleLoginButton.snp.makeConstraints { make in
+//            make.top.equalToSuperview().offset(superViewHeight * 0.68)
+//            make.leading.trailing.equalToSuperview().inset(20)
+//            make.height.equalTo(superViewWidth * 0.15)
+//        }
         kakaoLoginButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(superViewHeight * 0.76)
             make.leading.trailing.equalToSuperview().inset(20)
@@ -216,11 +218,11 @@ class SelectLoginType : UIViewController {
     }
     
     private func configureAppleButton() {
-        appleLoginButton.addTarget(self, action: #selector(handleAuthorizationAppleIDButtonPress), for: .touchUpInside)
+//        appleLoginButton.addTarget(self, action: #selector(handleAuthorizationAppleIDButtonPress), for: .touchUpInside)
     }
 }
 
-extension SelectLoginType : ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+extension SelectLoginTypeVC : ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     @objc
     func handleAuthorizationAppleIDButtonPress() {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -232,39 +234,39 @@ extension SelectLoginType : ASAuthorizationControllerDelegate, ASAuthorizationCo
         authorizationController.presentationContextProvider = self
         authorizationController.performRequests()
     }
-    
+   
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return self.view.window!
     }
     
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        switch authorization.credential {
-        case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            let userIdentifier = appleIDCredential.user
-            let fullName = appleIDCredential.fullName
-            
-            if let identityToken = appleIDCredential.identityToken,
-               let identityTokenString = String(data: identityToken, encoding: .utf8) {
-                // post appleLogin
-                //                postAppleLogin(token: identityTokenString) { isSuccess in
-                //                    if isSuccess {
-                //                        self.goToNextView()
-                //                    } else {
-                //                        print("로그인 실패")
-                //                        Toaster.shared.makeToast("400 Bad Request", .short)
-                //                    }
-                //                }
-            }
-            
-        case let passwordCredential as ASPasswordCredential:
-            // Sign in using an existing iCloud Keychain credential.
-            let username = passwordCredential.user
-            let password = passwordCredential.password
-            
-            //            print("username: \(username)")
-            //            print("password: \(password)")
-        default:
-            break
-        }
-    }
+//    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+//        switch authorization.credential {
+//        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+//            let userIdentifier = appleIDCredential.user
+//            let fullName = appleIDCredential.fullName
+//            
+//            if let identityToken = appleIDCredential.identityToken,
+//               let identityTokenString = String(data: identityToken, encoding: .utf8) {
+//                // post appleLogin
+//                //                postAppleLogin(token: identityTokenString) { isSuccess in
+//                //                    if isSuccess {
+//                //                        self.goToNextView()
+//                //                    } else {
+//                //                        print("로그인 실패")
+//                //                        Toaster.shared.makeToast("400 Bad Request", .short)
+//                //                    }
+//                //                }
+//            }
+//            
+//        case let passwordCredential as ASPasswordCredential:
+//            // Sign in using an existing iCloud Keychain credential.
+//            let username = passwordCredential.user
+//            let password = passwordCredential.password
+//            
+//            //            print("username: \(username)")
+//            //            print("password: \(password)")
+//        default:
+//            break
+//        }
+//    }
 }

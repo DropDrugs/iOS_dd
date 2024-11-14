@@ -35,7 +35,8 @@ extension LoginVC {
             case .success(let response):
                 do {
                     let data = try response.map(TokenDto.self)
-//                    LoginVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
+                    SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
                     completion(true)
                 } catch {
                     print("Failed to map data : \(error)")
