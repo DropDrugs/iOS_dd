@@ -14,6 +14,7 @@ class LoginVC : UIViewController {
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: " ")
         field.textField.isSecureTextEntry = true
+        field.textField.textContentType = .newPassword
         return field
     }()
 

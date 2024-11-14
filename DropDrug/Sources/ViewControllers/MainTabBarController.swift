@@ -26,7 +26,7 @@ class MainTabBarController: UITabBarController {
         self.tabBar.unselectedItemTintColor = UIColor(named: "Gray500")
         HomeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(named: "Home")?.withRenderingMode(.alwaysTemplate), tag: 0)
         
-        SearchVC.tabBarItem = UITabBarItem(title: "검색", image: UIImage(named: "Search")?.withRenderingMode(.alwaysTemplate), tag: 1)
+        SearchVC.tabBarItem = UITabBarItem(title: "등록", image: UIImage(named: "Register")?.withRenderingMode(.alwaysTemplate), tag: 1)
         
         LocationVC.tabBarItem = UITabBarItem(title: "탐색", image: UIImage(named: "Location")?.withRenderingMode(.alwaysTemplate), tag: 2)
         

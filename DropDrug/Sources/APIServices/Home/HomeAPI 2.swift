@@ -16,7 +16,7 @@ extension HomeAPI: TargetType {
     }
     
     var path: String {
-        return "members"
+        return "/members"
     }
     
     var method: Moya.Method {

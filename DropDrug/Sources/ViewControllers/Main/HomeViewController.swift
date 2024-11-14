@@ -21,6 +21,17 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         configureMapView()
         
         navigationController?.navigationBar.isHidden = true
+        
+        getHomeInfo { [weak self] isSuccess in
+            if isSuccess {
+                DispatchQueue.main.async {
+                    self?.homeView.updateStarter()
+                    self?.homeView.updatePoints()
+                }
+            } else {
+                print("GET 호출 실패")
+            }
+        }
     }
     
     private let homeView: HomeView = {
@@ -143,11 +154,12 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         provider.request(.getHomeInfo) { result in
             switch result {
             case .success(let response):
+                print(response.statusCode)
                 do {
-                    let responseData = try JSONDecoder().decode(APIResponseHomeResponse.self, from: response.data)
-                    self.homeView.name = responseData.result.nickname
-                    self.homeView.points = responseData.result.point
-                    self.selectedCharacterNum = responseData.result.selectedChar
+                    let responseData = try response.map(HomeResponse.self)
+                    self.homeView.name = responseData.nickname
+                    self.homeView.points = responseData.point
+                    self.selectedCharacterNum = responseData.selectedChar
                     completion(true)
                 } catch {
                     print("Failed to decode response: \(error)")
