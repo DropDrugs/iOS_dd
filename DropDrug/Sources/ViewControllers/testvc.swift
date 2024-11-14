@@ -2,6 +2,8 @@
 import UIKit
 import PinLayout
 import CoreLocation
+import NMapsMap
+import NMapsGeometry
 
 class TestVC: UIViewController, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()

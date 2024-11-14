@@ -19,7 +19,10 @@
                        "FirebaseCore" : .staticLibrary,
                        "FirebaseAuth" : .staticLibrary,
                        "FirebaseMessaging" : .staticLibrary,
-                       "FirebaseFirestore" : .staticLibrary
+                       "FirebaseFirestore" : .staticLibrary,
+                       "NaverMapSDK" : .framework,
+//                       "NMapsMap" : .staticLibrary,
+//                       "NMapsGeometry" : .staticLibrary
                       ]
     )
 #endif
@@ -34,6 +37,7 @@ let package = Package(
         .package(url: "https://github.com/evgenyneu/keychain-swift.git", from: "24.0.0"),
         .package(url: "https://github.com/kakao/kakao-ios-sdk", from: "2.23.0"),
         .package(url: "https://github.com/google/GoogleSignIn-iOS", from: "8.0.0"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.4.0")
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.4.0"),
+        .package(url: "https://github.com/slr-09/Naver-Map-iOS-SPM.git", from: "0.1.0")
     ]
 )

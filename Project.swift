@@ -53,7 +53,8 @@ let project = Project(
                         "CFBundleURLSchemes" : ["kakao74177ce7b14b89614c47ac7d51464b95"]
                         ],
                     ],
-                    "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink"]
+                    "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink"],
+                    "NMFClientId" : "a97eb0xf24"
                     // 새로운 거 추가
                 ]
             ),
@@ -76,6 +77,9 @@ let project = Project(
                 .external(name: "FirebaseCore"),
                 .external(name: "FirebaseMessaging"),
                 .external(name: "FirebaseFirestore"),
+                .external(name: "NaverMapSDK"),
+//                .external(name: "NMapsGeometry"),
+//                .external(name: "NMapsMap")
             ]
         ),
         .target(

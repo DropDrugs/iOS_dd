@@ -1,5 +1,5 @@
 {
-  "originHash" : "e14e3b7a1fdea442cd6d5408b7c9a18676e97d4402ba0f8ea543bf030fbdff40",
+  "originHash" : "c71d33ed18beacd7f1f9992d93df1f0453650b79fb6f8d3b219f63c07a121c12",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -170,6 +170,15 @@
       "state" : {
         "revision" : "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
         "version" : "2.30910.0"
+      }
+    },
+    {
+      "identity" : "naver-map-ios-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/slr-09/Naver-Map-iOS-SPM.git",
+      "state" : {
+        "revision" : "4c3f93d6cd44633d7d79466c78dc7b2bce527b80",
+        "version" : "0.1.0"
       }
     },
     {

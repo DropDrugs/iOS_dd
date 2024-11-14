@@ -246,14 +246,14 @@ extension SelectLoginType : ASAuthorizationControllerDelegate, ASAuthorizationCo
             if let identityToken = appleIDCredential.identityToken,
                let identityTokenString = String(data: identityToken, encoding: .utf8) {
                 // post appleLogin
-//                postAppleLogin(token: identityTokenString) { isSuccess in
-//                    if isSuccess {
-//                        self.goToNextView()
-//                    } else {
-//                        print("로그인 실패")
-//                        Toaster.shared.makeToast("400 Bad Request", .short)
-//                    }
-//                }
+                //                postAppleLogin(token: identityTokenString) { isSuccess in
+                //                    if isSuccess {
+                //                        self.goToNextView()
+                //                    } else {
+                //                        print("로그인 실패")
+                //                        Toaster.shared.makeToast("400 Bad Request", .short)
+                //                    }
+                //                }
             }
             
         case let passwordCredential as ASPasswordCredential:
@@ -261,10 +261,10 @@ extension SelectLoginType : ASAuthorizationControllerDelegate, ASAuthorizationCo
             let username = passwordCredential.user
             let password = passwordCredential.password
             
-//            print("username: \(username)")
-//            print("password: \(password)")
+            //            print("username: \(username)")
+            //            print("password: \(password)")
         default:
             break
         }
-    
+    }
 }
