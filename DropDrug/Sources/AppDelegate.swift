@@ -9,8 +9,10 @@ import Foundation
 import UIKit
 import KakaoSDKCommon
 //import GoogleSignIn
-//import FirebaseCore
-//import FirebaseMessaging
+import FirebaseCore
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseMessaging
 
 
 @main
@@ -26,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             KakaoSDK.initSDK(appKey: "\(kakaoAPIkey)")
         }
         
-//        FirebaseApp.configure()
+        FirebaseApp.configure()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         
