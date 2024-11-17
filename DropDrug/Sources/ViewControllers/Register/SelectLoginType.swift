@@ -118,6 +118,7 @@ class SelectLoginType : UIViewController {
     private func setupUI() {
         view.addSubview(mainLabel)
         view.addSubview(googleLoginButton)
+        view.addSubview(appleLoginButton)
         view.addSubview(kakaoLoginButton)
         view.addSubview(signUpButton)
         view.addSubview(loginButton)
@@ -158,7 +159,6 @@ class SelectLoginType : UIViewController {
                         guard self != nil else { return }
                         if let error = error {
                             print(error)
-                            print("에러가어디서 ")
                             return
                         }
                         let userName = user?.kakaoAccount?.name

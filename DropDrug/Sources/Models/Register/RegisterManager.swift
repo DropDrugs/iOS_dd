@@ -9,7 +9,7 @@ extension SignUpVC {
         return UserLoginRequest(email: emailString, password: pwString)
     }
     
-    func callSignUpAPI(_ userParameter: UserLoginRequest, completion: @escaping (Bool) -> Void) {
+    func callSignUpAPI(_ userParameter: UserSignUpRequest, completion: @escaping (Bool) -> Void) {
         provider.request(.postRegister(param: userParameter)) { result in
             switch result {
             case .success(let response):
