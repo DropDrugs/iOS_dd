@@ -6,7 +6,7 @@ import Moya
 enum LoginService {
     // 자체 로그인
     case postLogin(param: UserLoginRequest)
-    case postRegister(param: UserLoginRequest)
+    case postRegister(param: UserSignUpRequest)
     
     // SNS 로그인
     case postGoogleLogin(param: OAuthGoogleLoginRequest)
@@ -40,8 +40,9 @@ extension LoginService: TargetType {
     
     var task: Moya.Task {
         switch self {
-        case .postLogin(let param),
-                .postRegister(let param) :
+        case .postLogin(let param) :
+            return .requestJSONEncodable(param)
+        case .postRegister(let param) :
             return .requestJSONEncodable(param)
         case .postGoogleLogin(let param) :
             return .requestJSONEncodable(param)

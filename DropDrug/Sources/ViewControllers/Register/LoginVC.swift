@@ -4,7 +4,7 @@ import UIKit
 import SnapKit
 import Moya
 
-// TODO : 토큰 저장 매니저 따로 만들기
+// TODO: 토큰 저장 매니저 따로 만들기
 
 class LoginVC : UIViewController {
 
