@@ -40,6 +40,8 @@ class MyPageVC : UIViewController {
                 keyWindow.rootViewController?.present(navigationController, animated: true)
             }
         }
+        
+        self.navigationController?.isNavigationBarHidden = true
         addSafeAreaColor()
         setupViews()
         setConstraints()
@@ -48,7 +50,7 @@ class MyPageVC : UIViewController {
     
     func addSafeAreaColor() {
         let safeAreaView = UIView()
-//        safeAreaView.backgroundColor = UIColor.red.withAlphaComponent(0.2) // Safe Area를 강조하기 위한 반투명 빨간색
+        safeAreaView.backgroundColor = UIColor.red.withAlphaComponent(0.2) // Safe Area를 강조하기 위한 반투명 빨간색
         view.addSubview(safeAreaView)
         
         // Safe Area의 제약 조건 추가
