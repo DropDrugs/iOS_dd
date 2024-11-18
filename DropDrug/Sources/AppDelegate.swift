@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import KakaoSDKCommon
+import AuthenticationServices
 //import GoogleSignIn
 
 import FirebaseCore
@@ -49,6 +50,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let viewController = SplashVC()
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
+        
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        appleIDProvider.getCredentialState(forUserID: "00000.abcabcabcabc.0000") { (credentialState, error) in
+            switch credentialState {
+            case .authorized:
+                print("authorized")
+                // The Apple ID credential is valid.
+            case .revoked:
+                print("revoked")
+            case .notFound:
+                // The Apple ID credential is either revoked or was not found, so show the sign-in UI.
+                print("notFound")
+            default:
+                break
+            }
+        }
+
         
         return true
     }
