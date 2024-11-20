@@ -22,8 +22,11 @@ extension SignUpVC {
                     print("Failed to map data : \(error)")
                     completion(false)
                 }
-            case .failure(let error):
-                print("Request failed: \(error.localizedDescription)")
+            case .failure(let error) :
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
                 completion(false)
             }
         }
@@ -50,7 +53,10 @@ extension LoginVC {
                     completion(false)
                 }
             case .failure(let error) :
-                print("Request failed: \(error.localizedDescription)")
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
                 completion(false)
             }
         }
