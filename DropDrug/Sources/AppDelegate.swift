@@ -118,6 +118,7 @@ extension AppDelegate: MessagingDelegate {
     // 파이어베이스 MessagingDelegate 설정
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         print("Firebase registration token: \(String(describing: fcmToken))")
+        SelectLoginTypeVC.keychain.set(fcmToken!, forKey: "FCMToken")
         
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
         NotificationCenter.default.post(
@@ -131,8 +132,8 @@ extension AppDelegate: MessagingDelegate {
                 print("Error fetching FCM registration token: \(error)")
       
             } else if let token = token {
-                print("FCM registration token: \(token)")
-                SelectLoginTypeVC.keychain.set(token, forKey: "FCMToken")
+                print("----FCM registration token: \(token)")
+                
             }
         }
     }

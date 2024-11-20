@@ -105,6 +105,7 @@ class LoginVC : UIViewController {
     @objc func loginButtonTapped() {
         if isValid {
             if let loginRequest = setupLoginDTO(emailField.textField.text!, passwordField.textField.text!) {
+//                print(SelectLoginTypeVC.keychain.get("FCMToken"))
                 callLoginAPI(loginRequest) { isSuccess in
                     if isSuccess {
                         self.proceedLoginSuccessful()
