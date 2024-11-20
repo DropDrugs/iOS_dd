@@ -11,11 +11,13 @@ class SignUpVC : UIViewController {
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
         field.textField.isSecureTextEntry = true
+        field.textField.textContentType = .newPassword
         return field
     }()
     private lazy var confirmPasswordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 다시 입력해 주세요", validationText: "비밀번호를 다시 한 번 확인해 주세요")
         field.textField.isSecureTextEntry = true
+        field.textField.textContentType = .newPassword
         return field
     }()
 
@@ -150,6 +152,7 @@ class SignUpVC : UIViewController {
         
     @objc func signUpButtonTapped() {
         if isValid {
+
             let signUpRequest = setupSignUpDTO(emailField.textField.text!, passwordField.textField.text!, name: usernameField.textField.text!)
             callSignUpAPI(signUpRequest) { isSuccess in
                 if isSuccess {

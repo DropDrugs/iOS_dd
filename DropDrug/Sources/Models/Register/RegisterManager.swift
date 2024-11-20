@@ -5,6 +5,7 @@ import Moya
 import KeychainSwift
 
 extension SignUpVC {
+
     func setupSignUpDTO(_ emailString: String, _ pwString: String, name : String) -> MemberSignupRequest {
         return MemberSignupRequest(email: emailString, name: name, password: pwString)
     }
@@ -13,8 +14,9 @@ extension SignUpVC {
         provider.request(.postRegister(param: userParameter)) { result in
             switch result {
             case .success(let response):
+                print(response)
                 do {
-                    _ = try response.map(IdResponse.self)
+                    let data = try response.map(IdResponse.self)
                     completion(true)
                 } catch {
                     print("Failed to map data : \(error)")

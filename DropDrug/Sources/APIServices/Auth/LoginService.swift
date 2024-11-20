@@ -5,6 +5,7 @@ import Moya
 
 enum LoginService {
     // 자체 로그인
+
     case postLogin(param: MemberLoginRequest)
     case postRegister(param: MemberSignupRequest)
     
@@ -55,5 +56,4 @@ extension LoginService: TargetType {
     var headers: [String : String]? {
         return ["Content-Type": "application/json"]
     }
-    
 }
