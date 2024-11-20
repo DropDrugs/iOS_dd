@@ -54,7 +54,10 @@ let project = Project(
                         ],
                     ],
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink"],
-                    "NMFClientId" : "a97eb0xf24"
+                    "NMFClientId" : "a97eb0xf24",
+                    "FirebaseAppDelegateProxyEnabled" : false,
+                    "NSRemoteNotificationUsageDescription" : "푸시 알림을 통해 개인화된 최신 소식을 받아보세요.",
+                    "UIBackgroundModes" : ["remote-notification"],
                     // 새로운 거 추가
                 ]
             ),
@@ -67,17 +70,21 @@ let project = Project(
                 .external(name: "PinLayout"),
                 .external(name: "FlexLayout"),
                 .external(name: "KeychainSwift"),
+                
                 .external(name: "KakaoSDK"),
                 .external(name: "KakaoSDKAuth"),
                 .external(name: "KakaoSDKCert"),
                 .external(name: "KakaoSDKCertCore"),
                 .external(name: "KakaoSDKCommon"),
-//                .external(name: "GoogleSignIn"),
+                
                 .external(name: "FirebaseAuth"),
                 .external(name: "FirebaseCore"),
                 .external(name: "FirebaseMessaging"),
                 .external(name: "FirebaseFirestore"),
+//                .external(name: "FirebaseAnalytics"),
+                
                 .external(name: "NaverMapSDK"),
+//                .external(name: "GoogleSignIn"),
 //                .external(name: "NMapsGeometry"),
 //                .external(name: "NMapsMap")
             ]

@@ -5,8 +5,8 @@ import Moya
 
 enum LoginService {
     // 자체 로그인
-    case postLogin(param: UserLoginRequest)
-    case postRegister(param: UserSignUpRequest)
+    case postLogin(param: MemberLoginRequest)
+    case postRegister(param: MemberSignupRequest)
     
     // SNS 로그인
     case postGoogleLogin(param: OAuthGoogleLoginRequest)

@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct UserSignUpRequest : Codable{
+struct MemberSignupRequest : Codable{
     let email : String
     let name : String
     let password : String

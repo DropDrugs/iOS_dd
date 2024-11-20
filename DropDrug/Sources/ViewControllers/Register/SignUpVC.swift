@@ -150,7 +150,7 @@ class SignUpVC : UIViewController {
         
     @objc func signUpButtonTapped() {
         if isValid {
-            let signUpRequest = UserSignUpRequest(email: emailField.textField.text!, name: usernameField.textField.text!, password: passwordField.textField.text!)
+            let signUpRequest = setupSignUpDTO(emailField.textField.text!, passwordField.textField.text!, name: usernameField.textField.text!)
             callSignUpAPI(signUpRequest) { isSuccess in
                 if isSuccess {
                     self.loginButtonTapped()
