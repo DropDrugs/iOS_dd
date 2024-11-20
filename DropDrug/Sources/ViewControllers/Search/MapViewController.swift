@@ -217,7 +217,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             case .success(let response):
                 print(response.statusCode)
                 do {
-                    let responseData = try response.map([HomeResponse].self)
+                    let responseData = try response.map([MapResponse].self)
                     print(responseData)
                     completion(true)
                 } catch {
