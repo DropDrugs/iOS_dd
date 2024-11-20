@@ -5,11 +5,11 @@ import Moya
 import KeychainSwift
 
 extension SignUpVC {
-    func setupSignUpDTO(_ emailString: String, _ pwString: String) -> memberSignupRequest {
-        return memberSignupRequest(email: emailString, password: pwString)
+    func setupSignUpDTO(_ emailString: String, _ pwString: String, name : String) -> MemberSignupRequest {
+        return MemberSignupRequest(email: emailString, name: name, password: pwString)
     }
 
-    func callSignUpAPI(_ userParameter: memberSignupRequest, completion: @escaping (Bool) -> Void) {
+    func callSignUpAPI(_ userParameter: MemberSignupRequest, completion: @escaping (Bool) -> Void) {
         provider.request(.postRegister(param: userParameter)) { result in
             switch result {
             case .success(let response):
