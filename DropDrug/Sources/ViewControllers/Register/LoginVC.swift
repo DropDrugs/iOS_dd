@@ -104,12 +104,13 @@ class LoginVC : UIViewController {
     // MARK: - Actions
     @objc func loginButtonTapped() {
         if isValid {
-            let loginRequest = UserLoginRequest(email: emailField.textField.text!, password: passwordField.textField.text!)
-            callLoginAPI(loginRequest) { isSuccess in
-                if isSuccess {
-                    self.proceedLoginSuccessful()
-                } else {
-                    print("로그인 실패")
+            if let loginRequest = setupLoginDTO(emailField.textField.text!, passwordField.textField.text!) {
+                callLoginAPI(loginRequest) { isSuccess in
+                    if isSuccess {
+                        self.proceedLoginSuccessful()
+                    } else {
+                        print("로그인 실패")
+                    }
                 }
             }
         }

@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         let appleIDProvider = ASAuthorizationAppleIDProvider()
-        appleIDProvider.getCredentialState(forUserID: "00000.abcabcabcabc.0000") { (credentialState, error) in
+        appleIDProvider.getCredentialState(forUserID: "저장해둔유저아이디") { (credentialState, error) in
             switch credentialState {
             case .authorized:
                 print("authorized")
@@ -132,6 +132,7 @@ extension AppDelegate: MessagingDelegate {
       
             } else if let token = token {
                 print("FCM registration token: \(token)")
+                SelectLoginTypeVC.keychain.set(token, forKey: "FCMToken")
             }
         }
     }

@@ -151,7 +151,7 @@ class SignUpVC : UIViewController {
     @objc func signUpButtonTapped() {
         if isValid {
             //회원가입 버튼 클릭시 함수 추가 필요
-            let signUpRequest = UserLoginRequest(email: emailField.textField.text!, password: passwordField.textField.text!)
+            let signUpRequest = setupSignUpDTO(emailField.textField.text!, passwordField.textField.text!)
             callSignUpAPI(signUpRequest) { isSuccess in
                 if isSuccess {
                     self.loginButtonTapped()
@@ -159,8 +159,6 @@ class SignUpVC : UIViewController {
                     print("회원 가입 실패")
                 }
             }
-            
-            // TODO : 닉네임 패치 api 호출 추가 필요
         }
     }
     
