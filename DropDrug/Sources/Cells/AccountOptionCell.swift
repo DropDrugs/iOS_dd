@@ -13,7 +13,6 @@ class AccountOptionCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0))
     }
     
     required init?(coder: NSCoder) {
@@ -56,10 +55,12 @@ class AccountOptionCell: UITableViewCell {
         }
     }
     
-    func configure(title: String, detail: String?, showEditButton: Bool) {
+    /// `configure` 메서드에서 텍스트와 색상 설정
+    func configure(title: String, detail: String?, showEditButton: Bool, titleColor: UIColor = Constants.Colors.gray700!) {
         titleLabel.text = title
         detailLabel.text = detail
         editButton.isHidden = !showEditButton
+        titleLabel.textColor = titleColor
     }
     
     @objc private func didTapEditButton() {

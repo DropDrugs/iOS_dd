@@ -26,7 +26,7 @@ extension AccountSettingsVC {
 }
 
 extension ProfileView {
-    // TODO: 프로필 이미지 parsing 후 적용
+    // TODO: 프로필 캐릭터 parsing 후 적용
     func fetchMemberInfo() {
         provider.request(.fetchMemberInfo) { result in
             switch result {
@@ -46,6 +46,7 @@ extension ProfileView {
 }
 
 extension RewardView {
+    // TODO: point Controller 로 변경
     func fetchMemberInfo() {
         provider.request(.fetchMemberInfo) { result in
             switch result {
@@ -62,3 +63,4 @@ extension RewardView {
         }
     }
 }
+

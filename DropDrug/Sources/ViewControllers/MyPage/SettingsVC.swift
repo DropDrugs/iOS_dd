@@ -25,6 +25,7 @@ class SettingsVC: UIViewController {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupUI()
         setupConstraints()
     }
@@ -53,6 +54,7 @@ class SettingsVC: UIViewController {
     
     // MARK: - Actions
     @objc private func didTapBackButton() {
+        self.navigationController?.isNavigationBarHidden = true
         navigationController?.popViewController(animated: false)
     }
 }
@@ -86,8 +88,10 @@ extension SettingsVC: UITableViewDelegate {
         case "공지사항":
             navigationController?.pushViewController(NoticesVC(), animated: true)
         case "문의하기":
+            // TODO: 메일 전송 플로우
             openWebPage(urlString: "https://www.example.com/privacy-policy")
         case "개인정보 처리방침":
+            // TODO: 페이지 설정
             openWebPage(urlString: "https://www.example.com/privacy-policy")
         case "위치서비스 이용약관":
             openWebPage(urlString: "https://www.example.com/location-terms")

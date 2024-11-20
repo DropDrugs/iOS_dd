@@ -30,7 +30,8 @@ class SplashVC : UIViewController {
     private func checkAuthenticationStatus() {
         let keychain = KeychainSwift()
 
-        if let accessToken = keychain.get("serverAccessToken") {
+        if let accessToken = keychain.get("serverAccessToken"),
+           let refreshToken = keychain.get("serverRefreshToken") {
             print("Access Token 존재: \(accessToken)")
             navigateToMainScreen()
 //        } else if let refreshToken = keychain.get("serverRefreshToken") {

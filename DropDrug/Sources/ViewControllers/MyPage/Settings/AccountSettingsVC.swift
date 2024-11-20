@@ -15,9 +15,8 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         return button
     }()
     
-    let tableView = UITableView(frame: .zero, style: .grouped)
-    private let accountOptions = ["닉네임", "아이디", "비밀번호 변경", "캐릭터 변경", "로그아웃"]
-    private let accountActions = ["계정 삭제"] // 계정 삭제는 별도 섹션으로 처리
+    let tableView = UITableView()
+    private let accountOptions = ["닉네임", "아이디", "비밀번호 변경", "캐릭터 변경", "로그아웃","계정 삭제"]
     
     // 가상 데이터
     var nickname: String = "김드롭"
@@ -34,35 +33,30 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         view.backgroundColor = .white
         
         // TableView 설정
+        tableView.rowHeight = view.bounds.height * 0.06
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(AccountOptionCell.self, forCellReuseIdentifier: "AccountOptionCell")
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
         tableView.separatorStyle = .none
         tableView.backgroundColor = .white
-        
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
     // MARK: - TableView DataSource
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2 // 계정 정보 + 계정 삭제
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? accountOptions.count : accountActions.count
+        return accountOptions.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            // 계정 정보 및 옵션 섹션
-            let cell = tableView.dequeueReusableCell(withIdentifier: "AccountOptionCell", for: indexPath) as! AccountOptionCell
-            
-            let option = accountOptions[indexPath.row]
-            if option == "닉네임" {
+        let option = accountOptions[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "AccountOptionCell", for: indexPath) as! AccountOptionCell
+        
+        if option == "계정 삭제" {
+            cell.configure(title: option, detail: nil, showEditButton: false, titleColor: Constants.Colors.red ?? .red)
+        } else if option == "닉네임" {
                 cell.configure(title: option, detail: nickname, showEditButton: true)
                 cell.editAction = { [weak self] in
                     self?.showEditAlert(title: "닉네임 수정", currentValue: self?.nickname ?? "") { newName in
@@ -71,28 +65,14 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                     }
                 }
             } else if option == "아이디" {
-                cell.configure(title: option, detail: userId, showEditButton: true)
-                cell.editAction = { [weak self] in
-                    self?.showEditAlert(title: "아이디 수정", currentValue: self?.userId ?? "") { newId in
-                        self?.userId = newId
-                        self?.tableView.reloadData()
-                    }
-                }
+                cell.configure(title: option, detail: userId, showEditButton: false)
             } else {
                 cell.configure(title: option, detail: nil, showEditButton: false)
             }
-            return cell
-        } else {
-            // 계정 삭제 섹션
-            let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath)
-            cell.textLabel?.text = accountActions[indexPath.row]
-            cell.textLabel?.textColor = .red
-            cell.textLabel?.textAlignment = .left
             cell.selectionStyle = .none
             return cell
-        }
     }
-    
+
     // MARK: - TableView Delegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
@@ -103,12 +83,11 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 navigationController?.pushViewController(CharacterSettingsVC(), animated: true)
             case "로그아웃":
                 logoutButtonTapped()
+            case "계정 삭제":
+                showDeleteAccountAlert()
             default:
                 break
             }
-        } else if indexPath.section == 1 {
-            // TODO: 계정 삭제 동작
-            showDeleteAccountAlert()
         }
     }
     
@@ -120,6 +99,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         }
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "저장", style: .default, handler: { _ in
+            // TODO: 닉네임 변경 api
             if let text = alert.textFields?.first?.text, !text.isEmpty {
                 completion(text)
             }
@@ -131,6 +111,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         let alert = UIAlertController(title: "계정 삭제", message: "계정을 정말 삭제하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
+            // TODO: 계정 삭제 api
             print("계정 삭제 처리")
         }))
         present(alert, animated: true, completion: nil)

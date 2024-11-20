@@ -17,14 +17,12 @@ class MyPageVC : UIViewController {
     private lazy var settingButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "gearshape")?.withTintColor(Constants.Colors.black ?? .black , renderingMode: .alwaysOriginal), for: .normal)
-        button.backgroundColor = .red
-        button.isUserInteractionEnabled = true
         button.addTarget(self, action: #selector(settingTapped), for: .touchUpInside)
         return button
     }()
     
     private let myPageProfileView = ProfileView()
-    let rewardView = RewardView()
+    private let rewardView = RewardView()
     private let dropCardLabel = SubLabelView()
     private let disposalStateLabel = SubLabelView()
     
@@ -42,25 +40,11 @@ class MyPageVC : UIViewController {
         }
         
         self.navigationController?.isNavigationBarHidden = true
-        addSafeAreaColor()
         setupViews()
         setConstraints()
         setComponents()
+        setupGestures()
         }
-    
-    func addSafeAreaColor() {
-        let safeAreaView = UIView()
-        safeAreaView.backgroundColor = UIColor.red.withAlphaComponent(0.2) // Safe Area를 강조하기 위한 반투명 빨간색
-        view.addSubview(safeAreaView)
-        
-        // Safe Area의 제약 조건 추가
-        safeAreaView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading)
-            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-        }
-    }
     
     func setComponents() {
         dropCardLabel.text = "나의 드롭카드"
@@ -76,20 +60,20 @@ class MyPageVC : UIViewController {
     
     func setConstraints() {
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.snp.top).inset(superViewHeight * 0.08)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
             make.leading.equalToSuperview().inset(20)
         }
         settingButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
             make.width.height.equalTo(50)
-            make.trailing.equalToSuperview()
+            make.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         myPageProfileView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(superViewHeight * 0.05)
+            make.top.equalTo(titleLabel.snp.bottom).offset(superViewHeight * 0.07)
             make.left.equalTo(view.safeAreaLayoutGuide).offset(25)
         }
         rewardView.snp.makeConstraints { make in
-            make.top.equalTo(myPageProfileView.snp.bottom).offset(superViewHeight * 0.05)
+            make.top.equalTo(myPageProfileView.snp.bottom).offset(superViewHeight * 0.07)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(60)
@@ -105,10 +89,25 @@ class MyPageVC : UIViewController {
         
     }
     
+    func setupGestures() {
+            let rewardTapGesture = UITapGestureRecognizer(target: self, action: #selector(rewardViewTapped))
+            rewardView.addGestureRecognizer(rewardTapGesture)
+            rewardView.isUserInteractionEnabled = true
+        }
+    
+    // MARK: Actions
     @objc func settingTapped() {
+        self.navigationController?.isNavigationBarHidden = false
         let settingsVC = SettingsVC()
-        navigationController?.pushViewController(settingsVC, animated: true)
+        navigationController?.pushViewController(settingsVC, animated: false)
         print("setting tapped")
+    }
+    
+    @objc func rewardViewTapped() {
+        self.navigationController?.isNavigationBarHidden = false
+        let RewardVC = RewardVC()
+        navigationController?.pushViewController(RewardVC, animated: false)
+        print("Reward view tapped")
     }
     
 }
