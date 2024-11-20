@@ -9,10 +9,13 @@ import FirebaseAuth
 import KakaoSDKUser
 
 import KeychainSwift
+import Moya
 
 class SelectLoginTypeVC : UIViewController {
     
-    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, KakaoAccessToken, KakaoRefreshToken
+    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
+    
+    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, KakaoAccessToken, KakaoRefreshToken, KakaoIdToken
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     fileprivate var currentNonce: String?
@@ -143,41 +146,76 @@ class SelectLoginTypeVC : UIViewController {
         }
     }
     
+//    @objc func kakaoButtonTapped() {
+//        Task {
+//            if await kakaoAuthVM.KakaoLogin() {
+//                UserApi.shared.me() { [weak self] (user, error) in
+//                    guard let self = self else { return }
+//                    
+//                    if let error = error {
+//                        print("에러 발생: \(error.localizedDescription)")
+//                        return
+//                    }
+//                    
+//                    guard let kakaoAccount = user?.kakaoAccount else {
+//                        print("사용자 정보 없음")
+//                        return
+//                    }
+//                    
+//                    let userId = user?.id ?? 123
+//                    
+//                    print("유저: \(userId)")
+//                    let idToken = SelectLoginTypeVC.keychain.get("idToken")
+//                    // TODO: 서버에 카카오 사용자 정보 전달 및 로그인 처리
+//                    self.handleKakaoLoginSuccess()
+//                }
+//            } else {
+//                print("카카오 로그인 실패")
+//            }
+//        }
+//    }
+    
     @objc func kakaoButtonTapped() {
-        Task {
-            if await kakaoAuthVM.KakaoLogin() {
-                UserApi.shared.me() { [weak self] (user, error) in
-                    guard let self = self else { return }
-                    
-                    if let error = error {
-                        print("에러 발생: \(error.localizedDescription)")
-                        return
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            
+            // Kakao 로그인 실행
+            self.kakaoAuthVM.KakaoLogin { success in
+                if success {
+                    // Kakao 사용자 정보 가져오기
+                    UserApi.shared.me { (user, error) in
+                        if let error = error {
+                            print("에러 발생: \(error.localizedDescription)")
+                            return
+                        }
+                        
+                        guard let kakaoAccount = user?.kakaoAccount else {
+                            print("사용자 정보 없음")
+                            return
+                        }
+                        if let loginRequest = self.setupSocialLoginDTO() {
+                            self.callKakaoLoginAPI(loginRequest) { isSuccess in
+                                if isSuccess {
+                                    self.handleKakaoLoginSuccess()
+                                } else {
+                                    print("카카오 로그인 실패")
+                                }
+                            }
+                        }
                     }
-                    
-                    guard let kakaoAccount = user?.kakaoAccount else {
-                        print("사용자 정보 없음")
-                        return
+                } else {
+                    DispatchQueue.main.async {
+                        print("카카오 로그인 실패")
                     }
-                    
-                    let userName = kakaoAccount.profile?.nickname ?? "닉네임 없음"
-                    let userEmail = kakaoAccount.email ?? "이메일 없음"
-                    
-                    print("이름: \(userName)")
-                    print("이메일: \(userEmail)")
-                    
-                    // TODO: 서버에 카카오 사용자 정보 전달 및 로그인 처리
-                    self.handleKakaoLoginSuccess(name: userName, email: userEmail)
                 }
-            } else {
-                print("카카오 로그인 실패")
             }
         }
     }
 
-    private func handleKakaoLoginSuccess(name: String, email: String) {
-        print("카카오 로그인 성공!")
-        print("이름: \(name), 이메일: \(email)")
-        // 여기에서 서버 로그인 API 호출 또는 UI 업데이트
+    private func handleKakaoLoginSuccess() {
+        let mainVC = MainTabBarController()
+        mainVC.modalPresentationStyle = .fullScreen
+        present(mainVC, animated: true, completion: nil)
     }
     
 //    @objc private func googleButtonTapped() {

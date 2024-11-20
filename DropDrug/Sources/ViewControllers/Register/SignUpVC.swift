@@ -10,12 +10,15 @@ class SignUpVC : UIViewController {
     private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "사용할 수 없는 이메일입니다")
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
-        field.textField.isSecureTextEntry = true
+        //TODO: 주석 처리 해제
+//        field.textField.isSecureTextEntry = true
+        field.textField.isSecureTextEntry = false
         return field
     }()
     private lazy var confirmPasswordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 다시 입력해 주세요", validationText: "비밀번호를 다시 한 번 확인해 주세요")
-        field.textField.isSecureTextEntry = true
+//        field.textField.isSecureTextEntry = true
+        field.textField.isSecureTextEntry = false
         return field
     }()
 
@@ -200,7 +203,7 @@ class SignUpVC : UIViewController {
     
     @objc func emailValidate(){
 //        if let email = emailField.text, ValidationUtility.isValidEmail(email) {
-//        이메일 주소 유효성 확인 조건문
+//        TODO: 이메일 주소 유효성 확인 조건문
         if let email = emailField.text {
             emailField.validationLabel.isHidden = true
             emailField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
@@ -214,7 +217,7 @@ class SignUpVC : UIViewController {
     
     @objc func passwordValidate(){
 //      if let password = passwordField.text, ValidationUtility.isValidPassword(password) {
-//      패스워드 유효성 확인 조건문
+//      TODO: 패스워드 유효성 확인 조건문
         if let password = passwordField.text {
             passwordField.validationLabel.isHidden = true
             passwordField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
