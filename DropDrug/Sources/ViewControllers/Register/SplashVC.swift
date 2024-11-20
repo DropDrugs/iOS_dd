@@ -4,6 +4,7 @@ import UIKit
 import Moya
 import SnapKit
 import PinLayout
+import KeychainSwift
 
 class SplashVC : UIViewController {
     
@@ -20,17 +21,34 @@ class SplashVC : UIViewController {
         super.viewDidLoad()
         setupViews()
         setConstraints()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {self.navigateToOnBoaringScreen()} //일단 분기 처리 없이 온보딩 페이지로 넘어가도록
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//            if self.getRefreshToken() != nil {
-//                        // refreshToken 이 있으면 메인 화면으로 이동
-//                self.navigateToMainScreen()
-//                    } else {
-//                        // refreshToken 이 없으면 로그인 화면으로 이동
-//                        self.navigateToOnBoaringScreen()
-//                    }
-//        }
-//    }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.checkAuthenticationStatus()
+//            self.navigateToMainScreen()
+        }
+    }
+    
+    private func checkAuthenticationStatus() {
+        let keychain = KeychainSwift()
+
+        if let accessToken = keychain.get("serverAccessToken"),
+           let refreshToken = keychain.get("serverRefreshToken") {
+            print("Access Token 존재: \(accessToken)")
+            navigateToMainScreen()
+//        } else if let refreshToken = keychain.get("serverRefreshToken") {
+//            print("Access Token 없음. Refresh Token 존재.")
+//            refreshAccessToken(refreshToken: refreshToken) { success in
+//                if success {
+//                    self?.navigateToMainScreen()
+//                } else {
+//                    print("Refresh Token 갱신 실패.")
+//                    self?.navigateToOnBoaringScreen()
+//                }
+//            }
+        } else {
+            print("토큰 없음. 로그인 화면으로 이동.")
+            navigateToOnBoaringScreen()
+        }
+    }
     
     func setupViews() {
         view.backgroundColor = Constants.Colors.skyblue
@@ -39,8 +57,9 @@ class SplashVC : UIViewController {
     }
     
     func navigateToMainScreen() {
-
-        }
+        let mainVC = MainTabBarController()
+        mainVC.modalPresentationStyle = .fullScreen
+        present(mainVC, animated: true, completion: nil)
     }
     
     func navigateToOnBoaringScreen() {
@@ -51,8 +70,8 @@ class SplashVC : UIViewController {
     
     func setConstraints() {
         titleLabel.snp.makeConstraints { make in
-                make.center.equalToSuperview()
-            }
+            make.center.equalToSuperview()
+        }
     }
     
 }

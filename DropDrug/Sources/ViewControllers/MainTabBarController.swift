@@ -8,7 +8,7 @@ class MainTabBarController: UITabBarController {
     private let SearchVC = UINavigationController(rootViewController: TestVC())
     private let LocationVC = UINavigationController(rootViewController: TestVC())
     private let InfoVC = UINavigationController(rootViewController: InfoMainViewController())
-    private let MyVC = UINavigationController(rootViewController: TestVC())
+    private let MyVC = UINavigationController(rootViewController: MyPageVC())
     
     override func viewDidLoad() {
         super.viewDidLoad()

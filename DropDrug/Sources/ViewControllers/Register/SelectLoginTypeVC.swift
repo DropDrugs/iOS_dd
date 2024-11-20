@@ -146,32 +146,40 @@ class SelectLoginTypeVC : UIViewController {
     @objc func kakaoButtonTapped() {
         Task {
             if await kakaoAuthVM.KakaoLogin() {
-                DispatchQueue.main.async {
-                    UserApi.shared.me() { [weak self] (user, error) in
-                        guard self != nil else { return }
-                        if let error = error {
-                            print(error)
-                            return
-                        }
-                        let userName = user?.kakaoAccount?.name
-                        let userEmail = user?.kakaoAccount?.email
-//                        let userProfile = user?.kakaoAccount?.profile?.profileImageUrl
-                                    
-                        print("이름: \(userName)")
-                        print("이메일: \(userEmail)")
-//                        print("프로필: \(userProfile)")
-
-//                        userInfo["providerId"] = userID
-//                        userInfo["email"] = userEmail
-//                        print(userInfo)
-                        // TODO :하단 kakao login api 호출 함수 작성
+                UserApi.shared.me() { [weak self] (user, error) in
+                    guard let self = self else { return }
+                    
+                    if let error = error {
+                        print("에러 발생: \(error.localizedDescription)")
+                        return
                     }
+                    
+                    guard let kakaoAccount = user?.kakaoAccount else {
+                        print("사용자 정보 없음")
+                        return
+                    }
+                    
+                    let userName = kakaoAccount.profile?.nickname ?? "닉네임 없음"
+                    let userEmail = kakaoAccount.email ?? "이메일 없음"
+                    
+                    print("이름: \(userName)")
+                    print("이메일: \(userEmail)")
+                    
+                    // TODO: 서버에 카카오 사용자 정보 전달 및 로그인 처리
+                    self.handleKakaoLoginSuccess(name: userName, email: userEmail)
                 }
             } else {
-                print("Login failed.")
+                print("카카오 로그인 실패")
             }
         }
     }
+
+    private func handleKakaoLoginSuccess(name: String, email: String) {
+        print("카카오 로그인 성공!")
+        print("이름: \(name), 이메일: \(email)")
+        // 여기에서 서버 로그인 API 호출 또는 UI 업데이트
+    }
+    
 //    @objc private func googleButtonTapped() {
 //        // Google login setup
 //        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
