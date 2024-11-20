@@ -210,6 +210,24 @@ class SelectLoginTypeVC : UIViewController {
     @objc func handleAppleLogin() {
         startSignInWithAppleFlow()
     }
+    
+    func fetchFirebaseIDToken(completion: @escaping (String?) -> Void) {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("User is not logged in")
+            completion(nil)
+            return
+        }
+        
+        currentUser.getIDToken { token, error in
+            if let error = error {
+                print("Error fetching ID token: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            completion(token)
+        }
+    }
 }
 
 extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
@@ -258,64 +276,61 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            let userIdentifier = appleIDCredential.user
-            let fullName = appleIDCredential.fullName
-            print(userIdentifier)
-            print("\(fullName)")
+            guard let nonce = currentNonce else {
+                print("Error: Nonce is missing.")
+                return
+            }
+            guard let appleIDToken = appleIDCredential.identityToken else {
+                print("Error: Unable to fetch identity token.")
+                return
+            }
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                print("Error: Unable to serialize token string.")
+                return
+            }
+
+            guard let fullName = appleIDCredential.fullName else {
+                print("Unable to fetch full name")
+                return
+            }
+            SelectLoginTypeVC.keychain.set(appleIDToken, forKey: "appleUserIDToken")
             
-            SelectLoginTypeVC.keychain.set(userIdentifier, forKey: "appleUserID")
-            
-            if let identityToken = appleIDCredential.identityToken,
-               let identityTokenString = String(data: identityToken, encoding: .utf8) {
-                print(fullName ?? "none")
-                print(identityTokenString)
+            if let givenName = fullName.givenName, let familyName = fullName.familyName {
+                let completeName = "\(givenName) \(familyName)"
+                SelectLoginTypeVC.keychain.set(completeName, forKey: "appleUserfullName")
+                print("Saved fullName: \(completeName)")
+            } else {
+                print("No full name provided.")
             }
             
-        case let passwordCredential as ASPasswordCredential:
-            // Sign in using an existing iCloud Keychain credential.
-            let username = passwordCredential.user
-            let password = passwordCredential.password
+            print("idTokenString : \(idTokenString)")
+
+            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: fullName)
             
-            print("username: \(username)")
-            print("password: \(password)")
+            Auth.auth().signIn(with: credential) { authResult, error in
+                if let error = error {
+                    print("Error Apple sign in: \(error.localizedDescription)")
+                    return
+                }
+
+                print("애플 로그인 성공")
+                
+                self.fetchFirebaseIDToken { idToken in
+                    if let idToken = idToken {
+                        print("Firebase ID Token: \(idToken)")
+                    }
+                    DispatchQueue.main.async {
+                        let mainTabBarVC = MainTabBarController()
+                        self.navigationController?.pushViewController(mainTabBarVC, animated: true)
+                    }
+                }
+            }
+            
         default:
+            print("Error: Unsupported credential type.")
             break
         }
-        
-//        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-//            guard let nonce = currentNonce else {
-//                fatalError("Invalid state: A login callback was received, but no login request was sent.")
-//            }
-//            guard let appleIDToken = appleIDCredential.identityToken else {
-//                print("Unable to fetch identity token")
-//                return
-//            }
-//            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
-//                print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
-//                return
-//            }
-//
-//            guard let fullName = appleIDCredential.fullName else {
-//                print("Unable to fetch full name")
-//                return
-//            }
-//
-//
-//            // Initialize a Firebase credential, including the user's full name.
-//            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: fullName)
-//
-//            // Sign in with Firebase.
-//            Auth.auth().signIn(with: credential) { authResult, error in
-//                if let error = error {
-//                    print("Error Apple sign in: \(error.localizedDescription)")
-//                    return
-//                }
-//
-//                print("애플 로그인 성공")
-//                let mainTabBarVC = MainTabBarController()
-//                self.navigationController?.pushViewController(mainTabBarVC, animated: true)
-//            }
-//        }
+
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
