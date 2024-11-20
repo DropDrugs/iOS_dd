@@ -203,7 +203,7 @@ class SignUpVC : UIViewController {
     
     @objc func emailValidate(){
 //        if let email = emailField.text, ValidationUtility.isValidEmail(email) {
-//        이메일 주소 유효성 확인 조건문
+//        TODO: 이메일 주소 유효성 확인 조건문
         if let email = emailField.text {
             emailField.validationLabel.isHidden = true
             emailField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
@@ -217,7 +217,7 @@ class SignUpVC : UIViewController {
     
     @objc func passwordValidate(){
 //      if let password = passwordField.text, ValidationUtility.isValidPassword(password) {
-//      패스워드 유효성 확인 조건문
+//      TODO: 패스워드 유효성 확인 조건문
         if let password = passwordField.text {
             passwordField.validationLabel.isHidden = true
             passwordField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor

@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct OAuthGoogleLoginRequest : Codable{
+struct OAuthSocialLoginRequest : Codable{
     let accessToken: String
     let fcmToken : String
     let idToken : String

@@ -4,8 +4,11 @@ import Foundation
 import Combine
 import KakaoSDKAuth
 import KakaoSDKUser
+import KeychainSwift
 
 class KakaoAuthVM: ObservableObject {
+    
+    static let keychain = KeychainSwift()
     
     var subscriptions = Set<AnyCancellable>()
     
@@ -26,7 +29,7 @@ class KakaoAuthVM: ObservableObject {
     
     // 저장된 토큰을 로드하여 자동 로그인 시도
     private func loadToken() {
-        if let tokenString = UserDefaults.standard.string(forKey: "kakaoToken") {
+        if let tokenString = SelectLoginTypeVC.keychain.get("KakaoAccessToken") {
             oauthToken = tokenString
             isLoggedIn = true
             print("토큰 로드 성공, 자동 로그인 시도 중")
@@ -36,59 +39,48 @@ class KakaoAuthVM: ObservableObject {
     }
     
     // 토큰을 안전하게 저장
-    private func saveToken(_ token: String) {
-//        UserDefaults.standard.set(token, forKey: "kakaoToken")
-        //TO DO : keychain에 token 저장
+    private func saveAccessToken(_ token: String) {
         oauthToken = token
+        SelectLoginTypeVC.keychain.set(token, forKey: "KakaoAccessToken")
     }
     
-    // 카카오톡 앱으로 로그인 인증
-    func kakaoLoginWithApp() async -> Bool {
-        await withCheckedContinuation { continuation in
+    private func saveRefreshToken(_ token: String) {
+        oauthToken = token
+        SelectLoginTypeVC.keychain.set(token, forKey: "KakaoRefreshToken")
+    }
+    
+    private func saveIdToken(_ token: String?) {
+        let tokenToSave = token ?? "DefaultToken"
+        SelectLoginTypeVC.keychain.set(tokenToSave, forKey: "KakaoIdToken")
+    }
+
+    @MainActor
+    func KakaoLogin(completion: @escaping (Bool) -> Void) {
+        if UserApi.isKakaoTalkLoginAvailable() {
             UserApi.shared.loginWithKakaoTalk { [weak self] (oauthToken, error) in
                 if let error = error {
-                    print(error)
-                    self?.errorMessage = "카카오톡으로 로그인 실패: \(error.localizedDescription)"
-                    continuation.resume(returning: false)
+                    print("카카오톡 로그인 실패: \(error.localizedDescription)")
+                    completion(false)
                 } else if let oauthToken = oauthToken {
-                    print("loginWithKakaoTalk() success.")
-                    self?.saveToken(oauthToken.accessToken) // 토큰 저장
-                    continuation.resume(returning: true)
+                    self?.saveAccessToken(oauthToken.accessToken)
+                    self?.saveRefreshToken(oauthToken.refreshToken)
+                    self?.saveIdToken(oauthToken.idToken)
+                    print("카카오톡 로그인 성공")
+                    completion(true)
                 }
             }
-        }
-    }
-    
-    // 카카오 계정으로 로그인
-    func kakaoLoginWithAccount() async -> Bool {
-        await withCheckedContinuation { continuation in
+        } else {
             UserApi.shared.loginWithKakaoAccount { [weak self] (oauthToken, error) in
                 if let error = error {
-                    print(error)
-                    self?.errorMessage = "카카오 계정으로 로그인 실패: \(error.localizedDescription)"
-                    continuation.resume(returning: false)
+                    print("카카오 계정 로그인 실패: \(error.localizedDescription)")
+                    completion(false)
                 } else if let oauthToken = oauthToken {
-                    print("loginWithKakaoAccount() success.")
-                    self?.saveToken(oauthToken.accessToken) // 토큰 저장
-                    continuation.resume(returning: true)
+                    self?.saveAccessToken(oauthToken.accessToken)
+                    self?.saveRefreshToken(oauthToken.refreshToken)
+                    self?.saveIdToken(oauthToken.idToken)
+                    print("카카오 계정 로그인 성공")
+                    completion(true)
                 }
-            }
-        }
-    }
-    
-    @MainActor
-    func KakaoLogin() async -> Bool {
-        print("KakaoAuthVM - KakaoLogin() called")
-        
-        return await withCheckedContinuation { continuation in
-            Task {
-                let loginSuccess: Bool
-                if (UserApi.isKakaoTalkLoginAvailable()) {
-                    loginSuccess = await kakaoLoginWithApp()
-                } else {
-                    loginSuccess = await kakaoLoginWithAccount()
-                }
-                continuation.resume(returning: loginSuccess)
             }
         }
     }
@@ -120,6 +112,7 @@ class KakaoAuthVM: ObservableObject {
     
     // 저장된 토큰을 삭제
     private func clearToken() {
+        //TODO: keychain kakotoken clear
         UserDefaults.standard.removeObject(forKey: "kakaoToken")
         oauthToken = nil
     }
