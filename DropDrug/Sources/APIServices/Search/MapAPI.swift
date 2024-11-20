@@ -3,11 +3,11 @@
 import Foundation
 import Moya
 
-enum HomeAPI {
-    case getHomeInfo
+enum MapAPI {
+    case getPlaceInfo
 }
 
-extension HomeAPI: TargetType {
+extension MapAPI: TargetType {
     var baseURL: URL {
         guard let url = URL(string: Constants.NetworkManager.baseURL) else {
             fatalError("fatal error - invalid url")
@@ -16,7 +16,7 @@ extension HomeAPI: TargetType {
     }
     
     var path: String {
-        return "/members"
+        return "maps/seoul"
     }
     
     var method: Moya.Method {
@@ -30,4 +30,5 @@ extension HomeAPI: TargetType {
     var headers: [String : String]? {
         return ["Content-Type": "application/json"]
     }
+
 }

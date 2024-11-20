@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import NMapsMap
  
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -17,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
  
-        let viewController = SelectLoginTypeVC()
+        let viewController = SplashVC()
 
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
