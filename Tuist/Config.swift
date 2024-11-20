@@ -6,4 +6,5 @@ let config = Config(
 //    * Read more: https://docs.tuist.io/guides/quick-start/gather-insights
 //
 //    fullHandle: "{account_handle}/{project_handle}",
+    
 )
