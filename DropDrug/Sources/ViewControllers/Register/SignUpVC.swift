@@ -152,7 +152,8 @@ class SignUpVC : UIViewController {
         
     @objc func signUpButtonTapped() {
         if isValid {
-            let signUpRequest = UserRegisterRequest(email: emailField.textField.text!, password: passwordField.textField.text!, name: usernameField.textField.text!)
+
+            let signUpRequest = setupSignUpDTO(emailField.textField.text!, passwordField.textField.text!, name: usernameField.textField.text!)
             callSignUpAPI(signUpRequest) { isSuccess in
                 if isSuccess {
                     self.loginButtonTapped()
@@ -180,6 +181,7 @@ class SignUpVC : UIViewController {
         termsAgreeValidate()
     }
     
+    // MARK: validation Check
     lazy var isUsernameValid = false
     lazy var isEmailValid = false
     lazy var isPasswordValid = false

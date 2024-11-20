@@ -4,7 +4,7 @@ import UIKit
 import SnapKit
 import Moya
 
-// TODO : 토큰 저장 매니저 따로 만들기
+// TODO: 토큰 저장 매니저 따로 만들기
 
 class LoginVC : UIViewController {
 
@@ -105,12 +105,13 @@ class LoginVC : UIViewController {
     // MARK: - Actions
     @objc func loginButtonTapped() {
         if isValid {
-            let loginRequest = UserLoginRequest(email: emailField.textField.text!, password: passwordField.textField.text!)
-            callLoginAPI(loginRequest) { isSuccess in
-                if isSuccess {
-                    self.proceedLoginSuccessful()
-                } else {
-                    print("로그인 실패")
+            if let loginRequest = setupLoginDTO(emailField.textField.text!, passwordField.textField.text!) {
+                callLoginAPI(loginRequest) { isSuccess in
+                    if isSuccess {
+                        self.proceedLoginSuccessful()
+                    } else {
+                        print("로그인 실패")
+                    }
                 }
             }
         }

@@ -2,8 +2,8 @@
 
 import Foundation
 
-struct MemberLoginRequest : Codable{
+struct MemberSignupRequest : Codable{
     let email : String
+    let name : String
     let password : String
-    let fcmToken : String
 }

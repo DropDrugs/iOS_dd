@@ -5,9 +5,12 @@ import Moya
 import KeychainSwift
 
 extension SignUpVC {
-    
-    func callSignUpAPI(_ userParameter: UserRegisterRequest, completion: @escaping (Bool) -> Void) {
-        print(userParameter)
+
+    func setupSignUpDTO(_ emailString: String, _ pwString: String, name : String) -> MemberSignupRequest {
+        return MemberSignupRequest(email: emailString, name: name, password: pwString)
+    }
+
+    func callSignUpAPI(_ userParameter: MemberSignupRequest, completion: @escaping (Bool) -> Void) {
         provider.request(.postRegister(param: userParameter)) { result in
             switch result {
             case .success(let response):
@@ -28,7 +31,12 @@ extension SignUpVC {
 }
 
 extension LoginVC {
-    func callLoginAPI(_ userParameter: UserLoginRequest, completion: @escaping (Bool) -> Void) {
+    func setupLoginDTO(_ emailString: String, _ pwString: String) -> MemberLoginRequest? {
+        guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
+        return MemberLoginRequest(email: emailString, password: pwString, fcmToken: fcmToken)
+    }
+    
+    func callLoginAPI(_ userParameter: MemberLoginRequest, completion: @escaping (Bool) -> Void) {
         provider.request(.postLogin(param: userParameter)) { result in
             switch result {
             case .success(let response):

@@ -6,7 +6,7 @@ import SnapKit
 class SelectDrugTypeVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     private var collectionView: UICollectionView!
-    
+    // TODO : 이미지 에셋 추가
     let categories = [
         ("알약", "OB1"),
         ("물약", "OB1"),
@@ -15,26 +15,20 @@ class SelectDrugTypeVC : UIViewController, UICollectionViewDataSource, UICollect
         ("연고", "OB1"),
         ("기타", "OB1")
     ]
-
-    private lazy var backButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "chevron.left")?.withTintColor(UIColor(named: "gray500") ?? .systemGray , renderingMode: .alwaysOriginal), for: .normal)
-        button.setTitle("  의약품 드롭하기", for: .normal) // 필요시 제목 설정
-        button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 24)
-        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+    
+    private lazy var backButton: CustomBackButton = {
+        let button = CustomBackButton(title: "  종류 선택")
+        button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         return button
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.hidesBackButton = true
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         setupView()
     }
     
     private func setupView() {
-        view.addSubview(backButton)
         view.backgroundColor = .white
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
@@ -47,13 +41,9 @@ class SelectDrugTypeVC : UIViewController, UICollectionViewDataSource, UICollect
         view.addSubview(collectionView)
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(backButton.snp.bottom)
+            make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide)
-        }
-        
-        backButton.snp.makeConstraints { make in
-            make.left.top.equalTo(view.safeAreaLayoutGuide).offset(16)
         }
     }
     
@@ -141,7 +131,7 @@ class SelectDrugTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     }
     
     // MARK: Actions
-    @objc private func backButtonTapped() {
+    @objc private func didTapBackButton() {
         navigationController?.popViewController(animated: true)
     }
     
