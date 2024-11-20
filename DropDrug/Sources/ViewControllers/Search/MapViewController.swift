@@ -50,7 +50,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
         sender.isSelected.toggle()
         
         if sender.isSelected {
-            sender.setImage(UIImage(named: "selectOffice")?.withRenderingMode(.alwaysOriginal), for: .selected)
+            sender.setImage(UIImage(named: "ySelectOffice")?.withRenderingMode(.alwaysOriginal), for: .selected)
             sender.backgroundColor = Constants.Colors.skyblue
             sender.setTitleColor(.white, for: .normal)
             // 동사무소만 마커 띄움
@@ -77,7 +77,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
         sender.isSelected.toggle()
         
         if sender.isSelected {
-            sender.setImage(UIImage(named: "selectMail")?.withRenderingMode(.alwaysOriginal), for: .selected)
+            sender.setImage(UIImage(named: "ySelectMail")?.withRenderingMode(.alwaysOriginal), for: .selected)
             sender.backgroundColor = Constants.Colors.pink
             sender.setTitleColor(.white, for: .normal)
             // 동사무소만 마커 띄움
@@ -103,7 +103,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
         sender.isSelected.toggle()
         
         if sender.isSelected {
-            sender.setImage(UIImage(named: "selectPharm")?.withRenderingMode(.alwaysOriginal), for: .selected)
+            sender.setImage(UIImage(named: "ySelectPharm")?.withRenderingMode(.alwaysOriginal), for: .selected)
             sender.backgroundColor = UIColor(hex: "#FFE23F")
             sender.setTitleColor(.white, for: .normal)
             // 동사무소만 마커 띄움
