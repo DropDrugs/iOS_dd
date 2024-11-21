@@ -326,32 +326,51 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                 print("Error: Nonce is missing.")
                 return
             }
+            
             guard let appleIDToken = appleIDCredential.identityToken else {
                 print("Error: Unable to fetch identity token.")
                 return
             }
+            
             guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
                 print("Error: Unable to serialize token string.")
                 return
             }
-
-            guard let fullName = appleIDCredential.fullName else {
-                print("Unable to fetch full name")
-                return
-            }
-            SelectLoginTypeVC.keychain.set(appleIDToken, forKey: "appleUserIDToken")
+            SelectLoginTypeVC.keychain.set(idTokenString, forKey: "appleUserIDToken")
             
-            if let givenName = fullName.givenName, let familyName = fullName.familyName {
-                let completeName = "\(givenName) \(familyName)"
-                SelectLoginTypeVC.keychain.set(completeName, forKey: "appleUserfullName")
-                print("Saved fullName: \(completeName)")
-            } else {
-                print("No full name provided.")
+            var fullNameToUse: PersonNameComponents? = nil
+
+            if let fullName = appleIDCredential.fullName {
+                fullNameToUse = fullName
+                if let givenName = fullName.givenName, let familyName = fullName.familyName {
+                    let completeName = "\(givenName) \(familyName)"
+                    SelectLoginTypeVC.keychain.set(completeName, forKey: "appleUserFullName")
+                    print("Saved fullName: \(completeName)")
+                }
             }
             
-            print("idTokenString : \(idTokenString)")
-
-            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: fullName)
+            if let savedFullName = SelectLoginTypeVC.keychain.get("appleUserFullName") {
+                print("무조건 진입아님?\(SelectLoginTypeVC.keychain.get("appleUserFullName"))")
+                
+                var nameComponents = PersonNameComponents()
+                let nameParts = savedFullName.split(separator: " ")
+                if nameParts.count > 1 {
+                    nameComponents.givenName = String(nameParts[0])
+                    nameComponents.familyName = String(nameParts[1])
+                } else {
+                    nameComponents.givenName = savedFullName
+                }
+                fullNameToUse = nameComponents
+                print("Fetched saved fullName from Keychain: \(savedFullName)")
+            }
+            
+            print("idTokenString")
+            print(idTokenString)
+            print("nonce")
+            print(nonce)
+            print(fullNameToUse ?? "nil")
+            
+            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: fullNameToUse!)
             
             Auth.auth().signIn(with: credential) { authResult, error in
                 if let error = error {
