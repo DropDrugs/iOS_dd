@@ -8,6 +8,7 @@ import KeychainSwift
 class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let provider = MoyaProvider<MemberAPI>(plugins: [NetworkLoggerPlugin()])
+    let Authprovider = MoyaProvider<LoginService>(plugins: [NetworkLoggerPlugin(), BearerTokenPlugin()])
     
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  계정 관리")
@@ -16,7 +17,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     }()
     
     let tableView = UITableView()
-    private let accountOptions = ["닉네임", "아이디", "비밀번호 변경", "캐릭터 변경", "로그아웃","계정 삭제"]
+    private let accountOptions = ["닉네임", "아이디", "비밀번호 변경", "캐릭터 변경", "로그아웃", "계정 삭제"]
     
     // 가상 데이터
     var nickname: String = "김드롭"
@@ -112,7 +113,17 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
             // TODO: 계정 삭제 api
-            print("계정 삭제 처리")
+            print("계정 삭제 처리 진입")
+            self.callQuit { isSuccess in
+                if isSuccess {
+                    print("계정 삭제 완료")
+                    self.goToSplashScreen()
+                } else {
+                    print("계정 삭제 실패 - 다시 시도해주세요")
+                }
+            }
+            
+            
         }))
         present(alert, animated: true, completion: nil)
     }
@@ -123,18 +134,17 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     }
     
     @objc func logoutButtonTapped() {
-        let keychain = KeychainSwift()
-        guard let accessToken = keychain.get("serverAccessToken") else {
+        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
             print("Access Token 없음")
             return
         }
-        let provider = MoyaProvider<LoginService>()
-        provider.request(.postLogOut(accessToken: accessToken)) { result in
+        
+        Authprovider.request(.postLogOut(accessToken: accessToken)) { result in
             switch result {
             case .success(let response):
                 print("로그아웃 성공")
-                keychain.delete("serverAccessToken")
-                keychain.delete("serverRefreshToken")
+                SelectLoginTypeVC.keychain.delete("serverAccessToken")
+                SelectLoginTypeVC.keychain.delete("serverRefreshToken")
                 print("로그아웃 처리")
                 self.navigateToSplashScreen()
             case .failure(let error):
@@ -143,9 +153,34 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         }
     }
     
+    func callQuit(completion: @escaping (Bool) -> Void) {
+        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
+            print("Access Token 없음")
+            return
+        }
+        Authprovider.request(.postQuit(token: accessToken)) { result in
+            switch result {
+            case .success(let response) :
+                SelectLoginTypeVC.keychain.clear()
+                completion(true)
+            case .failure(let error) :
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
+                completion(false)
+            }
+        }
+    }
+    
     private func navigateToSplashScreen() {
         let SplashVC = SplashVC()
         SplashVC.modalPresentationStyle = .fullScreen
         present(SplashVC, animated: true)
+    }
+    
+    private func goToSplashScreen() {
+        let SplashVC = SplashVC()
+        self.navigationController?.pushViewController(SplashVC, animated: true)
     }
 }
