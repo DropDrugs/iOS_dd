@@ -92,6 +92,7 @@ class HomeView: UIView {
         attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
         attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
         b.setAttributedTitle(attributedString, for: .normal)
+        b.titleLabel?.lineBreakMode = .byClipping
         return b
     }()
     
@@ -185,7 +186,7 @@ class HomeView: UIView {
             make.top.equalTo(appTitle.snp.bottom).offset(28)
             make.leading.equalTo(appTitle.snp.leading)
             make.height.equalTo(40)
-            make.width.equalTo(127)
+            make.width.equalTo(calculateButtonWidth(name: name))
         }
         
         point.snp.makeConstraints { make in
@@ -232,6 +233,22 @@ class HomeView: UIView {
             make.top.equalTo(presLoca.snp.bottom).offset(14)
             make.leading.equalTo(presLoca.snp.leading)
         }
+    }
+    
+    func calculateButtonWidth(name: String) -> CGFloat {
+        // 이름 길이 계산
+        let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
+        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+
+        let textSize = attributedString.boundingRect(
+            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            context: nil
+        ).size
+
+        // 텍스트 패딩 추가
+        return textSize.width + 40
     }
     
     public func updateStarter() {
