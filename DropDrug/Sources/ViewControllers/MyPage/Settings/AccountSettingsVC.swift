@@ -112,12 +112,10 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         let alert = UIAlertController(title: "계정 삭제", message: "계정을 정말 삭제하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
-            // TODO: 계정 삭제 api
-            print("계정 삭제 처리 진입")
             self.callQuit { isSuccess in
                 if isSuccess {
                     print("계정 삭제 완료")
-                    self.goToSplashScreen()
+                    self.showSplashScreen()
                 } else {
                     print("계정 삭제 실패 - 다시 시도해주세요")
                 }
@@ -179,8 +177,20 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         present(SplashVC, animated: true)
     }
     
-    private func goToSplashScreen() {
-        let SplashVC = SplashVC()
-        self.navigationController?.pushViewController(SplashVC, animated: true)
+    private func showSplashScreen() {
+        let splashViewController = SplashVC()
+
+        // 현재 윈도우 가져오기
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first?.windows
+            .first else {
+            print("윈도우를 가져올 수 없습니다.")
+            return
+        }
+
+        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = splashViewController
+        }, completion: nil)
     }
 }
