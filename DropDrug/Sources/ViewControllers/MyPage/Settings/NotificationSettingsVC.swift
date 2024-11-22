@@ -41,6 +41,7 @@ class NotificationSettingsVC: UIViewController {
         tableView.delegate = self
         tableView.rowHeight = 60
         tableView.separatorStyle = .none
+        tableView.isScrollEnabled = false
         tableView.register(NotificationOptionCell.self, forCellReuseIdentifier: "NotificationOptionCell")
         view.addSubview(tableView)
         
