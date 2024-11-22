@@ -350,7 +350,6 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
             }
             
             if let savedFullName = SelectLoginTypeVC.keychain.get("appleUserFullName") {
-                print("무조건 진입아님?\(SelectLoginTypeVC.keychain.get("appleUserFullName"))")
                 
                 var nameComponents = PersonNameComponents()
                 let nameParts = savedFullName.split(separator: " ")
@@ -361,16 +360,20 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                     nameComponents.givenName = savedFullName
                 }
                 fullNameToUse = nameComponents
-                print("Fetched saved fullName from Keychain: \(savedFullName)")
+//                print("Fetched saved fullName from Keychain: \(savedFullName)")
             }
             
-            print("idTokenString")
-            print(idTokenString)
-            print("nonce")
-            print(nonce)
-            print(fullNameToUse ?? "nil")
+            print("idTokenString: \(idTokenString)")
+            print("nonce: \(nonce)")
+            if let fullName = fullNameToUse {
+                print("fullNameToUse - givenName: \(fullName.givenName ?? "nil"), familyName: \(fullName.familyName ?? "nil")")
+            } else {
+                print("fullNameToUse is nil")
+            }
             
-            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: fullNameToUse!)
+            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString,
+                                                           rawNonce: nonce,
+                                                           fullName: fullNameToUse)
             
             Auth.auth().signIn(with: credential) { authResult, error in
                 if let error = error {
@@ -390,7 +393,6 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                     }
                 }
             }
-            
         default:
             print("Error: Unsupported credential type.")
             break
@@ -399,7 +401,6 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        // Handle error.
         print("Sign in with Apple errored: \(error)")
     }
     
