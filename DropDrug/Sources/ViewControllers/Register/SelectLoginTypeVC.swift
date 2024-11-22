@@ -322,6 +322,7 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
+            // nonce 검사
             guard let nonce = currentNonce else {
                 print("Error: Nonce is missing.")
                 return
@@ -332,6 +333,7 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                 return
             }
             
+            // 애플 id 토큰 검사
             guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
                 print("Error: Unable to serialize token string.")
                 return
@@ -359,12 +361,15 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                 } else {
                     nameComponents.givenName = savedFullName
                 }
-                fullNameToUse = nameComponents
+                if nameComponents.familyName != nil && nameComponents.givenName != nil {
+                    fullNameToUse = nameComponents
+                }
 //                print("Fetched saved fullName from Keychain: \(savedFullName)")
             }
+//            
+//            print("idTokenString: \(idTokenString)")
+//            print("nonce: \(nonce)")
             
-            print("idTokenString: \(idTokenString)")
-            print("nonce: \(nonce)")
             if let fullName = fullNameToUse {
                 print("fullNameToUse - givenName: \(fullName.givenName ?? "nil"), familyName: \(fullName.familyName ?? "nil")")
             } else {
