@@ -1,0 +1,160 @@
+// Copyright © 2024 RT4. All rights reserved
+
+import UIKit
+import SnapKit
+
+class PrescriptionDrugVC: UIViewController {
+    //TODO: api 연결 시 따로 빼기
+    struct PrescriptionDrug {
+        let date: String
+        let duration: String
+    }
+    
+    var drugs: [PrescriptionDrug] = []
+    
+    // MARK: - UI Elements
+    private lazy var logoLabelView: UILabel = {
+        let label = UILabel()
+        label.text = "DropDrug"
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = UIFont.roRegularFont(ofSize: 26)
+        label.textColor = Constants.Colors.skyblue
+        return label
+    }()
+    
+    private var addDrugView = AddDrugView()
+    
+    public lazy var registeredDrugLabel: UILabel = {
+        let label = UILabel()
+        label.text = "등록된 의약품"
+        label.textColor = Constants.Colors.gray900
+        label.textAlignment = .left
+        label.font = UIFont.ptdSemiBoldFont(ofSize: 17)
+        return label
+    }()
+    
+    private lazy var discardButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "trash.fill")?.withTintColor(Constants.Colors.gray500 ?? .systemGray , renderingMode: .alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(discardButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var drugsTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.register(PrescriptionDrugCell.self, forCellReuseIdentifier: PrescriptionDrugCell.identifier)
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.separatorStyle = .none
+        return tableView
+    }()
+    
+    // MARK: - Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        
+        if navigationController == nil {
+            let navigationController = UINavigationController(rootViewController: self)
+            navigationController.modalPresentationStyle = .fullScreen
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                keyWindow.rootViewController?.present(navigationController, animated: true)
+            }
+        }
+        
+        self.navigationController?.isNavigationBarHidden = true
+        
+        drugs = [
+                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
+                PrescriptionDrug(date: "23/05/01", duration: "3일치"),
+                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
+                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
+                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
+                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
+                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
+                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
+                PrescriptionDrug(date: "23/06/15", duration: "7일치")
+            ]
+        drugsTableView.reloadData()
+        setupView()
+        setConstraints()
+        setupGestures()
+    }
+    
+    // MARK: - Setup Methods
+    
+    func setupView() {
+        [logoLabelView, addDrugView, registeredDrugLabel, discardButton, drugsTableView].forEach {
+            view.addSubview($0)
+        }
+    }
+    
+    func setConstraints() {
+        logoLabelView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+            make.leading.equalToSuperview().inset(20)
+        }
+        addDrugView.snp.makeConstraints { make in
+            make.top.equalTo(logoLabelView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(superViewHeight * 0.25)
+        }
+        registeredDrugLabel.snp.makeConstraints { make in
+            make.top.equalTo(addDrugView.snp.bottom).offset(20)
+            make.leading.equalToSuperview().inset(20)
+        }
+        discardButton.snp.makeConstraints { make in
+            make.centerY.equalTo(registeredDrugLabel)
+            make.width.height.equalTo(50)
+            make.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+        drugsTableView.snp.makeConstraints { make in
+            make.top.equalTo(registeredDrugLabel.snp.bottom).offset(20)
+            make.bottom.leading.trailing.equalToSuperview()
+        }
+    }
+    
+    func setupGestures() {
+        let addDrugTapGesture = UITapGestureRecognizer(target: self, action: #selector(addDrugViewTapped))
+        addDrugView.addGestureRecognizer(addDrugTapGesture)
+        addDrugView.isUserInteractionEnabled = true
+    }
+    
+    // MARK: - Actions
+    
+    @objc func addDrugViewTapped() {
+        //TODO: 약 등록하기 VC로 연결
+        self.navigationController?.isNavigationBarHidden = false
+        let testVC = TestVC()
+        navigationController?.pushViewController(testVC, animated: false)
+    }
+    
+    @objc func discardButtonTapped(){
+        self.navigationController?.isNavigationBarHidden = false
+        let DiscardPrescriptionDrugVC = DiscardPrescriptionDrugVC()
+        navigationController?.pushViewController(DiscardPrescriptionDrugVC, animated: false)
+    }
+}
+
+
+
+// MARK: - UITableViewDataSource & UITableViewDelegate
+
+extension PrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return drugs.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PrescriptionDrugCell.identifier, for: indexPath) as? PrescriptionDrugCell else {
+            return UITableViewCell()
+        }
+        let drug = drugs[indexPath.row]
+        cell.configure(date: drug.date, duration: drug.duration)
+        cell.selectionStyle = .none
+        return cell
+    }
+}

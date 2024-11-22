@@ -33,7 +33,6 @@ class RewardView: UIView {
     
     private let gradientLayer = CAGradientLayer()
     
-    /// Property to control chevron visibility
     var isChevronHidden: Bool = false {
         didSet {
             chevronImageView.isHidden = isChevronHidden

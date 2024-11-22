@@ -144,7 +144,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 SelectLoginTypeVC.keychain.delete("serverAccessToken")
                 SelectLoginTypeVC.keychain.delete("serverRefreshToken")
                 print("로그아웃 처리")
-                self.navigateToSplashScreen()
+                self.showSplashScreen()
             case .failure(let error):
                 print("로그아웃 요청 실패: \(error.localizedDescription)")
             }
@@ -169,12 +169,6 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 completion(false)
             }
         }
-    }
-    
-    private func navigateToSplashScreen() {
-        let SplashVC = SplashVC()
-        SplashVC.modalPresentationStyle = .fullScreen
-        present(SplashVC, animated: true)
     }
     
     private func showSplashScreen() {
