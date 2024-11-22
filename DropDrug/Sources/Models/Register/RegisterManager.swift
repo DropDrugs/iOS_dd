@@ -91,4 +91,28 @@ extension SelectLoginTypeVC {
             }
         }
     }
+    
+    func setupAppleDTO(_ idToken: String) -> OAuthAppleLoginRequest? {
+        guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
+        return OAuthAppleLoginRequest(fcmToken: fcmToken, idToken: idToken)
+    }
+    func callAppleLoginAPI(param : OAuthAppleLoginRequest, completion: @escaping (Bool) -> Void) {
+        provider.request(.postAppleLogin(param: param)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let data = try response.map(TokenDto.self)
+                    SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
+                    SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    completion(true)
+                } catch {
+                    print("Failed to map data : \(error)")
+                    completion(false)
+                }
+            case .failure(let error) :
+                print("Request failed: \(error.localizedDescription)")
+                completion(false)
+            }
+        }
+    }
 }
