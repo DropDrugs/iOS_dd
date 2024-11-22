@@ -5,14 +5,14 @@ import Moya
 
 extension RewardVC {
     func fetchPoint(completion: @escaping (Bool) -> Void) {
-        PointProvider.request(.getPoint) { result in
+        PointProvider.request(.getPointHistory) { result in
             switch result {
             case .success(let response):
                 do {
                     // JSON 디코딩
-                    let data = try response.map(PointResponse.self)
+                    let data = try response.map(PointHistoryResponse.self)
                     DispatchQueue.main.async {
-                        self.rewardView.pointsLabel.text = "\(data.point) P"
+                        self.rewardView.pointsLabel.text = "\(data.totalPoint) P"
                     }
                 } catch {
                     print("JSON 파싱 에러: \(error)")

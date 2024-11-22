@@ -6,7 +6,7 @@ import KeychainSwift
 
 enum PointAPI {
     case getPoint
-    case postPoint
+    case postPoint(param: AddPointRequest)
     case getPointHistory
     case getMonthlyStats
 }
@@ -24,7 +24,7 @@ extension PointAPI: TargetType {
         case .getPoint:
             return "points"
         case .postPoint:
-            return "members/notification"
+            return "points"
         case .getPointHistory:
             return "points/history"
         case .getMonthlyStats:
@@ -45,8 +45,8 @@ extension PointAPI: TargetType {
         switch self {
         case .getPoint:
             return .requestPlain
-        case .postPoint:
-            return .requestPlain
+        case .postPoint(let param):
+            return .requestJSONEncodable(param)
         case .getPointHistory:
             return .requestPlain
         case .getMonthlyStats:
