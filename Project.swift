@@ -84,6 +84,8 @@ let project = Project(
 //                .external(name: "FirebaseAnalytics"),
                 
                 .external(name: "NaverMapSDK"),
+                .external(name: "SDWebImage"),
+                .external(name: "Toast")
 //                .external(name: "GoogleSignIn"),
 //                .external(name: "NMapsGeometry"),
 //                .external(name: "NMapsMap")
