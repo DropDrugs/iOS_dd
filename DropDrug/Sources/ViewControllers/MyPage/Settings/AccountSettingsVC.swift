@@ -17,7 +17,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     }()
     
     let tableView = UITableView()
-    private let accountOptions = ["닉네임", "아이디", "비밀번호 변경", "캐릭터 변경", "로그아웃", "계정 삭제"]
+    private let accountOptions = ["닉네임", "아이디", /*"비밀번호 변경",*/ "캐릭터 변경", "로그아웃", "계정 삭제"]
     
     // 가상 데이터
     var nickname: String = "김드롭"
@@ -27,7 +27,13 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         setupView()
-        fetchMemberInfo()
+        fetchMemberInfo { isSucess in
+            if isSucess {
+                self.tableView.reloadData()
+            } else {
+                // 토스트 메세지 띄워서 에러 알려주기
+            }
+        }
     }
     
     private func setupView() {
@@ -78,8 +84,8 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             switch accountOptions[indexPath.row] {
-            case "비밀번호 변경":
-                print("비밀번호 변경 화면 이동")
+//            case "비밀번호 변경":
+//                print("비밀번호 변경 화면 이동")
             case "캐릭터 변경":
                 navigationController?.pushViewController(CharacterSettingsVC(), animated: true)
             case "로그아웃":

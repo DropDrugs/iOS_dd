@@ -7,6 +7,10 @@ struct Constants {
         static let baseURL = "http://54.180.45.153:8080/"
     }
     
+    struct AllCharacter {
+        static var allCharCount = 12
+    }
+    
     static let seoulDistrictsList: [DistrictsDataModel] = [
             DistrictsDataModel(name: "강남구", image: "강남구", url: "https://www.gangnam.go.kr/board/waste/list.do?mid=ID02_011109#collapse21"),
             DistrictsDataModel(name: "강동구", image: "강동구", url: "https://www.gangdong.go.kr/web/newportal/contents/gdp_005_004_010_001"),
@@ -65,4 +69,5 @@ struct Constants {
         static let red = UIColor(named: "red")
         static let skyblue = UIColor(named: "skyblue")
     }
+    
 }

@@ -2,8 +2,11 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class MyPageVC : UIViewController {
+    
+    let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -21,8 +24,8 @@ class MyPageVC : UIViewController {
         return button
     }()
     
-    private let myPageProfileView = ProfileView()
-    private let rewardView = RewardView()
+    let myPageProfileView = ProfileView()
+    let rewardView = RewardView()
     private let dropCardLabel = SubLabelView()
     private let disposalStateLabel = SubLabelView()
     
@@ -55,6 +58,13 @@ class MyPageVC : UIViewController {
         view.backgroundColor = .white
         [titleLabel, settingButton, myPageProfileView, rewardView, dropCardLabel, disposalStateLabel].forEach {
             view.addSubview($0)
+        }
+        fetchMemberInfo { success in
+            if success {
+                print("Profile updated successfully")
+            } else {
+                print("Failed to update profile")
+            }
         }
     }
     

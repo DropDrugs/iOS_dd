@@ -7,7 +7,7 @@ import MapKit
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
-    let provider = MoyaProvider<HomeAPI>(plugins: [ BearerTokenPlugin() ])
+    let provider = MoyaProvider<HomeAPI>(plugins: [ BearerTokenPlugin(), NetworkLoggerPlugin() ])
     
     var selectedCharacterNum: Int = 0
     
