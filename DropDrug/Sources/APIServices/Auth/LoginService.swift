@@ -12,6 +12,7 @@ enum LoginService {
     // SNS 로그인
     case postGoogleLogin(param: OAuthSocialLoginRequest)
     case postKakaoLogin(param: OAuthSocialLoginRequest)
+    case postAppleLogin(param: OAuthAppleLoginRequest)
     
     // 기타
     case postLogOut(accessToken: String)
@@ -32,6 +33,7 @@ extension LoginService: TargetType {
         case .postRegister: return "auth/signup/pw"
         case .postKakaoLogin: return "auth/login/kakao"
         case .postGoogleLogin: return "auth/login/google"
+        case .postAppleLogin: return "auth/login/apple"
         case .postLogOut: return "auth/logout"
         case .postQuit: return "auth/quit"
         }
@@ -50,6 +52,8 @@ extension LoginService: TargetType {
         case .postGoogleLogin(let param) :
             return .requestJSONEncodable(param)
         case .postKakaoLogin(let param) :
+            return .requestJSONEncodable(param)
+        case .postAppleLogin(let param) :
             return .requestJSONEncodable(param)
         case .postLogOut(let accessToken) :
             return .requestParameters(parameters: ["accessToken": accessToken], encoding: JSONEncoding.default)
