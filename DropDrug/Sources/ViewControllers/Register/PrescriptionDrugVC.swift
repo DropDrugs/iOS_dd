@@ -128,8 +128,8 @@ class PrescriptionDrugVC: UIViewController {
     @objc func addDrugViewTapped() {
         //TODO: 약 등록하기 VC로 연결
         self.navigationController?.isNavigationBarHidden = false
-        let testVC = TestVC()
-        navigationController?.pushViewController(testVC, animated: false)
+        let detailVC = EnrollDetailViewController()
+        navigationController?.pushViewController(detailVC, animated: false)
     }
     
     @objc func discardButtonTapped(){

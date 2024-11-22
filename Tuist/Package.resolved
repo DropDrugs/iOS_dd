@@ -1,5 +1,5 @@
 {
-  "originHash" : "a9835bfeadab6fd8ffe9413aeeaebfe62a8c6e97d150bc2588394d03b2787418",
+  "originHash" : "4915c3f1fbbee0cd346a03a9c751be644eaf01b58bc4cd5c10c66a327a2130b8",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -191,6 +191,15 @@
       }
     },
     {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage.git",
+      "state" : {
+        "revision" : "10d06f6a33bafae8c164fbfd1f03391f6d4692b3",
+        "version" : "5.20.0"
+      }
+    },
+    {
       "identity" : "snapkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SnapKit/SnapKit.git",
@@ -206,6 +215,15 @@
       "state" : {
         "revision" : "ebc7251dd5b37f627c93698e4374084d98409633",
         "version" : "1.28.2"
+      }
+    },
+    {
+      "identity" : "toast-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scalessec/Toast-Swift.git",
+      "state" : {
+        "revision" : "ddccd20d6fb718448d9b179c454c561653fda7d5",
+        "version" : "5.1.1"
       }
     }
   ],
