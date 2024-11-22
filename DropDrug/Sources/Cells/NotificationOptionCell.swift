@@ -12,6 +12,10 @@ class NotificationOptionCell: UITableViewCell {
         titleLabel.text = title
         toggleSwitch.isOn = isSwitchOn
         toggleSwitch.isEnabled = isSwitchEnabled
+        
+        toggleSwitch.onTintColor = Constants.Colors.skyblue // 켜졌을 때 배경색
+        toggleSwitch.thumbTintColor = UIColor.white
+        
         toggleAction = onToggle
 
         toggleSwitch.removeTarget(self, action: #selector(handleToggle(_:)), for: .valueChanged)

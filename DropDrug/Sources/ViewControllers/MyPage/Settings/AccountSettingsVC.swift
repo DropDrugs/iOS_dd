@@ -46,6 +46,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         tableView.register(AccountOptionCell.self, forCellReuseIdentifier: "AccountOptionCell")
         tableView.separatorStyle = .none
         tableView.backgroundColor = .white
+        tableView.isScrollEnabled = false
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
