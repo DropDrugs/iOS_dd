@@ -32,7 +32,6 @@ class PrescriptionDrugCell: UITableViewCell {
         contentView.addSubview(stackView)
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(20)
-//            make.leading.trailing.equalToSuperview()
         }
     }
     

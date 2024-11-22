@@ -50,7 +50,7 @@ extension LoginVC {
                     completion(true)
                 } catch {
                     print("Failed to map data : \(error)")
-                    completion(false)
+                     
                 }
             case .failure(let error) :
                 print("Error: \(error.localizedDescription)")
@@ -64,11 +64,10 @@ extension LoginVC {
 }
 
 extension SelectLoginTypeVC {
-    func setupSocialLoginDTO() -> OAuthSocialLoginRequest? {
+    func setupKakaoLoginDTO() -> OAuthSocialLoginRequest? {
         guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
-        
         guard let accessToken = SelectLoginTypeVC.keychain.get("KakaoAccessToken") else { return nil }
-        guard let idToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
+        guard let idToken = SelectLoginTypeVC.keychain.get("KakaoIdToken") else { return nil }
         return OAuthSocialLoginRequest(accessToken: accessToken, fcmToken: fcmToken, idToken: idToken)
     }
     

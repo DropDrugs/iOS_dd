@@ -2,15 +2,19 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class RewardVC : UIViewController {
+    
+    let PointProvider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  리워드 내역")
         button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         return button
     }()
     
-    private let rewardView: RewardView = {
+    let rewardView: RewardView = {
             let view = RewardView()
             view.isChevronHidden = true
             return view
@@ -27,6 +31,13 @@ class RewardVC : UIViewController {
         view.backgroundColor = .white
         [rewardView].forEach {
             view.addSubview($0)
+        }
+        fetchPoint { success in
+            if success {
+                print("Profile updated successfully")
+            } else {
+                print("Failed to update profile")
+            }
         }
     }
     

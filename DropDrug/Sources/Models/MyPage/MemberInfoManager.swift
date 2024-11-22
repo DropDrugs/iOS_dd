@@ -1,10 +1,10 @@
 // Copyright © 2024 RT4. All rights reserved
 
-import UIKit
+import Foundation
 import Moya
 
 extension AccountSettingsVC {
-    func fetchMemberInfo() {
+    func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
         provider.request(.fetchMemberInfo) { result in
             switch result {
             case .success(let response):
@@ -12,55 +12,61 @@ extension AccountSettingsVC {
                     let data = try response.map(MemberInfo.self)
                     self.nickname = data.nickname
                     self.userId = data.email
+                    completion(true)
+                } catch {
+                    completion(false)
+                }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
+                completion(false)
+            }
+        }
+    }
+}
+
+extension MyPageVC {
+    func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
+        MemberProvider.request(.fetchMemberInfo) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let data = try response.map(MemberInfo.self)
                     DispatchQueue.main.async {
-                        self.tableView.reloadData()
+                        self.myPageProfileView.nameLabel.text = data.nickname
+                        self.myPageProfileView.emailLabel.text = data.email
+                        self.rewardView.pointsLabel.text = "\(data.point) P"
                     }
+                    completion(true)
                 } catch {
-                    print("JSON 파싱 에러: \(error)")
+                    completion(false)
                 }
             case .failure(let error):
-                print("네트워크 에러: \(error.localizedDescription)")
+                completion(false)
             }
         }
     }
 }
 
-extension ProfileView {
-    // TODO: 프로필 캐릭터 parsing 후 적용
-    func fetchMemberInfo() {
-        provider.request(.fetchMemberInfo) { result in
+extension CharacterSettingsVC {
+    func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
+        MemberProvider.request(.fetchMemberInfo) { result in
             switch result {
             case .success(let response):
                 do {
                     let data = try response.map(MemberInfo.self)
-                    self.nameLabel.text = data.nickname
-                    self.emailLabel.text = data.email
+                    DispatchQueue.main.async {
+                        self.ownedCharCount = data.ownedChars.count
+                    }
+                    completion(true)
                 } catch {
-                    print("JSON 파싱 에러: \(error)")
+                    completion(false)
                 }
             case .failure(let error):
-                print("네트워크 에러: \(error.localizedDescription)")
+                completion(false)
             }
         }
     }
 }
-
-extension RewardView {
-    // TODO: point Controller 로 변경
-    func fetchMemberInfo() {
-        provider.request(.fetchMemberInfo) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let data = try response.map(MemberInfo.self)
-                    self.pointsLabel.text = "\(data.point) P"
-                } catch {
-                    print("JSON 파싱 에러: \(error)")
-                }
-            case .failure(let error):
-                print("네트워크 에러: \(error.localizedDescription)")
-            }
-        }
-    }
-}
-

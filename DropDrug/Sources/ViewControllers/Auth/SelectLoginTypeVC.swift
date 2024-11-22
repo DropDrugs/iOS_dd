@@ -193,7 +193,7 @@ class SelectLoginTypeVC : UIViewController {
                             print("사용자 정보 없음")
                             return
                         }
-                        if let loginRequest = self.setupSocialLoginDTO() {
+                        if let loginRequest = self.setupKakaoLoginDTO() {
                             self.callKakaoLoginAPI(loginRequest) { isSuccess in
                                 if isSuccess {
                                     self.handleKakaoLoginSuccess()
