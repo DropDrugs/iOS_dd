@@ -10,5 +10,6 @@ struct OAuthSocialLoginRequest : Codable{
 
 struct OAuthAppleLoginRequest : Codable{
     let fcmToken : String
-    let idToken : String
+    let name : String
+    let email : String
 }
