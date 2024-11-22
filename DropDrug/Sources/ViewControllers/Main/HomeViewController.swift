@@ -21,7 +21,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         configureMapView()
         
         navigationController?.navigationBar.isHidden = true
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         getHomeInfo { [weak self] isSuccess in
             if isSuccess {
                 DispatchQueue.main.async {
@@ -32,8 +35,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 print("GET 호출 실패")
             }
         }
+        
     }
-    
     private let homeView: HomeView = {
         let hv = HomeView()
         hv.resetBtn.addTarget(self, action: #selector(resetBtnTapped), for: .touchUpInside)

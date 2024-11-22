@@ -64,14 +64,6 @@ extension MemberAPI: TargetType {
     }
     
     var headers: [String: String]? {
-        let keychain = KeychainSwift()
-        if let accessToken = keychain.get("serverRefreshToken") {
-            return [
-                "Authorization": "Bearer \(accessToken)",
-                "Accept": "*/*",
-                "Content-Type": "application/json"
-            ]
-        }
-        return ["Accept": "*/*"]
+        return ["Content-Type": "application/json"]
     }
 }

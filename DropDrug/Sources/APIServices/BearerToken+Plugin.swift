@@ -5,7 +5,7 @@ import Moya
 
 final class BearerTokenPlugin: PluginType {
     private var accessToken: String? {
-        return SelectLoginTypeVC.keychain.get("serverRefreshToken")
+        return SelectLoginTypeVC.keychain.get("serverAccessToken")
     }
 
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {

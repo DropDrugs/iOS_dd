@@ -6,7 +6,7 @@ import Moya
 
 class RewardView: UIView {
     
-    let provider = MoyaProvider<MemberAPI>(plugins: [NetworkLoggerPlugin()])
+    let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     private let rewardLabel: UILabel = {
         let label = UILabel()

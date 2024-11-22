@@ -6,7 +6,7 @@ import Moya
 
 class ProfileView: UIView {
 
-    let provider = MoyaProvider<MemberAPI>(plugins: [NetworkLoggerPlugin()])
+    let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     // MARK: - UI Components
     let profileImageView: UIImageView = {

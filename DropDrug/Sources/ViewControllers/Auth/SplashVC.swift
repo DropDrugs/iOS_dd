@@ -23,27 +23,14 @@ class SplashVC : UIViewController {
         setConstraints()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.checkAuthenticationStatus()
-//            self.navigateToMainScreen()
         }
     }
     
     private func checkAuthenticationStatus() {
-        let keychain = KeychainSwift()
-
-        if let accessToken = keychain.get("serverAccessToken"),
-           let refreshToken = keychain.get("serverRefreshToken") {
+        if let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken")
+        {
             print("Access Token 존재: \(accessToken)")
             navigateToMainScreen()
-//        } else if let refreshToken = keychain.get("serverRefreshToken") {
-//            print("Access Token 없음. Refresh Token 존재.")
-//            refreshAccessToken(refreshToken: refreshToken) { success in
-//                if success {
-//                    self?.navigateToMainScreen()
-//                } else {
-//                    print("Refresh Token 갱신 실패.")
-//                    self?.navigateToOnBoaringScreen()
-//                }
-//            }
         } else {
             print("토큰 없음. 로그인 화면으로 이동.")
             navigateToOnBoaringScreen()
@@ -53,7 +40,6 @@ class SplashVC : UIViewController {
     func setupViews() {
         view.backgroundColor = Constants.Colors.skyblue
         view.addSubview(titleLabel)
-        
     }
     
     func navigateToMainScreen() {

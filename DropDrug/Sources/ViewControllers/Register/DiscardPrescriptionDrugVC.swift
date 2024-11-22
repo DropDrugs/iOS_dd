@@ -4,7 +4,6 @@ import UIKit
 import SnapKit
 
 class DiscardPrescriptionDrugVC: UIViewController {
-    
     // MARK: - UI Elements
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  의약품 삭제하기")
@@ -26,7 +25,8 @@ class DiscardPrescriptionDrugVC: UIViewController {
         button.setTitle("삭제하기", for: .normal)
         button.backgroundColor = Constants.Colors.skyblue
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = 25
+        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         button.addTarget(self, action: #selector(didTapCompleteButton), for: .touchUpInside)
         return button
     }()
@@ -65,7 +65,6 @@ class DiscardPrescriptionDrugVC: UIViewController {
             make.left.right.equalToSuperview().inset(16)
             make.bottom.equalTo(completeButton.snp.top).offset(-16)
         }
-        
         completeButton.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(16)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
