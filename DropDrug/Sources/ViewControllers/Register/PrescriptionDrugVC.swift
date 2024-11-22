@@ -84,6 +84,11 @@ class PrescriptionDrugVC: UIViewController {
         setupGestures()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = true
+    }
+    
     // MARK: - Setup Methods
     
     func setupView() {
@@ -126,15 +131,16 @@ class PrescriptionDrugVC: UIViewController {
     // MARK: - Actions
     
     @objc func addDrugViewTapped() {
-        //TODO: 약 등록하기 VC로 연결
         self.navigationController?.isNavigationBarHidden = false
         let detailVC = EnrollDetailViewController()
+        detailVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detailVC, animated: false)
     }
     
     @objc func discardButtonTapped(){
         self.navigationController?.isNavigationBarHidden = false
         let DiscardPrescriptionDrugVC = DiscardPrescriptionDrugVC()
+        DiscardPrescriptionDrugVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(DiscardPrescriptionDrugVC, animated: false)
     }
 }
