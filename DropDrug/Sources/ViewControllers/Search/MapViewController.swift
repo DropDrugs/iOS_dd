@@ -129,10 +129,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         mapView.pharmFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
         
         mapView.healthCenterFltBtn.isSelected = false
-        mapView.healthCenterFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        mapView.healthCenterFltBtn.setImage(UIImage(named: "healthBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
         
         mapView.etcFltBtn.isSelected = false
-        mapView.etcFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        mapView.etcFltBtn.setImage(UIImage(named: "etcBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
         
         fetchPlaces()
     }
@@ -152,9 +152,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             mapView.pharmFltBtn.isSelected = false
             mapView.pharmFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             mapView.healthCenterFltBtn.isSelected = false
-            mapView.healthCenterFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            mapView.healthCenterFltBtn.setImage(UIImage(named: "healthBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             mapView.etcFltBtn.isSelected = false
-            mapView.etcFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            mapView.etcFltBtn.setImage(UIImage(named: "etcBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             for marker in groupedMarkers["동사무소"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
@@ -194,9 +194,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             mapView.pharmFltBtn.isSelected = false
             mapView.pharmFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             mapView.healthCenterFltBtn.isSelected = false
-            mapView.healthCenterFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            mapView.healthCenterFltBtn.setImage(UIImage(named: "healthBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             mapView.etcFltBtn.isSelected = false
-            mapView.etcFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            mapView.etcFltBtn.setImage(UIImage(named: "etcBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             // 동사무소만 마커 띄움
             for marker in groupedMarkers["우체국"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
@@ -237,9 +237,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             mapView.mailboxFltBtn.isSelected = false
             mapView.mailboxFltBtn.setImage(UIImage(named: "mailBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             mapView.healthCenterFltBtn.isSelected = false
-            mapView.healthCenterFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            mapView.healthCenterFltBtn.setImage(UIImage(named: "healthBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             mapView.etcFltBtn.isSelected = false
-            mapView.etcFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            mapView.etcFltBtn.setImage(UIImage(named: "etcBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             for marker in groupedMarkers["약국"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
@@ -272,7 +272,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         sender.isSelected.toggle()
         
         if sender.isSelected {
-            sender.setImage(UIImage(named: "pharmBtnSelect")?.withRenderingMode(.alwaysOriginal), for: .selected)
+            sender.setImage(UIImage(named: "healthBtnSelect")?.withRenderingMode(.alwaysOriginal), for: .selected)
             sender.setTitleColor(.white, for: .normal)
             mapView.mailboxFltBtn.isSelected = false
             mapView.mailboxFltBtn.setImage(UIImage(named: "mailBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
@@ -281,7 +281,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             mapView.townOfficeFltBtn.isSelected = false
             mapView.townOfficeFltBtn.setImage(UIImage(named: "officeBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             mapView.etcFltBtn.isSelected = false
-            mapView.etcFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            mapView.etcFltBtn.setImage(UIImage(named: "etcBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             for marker in groupedMarkers["보건소"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
@@ -300,7 +300,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             mapView.listBtn.removeTarget(nil, action: nil, for: .allEvents)
             mapView.listBtn.addTarget(self, action: #selector(goToHealtCenterList), for: .touchUpInside)
         } else {
-            sender.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            sender.setImage(UIImage(named: "healthBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             sender.setTitleColor(.black, for: .normal)
             for marker in groupedMarkers["보건소"] ?? [] {
                 marker.mapView = nil // 지도에서 제거
@@ -314,7 +314,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         sender.isSelected.toggle()
         
         if sender.isSelected {
-            sender.setImage(UIImage(named: "pharmBtnSelect")?.withRenderingMode(.alwaysOriginal), for: .selected)
+            sender.setImage(UIImage(named: "etcBtnSelect")?.withRenderingMode(.alwaysOriginal), for: .selected)
             sender.setTitleColor(.white, for: .normal)
             mapView.mailboxFltBtn.isSelected = false
             mapView.mailboxFltBtn.setImage(UIImage(named: "mailBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
@@ -323,7 +323,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             mapView.townOfficeFltBtn.isSelected = false
             mapView.townOfficeFltBtn.setImage(UIImage(named: "officeBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             mapView.healthCenterFltBtn.isSelected = false
-            mapView.healthCenterFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            mapView.healthCenterFltBtn.setImage(UIImage(named: "healthBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             for marker in groupedMarkers["기타"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
@@ -342,7 +342,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             mapView.listBtn.removeTarget(nil, action: nil, for: .allEvents)
             mapView.listBtn.addTarget(self, action: #selector(goToEtcList), for: .touchUpInside)
         } else {
-            sender.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+            sender.setImage(UIImage(named: "etcBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             sender.setTitleColor(.black, for: .normal)
             for marker in groupedMarkers["기타"] ?? [] {
                 marker.mapView = nil // 지도에서 제거
@@ -489,9 +489,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
                         } else if type == "약국" {
                             placeType = "Pharm"
                         } else if type == "보건소" {
-                            placeType = "Pharm"
+                            placeType = "Health"
                         } else if type == "기타" {
-                            placeType = "Pharm"
+                            placeType = "Etc"
                         }
                         let marker = NMFMarker()
                         marker.position = NMGLatLng(lat: Double(place.lat)!, lng: Double(place.lng)!)
