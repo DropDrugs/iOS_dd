@@ -60,6 +60,38 @@ class MapView: UIView {
         return m
     }()
     
+    public lazy var resetLocaBtn: UIButton = {
+        let fb = UIButton()
+        fb.backgroundColor = .white
+        fb.layer.cornerRadius = 15
+        fb.layer.shadowColor = UIColor.black.cgColor
+        fb.layer.shadowOpacity = 0.3
+        fb.layer.shadowOffset = CGSize(width: 0, height: 5)
+        fb.layer.shadowRadius = 5
+
+        var configuration = UIButton.Configuration.plain()
+        // 이미지 설정
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .regular) // 원하는 크기와 굵기
+        configuration.image = UIImage(systemName: "arrow.clockwise", withConfiguration: imageConfig)?
+            .withRenderingMode(.alwaysOriginal)
+            .withTintColor(Constants.Colors.skyblue ?? .blue)
+        configuration.imagePlacement = .leading
+        configuration.imagePadding = 8
+
+        // 타이틀 속성 설정
+        let attributes: AttributeContainer = AttributeContainer([
+            .font: UIFont.ptdRegularFont(ofSize: 14), .foregroundColor: Constants.Colors.skyblue ?? .blue])
+        configuration.attributedTitle = AttributedString("현 위치에서 검색", attributes: attributes)
+        configuration.titleAlignment = .center
+        
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8) // 여백 설정
+
+        // 버튼 설정
+        fb.configuration = configuration
+        
+        return fb
+    }()
+    
     public lazy var scrollView: UIScrollView = {
         let s = UIScrollView()
         s.backgroundColor = .clear
@@ -88,8 +120,8 @@ class MapView: UIView {
     }
     
     private func addComponents() {
-        [topView, scrollView, backgroundMap].forEach{ self.addSubview($0) }
-        bringSubviewToFront(scrollView)
+        [topView, scrollView, backgroundMap, resetLocaBtn].forEach{ self.addSubview($0) }
+        [scrollView, resetLocaBtn].forEach{ self.bringSubviewToFront($0) }
         [townOfficeFltBtn, mailboxFltBtn, pharmFltBtn, healthCenterFltBtn, etcFltBtn].forEach{ scrollView.addSubview($0) }
         [listBtn, title].forEach{ topView.addSubview($0) }
     }
@@ -122,6 +154,13 @@ class MapView: UIView {
         backgroundMap.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom)
             make.horizontalEdges.bottom.equalToSuperview()
+        }
+        
+        resetLocaBtn.snp.makeConstraints { make in
+            make.centerX.equalTo(safeAreaLayoutGuide)
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-30)
+            make.width.equalTo(150)
+            make.height.equalTo(30)
         }
         
         townOfficeFltBtn.snp.makeConstraints { make in

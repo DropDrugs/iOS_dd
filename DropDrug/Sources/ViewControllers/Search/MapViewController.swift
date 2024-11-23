@@ -21,6 +21,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
     }
     
     private let locationManager = CLLocationManager()
+    private var hasFetchedInitialPlaces = false
     private let geocoder = CLGeocoder()
     private var lat = 0.0 //현재 위치 저장
     private var lng = 0.0 //현재 위치 저장
@@ -31,7 +32,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
     
     public var groupedMarkers: [String: [NMFMarker]] = [
         "동사무소": [],
-        "우체통": [],
+        "우체국": [],
         "약국": [],
         "보건소": [],
         "기타": []
@@ -45,6 +46,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         v.pharmFltBtn.addTarget(self, action: #selector(pharmTapped), for: .touchUpInside)
         v.healthCenterFltBtn.addTarget(self, action: #selector(healtCenterTapped), for: .touchUpInside)
         v.etcFltBtn.addTarget(self, action: #selector(etcTapped), for: .touchUpInside)
+        v.resetLocaBtn.addTarget(self, action: #selector(doReSearch), for: .touchUpInside)
         return v
     }()
     
@@ -107,6 +109,33 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         vc.siGu = siGu
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    @objc
+    private func doReSearch() {
+        for (_, markers) in groupedMarkers {
+            for marker in markers {
+                marker.mapView = nil // 지도에서 마커 제거
+            }
+        }
+        groupedMarkers = ["동사무소": [], "우체국": [], "약국": [], "보건소": [], "기타": []]
+        
+        mapView.townOfficeFltBtn.isSelected = false
+        mapView.townOfficeFltBtn.setImage(UIImage(named: "officeBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        mapView.mailboxFltBtn.isSelected = false
+        mapView.mailboxFltBtn.setImage(UIImage(named: "mailBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        mapView.pharmFltBtn.isSelected = false
+        mapView.pharmFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        mapView.healthCenterFltBtn.isSelected = false
+        mapView.healthCenterFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        mapView.etcFltBtn.isSelected = false
+        mapView.etcFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        fetchPlaces()
+    }
 
     
     //MARK: - 플로팅 버튼 이벤트 설정
@@ -129,7 +158,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             for marker in groupedMarkers["동사무소"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
-            for marker in groupedMarkers["우체통"] ?? [] {
+            for marker in groupedMarkers["우체국"] ?? [] {
                 marker.mapView = nil // 지도에서 제거
             }
             for marker in groupedMarkers["약국"] ?? [] {
@@ -169,7 +198,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             mapView.etcFltBtn.isSelected = false
             mapView.etcFltBtn.setImage(UIImage(named: "pharmBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             // 동사무소만 마커 띄움
-            for marker in groupedMarkers["우체통"] ?? [] {
+            for marker in groupedMarkers["우체국"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
             for marker in groupedMarkers["동사무소"] ?? [] {
@@ -189,7 +218,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         } else {
             sender.setImage(UIImage(named: "mailBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
             sender.setTitleColor(.black, for: .normal)
-            for marker in groupedMarkers["우체통"] ?? [] {
+            for marker in groupedMarkers["우체국"] ?? [] {
                 marker.mapView = nil // 지도에서 제거
             }
             mapView.listBtn.removeTarget(nil, action: nil, for: .allEvents)
@@ -214,7 +243,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             for marker in groupedMarkers["약국"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
-            for marker in groupedMarkers["우체통"] ?? [] {
+            for marker in groupedMarkers["우체국"] ?? [] {
                 marker.mapView = nil // 지도에서 제거
             }
             for marker in groupedMarkers["동사무소"] ?? [] {
@@ -256,7 +285,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             for marker in groupedMarkers["보건소"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
-            for marker in groupedMarkers["우체통"] ?? [] {
+            for marker in groupedMarkers["우체국"] ?? [] {
                 marker.mapView = nil // 지도에서 제거
             }
             for marker in groupedMarkers["약국"] ?? [] {
@@ -298,7 +327,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             for marker in groupedMarkers["기타"] ?? [] {
                 marker.mapView = mapView.backgroundMap.mapView // 지도에 표시
             }
-            for marker in groupedMarkers["우체통"] ?? [] {
+            for marker in groupedMarkers["우체국"] ?? [] {
                 marker.mapView = nil // 지도에서 제거
             }
             for marker in groupedMarkers["약국"] ?? [] {
@@ -335,6 +364,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
     // 위치 업데이트
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let currentLocation = locations.last else { return }
+        mapView.backgroundMap.mapView.positionMode = .direction
         lat = currentLocation.coordinate.latitude
         lng = currentLocation.coordinate.longitude
         print("현재 위치: \(lat), \(lng)")
@@ -343,7 +373,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             guard error == nil, let placemark = placemarks?.first else {
                 return
             }
-            //            print(self.processString(placemark.description))
             var strAddr = ""
             var address = ""
             for i in self.processString(placemark.description) {
@@ -362,7 +391,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
                 self.siDo = String(first)
                 self.siGu = String(second)
                 
-                self.fetchPlaces()
+                if !self.hasFetchedInitialPlaces {
+                    self.hasFetchedInitialPlaces = true
+                    self.fetchPlaces()
+                }
             } else {
                 print("값이 충분하지 않습니다.")
             }
@@ -482,7 +514,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
                             // 동사무소 그룹에 추가
                             self.groupedMarkers["동사무소"]?.append(marker)
                         } else if type == "우체국" {
-                            self.groupedMarkers["우체통"]?.append(marker)
+                            self.groupedMarkers["우체국"]?.append(marker)
                         } else if type == "약국" {
                             self.groupedMarkers["약국"]?.append(marker)
                         } else if type == "보건소" {
