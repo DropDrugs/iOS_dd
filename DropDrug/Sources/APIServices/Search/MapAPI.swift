@@ -4,7 +4,7 @@ import Foundation
 import Moya
 
 enum MapAPI {
-    case getPlaceInfo
+    case getPlaceInfo(addrLvl1: String, addrLvl2: String, type: String)
 }
 
 extension MapAPI: TargetType {
@@ -16,7 +16,7 @@ extension MapAPI: TargetType {
     }
     
     var path: String {
-        return "maps/seoul"
+        return "maps/division"
     }
     
     var method: Moya.Method {
@@ -24,7 +24,17 @@ extension MapAPI: TargetType {
     }
     
     var task: Task {
-        return .requestPlain
+        switch self {
+        case .getPlaceInfo(let addrLvl1, let addrLvl2, let type):
+            return .requestParameters(
+                parameters: [
+                    "addrLvl1": addrLvl1,
+                    "addrLvl2": addrLvl2,
+                    "type": type
+                ],
+                encoding: URLEncoding.queryString
+            )
+        }
     }
     
     var headers: [String : String]? {
