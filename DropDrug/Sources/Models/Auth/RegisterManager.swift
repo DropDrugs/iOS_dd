@@ -92,9 +92,9 @@ extension SelectLoginTypeVC {
         }
     }
     
-    func setupAppleDTO(_ idToken: String, _ name: String, _ email: String) -> OAuthAppleLoginRequest? {
+    func setupAppleDTO(_ idToken: String, _ name: String, _ email: String, _ authorizationCode : String) -> OAuthAppleLoginRequest? {
         guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
-        return OAuthAppleLoginRequest(fcmToken: fcmToken, name: name, email: email)
+        return OAuthAppleLoginRequest(fcmToken: fcmToken, name: name, email: email, authorizationCode: authorizationCode)
     }
     func callAppleLoginAPI(param : OAuthAppleLoginRequest, completion: @escaping (Bool) -> Void) {
         provider.request(.postAppleLogin(param: param)) { result in
