@@ -105,9 +105,9 @@ class MapView: UIView {
     
     public lazy var pharmFltBtn: UIButton = makeFltBtn(image: "pharmBtnNSelect")
     
-    public lazy var healthCenterFltBtn: UIButton = makeFltBtn(image: "pharmBtnNSelect")
+    public lazy var healthCenterFltBtn: UIButton = makeFltBtn(image: "healthBtnNSelect")
     
-    public lazy var etcFltBtn: UIButton = makeFltBtn(image: "pharmBtnNSelect")
+    public lazy var etcFltBtn: UIButton = makeFltBtn(image: "etcBtnNSelect")
         
     private func makeFltBtn(image: String) -> UIButton {
         let b = UIButton(type: .custom)
