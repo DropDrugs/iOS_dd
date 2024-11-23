@@ -8,8 +8,9 @@ struct OAuthSocialLoginRequest : Codable{
     let idToken : String
 }
 
-struct OAuthAppleLoginRequest : Codable{
+struct OAuthAppleLoginRequest : Codable {
     let fcmToken : String
     let name : String
     let email : String
+    let authorizationCode : String
 }

@@ -19,7 +19,7 @@ class HomeView: UIView {
     
     public var points = 100
     public var name = "김드롭"
-    public var presentLocation = "기본 주소"
+    public var presentLocation = "서비스 이용 가능 지역이 아닙니다"
     
     public lazy var floatingBtn: UIButton = {
         let fb = UIButton()
