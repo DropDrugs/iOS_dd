@@ -56,9 +56,10 @@ class SplashVC : UIViewController {
             if isTokenExpired(token: accessToken) {
                 refreshAccessToken { success in
                     if success {
-                        print("Profile updated successfully")
+                        print("accessToken 재발급 성공")
                         self.navigateToMainScreen()
                     } else {
+                        print("accessToken 재발급 실패")
                         self.navigateToOnBoaringScreen()
                     }
                 }

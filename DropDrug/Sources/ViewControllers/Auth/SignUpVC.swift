@@ -156,7 +156,7 @@ class SignUpVC : UIViewController {
                 }
                 currentVC = presentingVC
             }
-            print("SelectLoginTypeVC를 찾을 수 없습니다.")
+        print("SelectLoginTypeVC를 찾을 수 없습니다.")
     }
     
     @objc func signUpButtonTapped() {
