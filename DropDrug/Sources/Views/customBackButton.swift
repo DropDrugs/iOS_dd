@@ -23,6 +23,6 @@ class CustomBackButton: UIButton {
                       for: .normal)
         self.setTitle("\(title)", for: .normal)
         self.setTitleColor(.black, for: .normal)
-        self.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 24)
+        self.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 22)
     }
 }

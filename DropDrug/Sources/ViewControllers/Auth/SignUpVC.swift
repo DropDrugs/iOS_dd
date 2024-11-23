@@ -5,6 +5,7 @@ import SnapKit
 import Moya
 
 class SignUpVC : UIViewController {
+    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     
     private lazy var usernameField = CustomLabelTextFieldView(textFieldPlaceholder: "이름을 입력해 주세요", validationText: "이름을 입력해 주세요")
     private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "사용할 수 없는 이메일입니다")
@@ -22,6 +23,12 @@ class SignUpVC : UIViewController {
     }()
 
     // MARK: - UI Properties
+    private lazy var backButton: CustomBackButton = {
+        let button = CustomBackButton(title: "")
+        button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
+        return button
+    }()
+    
     private lazy var loginButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("로그인", for: .normal)
@@ -73,25 +80,18 @@ class SignUpVC : UIViewController {
     
     // MARK: - Setup Methods
     private func setupView() {
-        view.addSubview(loginButton)
-        view.addSubview(titleLabel)
-        
-        view.addSubview(usernameField)
-        view.addSubview(emailField)
-        view.addSubview(passwordField)
-        view.addSubview(confirmPasswordField)
-        
-        view.addSubview(termsCheckBox)
-        
-        view.addSubview(signUpButton)
-        view.addSubview(termsValidationLabel)
-        
+        [backButton, loginButton, titleLabel, usernameField, emailField, passwordField, confirmPasswordField, termsCheckBox, signUpButton, termsValidationLabel].forEach {
+            view.addSubview($0)
+        }
         view.backgroundColor = .white
     }
-    
     private func setupConstraints() {
+        backButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.equalToSuperview().inset(20)
+        }
         loginButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(superViewHeight * 0.07)
+            make.centerY.equalTo(backButton)
             make.trailing.equalToSuperview().offset(-superViewWidth * 0.07)
         }
         titleLabel.snp.makeConstraints { make in
@@ -147,12 +147,20 @@ class SignUpVC : UIViewController {
     }
     
     // MARK: - Actions
+    @objc func didTapBackButton() {
+        var currentVC: UIViewController? = self
+            while let presentingVC = currentVC?.presentingViewController {
+                if presentingVC is SelectLoginTypeVC {
+                    presentingVC.dismiss(animated: true, completion: nil)
+                    return
+                }
+                currentVC = presentingVC
+            }
+            print("SelectLoginTypeVC를 찾을 수 없습니다.")
+    }
     
-    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
-        
     @objc func signUpButtonTapped() {
         if isValid {
-
             let signUpRequest = setupSignUpDTO(emailField.textField.text!, passwordField.textField.text!, name: usernameField.textField.text!)
             callSignUpAPI(signUpRequest) { isSuccess in
                 if isSuccess {

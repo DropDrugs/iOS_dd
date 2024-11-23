@@ -47,7 +47,18 @@ class MyPageVC : UIViewController {
         setConstraints()
         setComponents()
         setupGestures()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchMemberInfo { success in
+            if success {
+                print("Profile updated successfully")
+            } else {
+                print("Failed to update profile")
+            }
         }
+    }
     
     func setComponents() {
         dropCardLabel.text = "나의 드롭카드"
@@ -58,13 +69,6 @@ class MyPageVC : UIViewController {
         view.backgroundColor = .white
         [titleLabel, settingButton, myPageProfileView, rewardView, dropCardLabel, disposalStateLabel].forEach {
             view.addSubview($0)
-        }
-        fetchMemberInfo { success in
-            if success {
-                print("Profile updated successfully")
-            } else {
-                print("Failed to update profile")
-            }
         }
     }
     

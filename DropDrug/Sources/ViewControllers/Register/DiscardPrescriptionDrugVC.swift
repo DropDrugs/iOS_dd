@@ -2,8 +2,10 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class DiscardPrescriptionDrugVC: UIViewController {
+    let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     // MARK: - UI Elements
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  의약품 삭제하기")

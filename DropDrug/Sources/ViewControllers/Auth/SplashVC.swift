@@ -8,6 +8,8 @@ import KeychainSwift
 
 class SplashVC : UIViewController {
     
+    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Drop Drug"
@@ -23,17 +25,6 @@ class SplashVC : UIViewController {
         setConstraints()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.checkAuthenticationStatus()
-        }
-    }
-    
-    private func checkAuthenticationStatus() {
-        if let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken")
-        {
-            print("Access Token 존재: \(accessToken)")
-            navigateToMainScreen()
-        } else {
-            print("토큰 없음. 로그인 화면으로 이동.")
-            navigateToOnBoaringScreen()
         }
     }
     
@@ -58,6 +49,52 @@ class SplashVC : UIViewController {
         titleLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+    }
+    
+    private func checkAuthenticationStatus() {
+        if let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") {
+            if isTokenExpired(token: accessToken) {
+                refreshAccessToken { success in
+                    if success {
+                        print("Profile updated successfully")
+                        self.navigateToMainScreen()
+                    } else {
+                        self.navigateToOnBoaringScreen()
+                    }
+                }
+            } else {
+                print("Access Token 유효: \(accessToken)")
+                navigateToMainScreen()
+            }
+        } else {
+            print("토큰 없음. 로그인 화면으로 이동.")
+            navigateToOnBoaringScreen()
+        }
+    }
+    
+    func isTokenExpired(token: String) -> Bool {
+        let segments = token.split(separator: ".")
+        guard segments.count == 3 else {
+            print("Invalid JWT token format")
+            return true // 만료된 것으로 간주
+        }
+        
+        let payloadSegment = segments[1]
+        guard let payloadData = Data(base64Encoded: String(payloadSegment)) else {
+            print("Failed to decode payload")
+            return true
+        }
+        
+        do {
+            if let payload = try JSONSerialization.jsonObject(with: payloadData, options: []) as? [String: Any],
+               let exp = payload["exp"] as? TimeInterval {
+                let expirationDate = Date(timeIntervalSince1970: exp)
+                return expirationDate < Date()
+            }
+        } catch {
+            print("Failed to parse payload: \(error)")
+        }
+        return true // 만료된 것으로 간주
     }
     
 }

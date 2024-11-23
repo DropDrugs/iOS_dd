@@ -1,8 +1,12 @@
 // Copyright © 2024 RT4. All rights reserved
 
 import UIKit
+import SnapKit
+import Moya
 
 class EnrollDetailViewController: UIViewController {
+    
+    let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  의약품 등록하기")

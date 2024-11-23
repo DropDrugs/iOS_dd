@@ -4,8 +4,6 @@ import UIKit
 import SnapKit
 import Moya
 
-// TODO: 토큰 저장 매니저 따로 만들기
-
 class LoginVC : UIViewController {
 
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
@@ -19,6 +17,12 @@ class LoginVC : UIViewController {
     }()
 
     // MARK: - UI Properties
+    private lazy var backButton: CustomBackButton = {
+        let button = CustomBackButton(title: "")
+        button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
+        return button
+    }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "로그인"
@@ -52,21 +56,19 @@ class LoginVC : UIViewController {
     
     // MARK: - Setup Methods
     private func setupView() {
-        view.addSubview(titleLabel)
-        
-        view.addSubview(emailField)
-        view.addSubview(passwordField)
-        
-        view.addSubview(emailSaveCheckBox)
-        
-        view.addSubview(loginButton)
-        
+        [backButton, titleLabel, emailField, passwordField, emailSaveCheckBox, loginButton].forEach {
+            view.addSubview($0)
+        }
         view.backgroundColor = .white
     }
     
     private func setupConstraints() {
+        backButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.equalToSuperview().inset(20)
+        }
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(superViewHeight * 0.1)
+            make.top.equalTo(backButton.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
         }
         emailField.snp.makeConstraints { make in
@@ -103,10 +105,22 @@ class LoginVC : UIViewController {
     }
     
     // MARK: - Actions
+    
+    @objc func didTapBackButton() {
+        var currentVC: UIViewController? = self
+            while let presentingVC = currentVC?.presentingViewController {
+                if presentingVC is SelectLoginTypeVC {
+                    presentingVC.dismiss(animated: true, completion: nil)
+                    return
+                }
+                currentVC = presentingVC
+            }
+            print("SelectLoginTypeVC를 찾을 수 없습니다.")
+    }
+    
     @objc func loginButtonTapped() {
         if isValid {
             if let loginRequest = setupLoginDTO(emailField.textField.text!, passwordField.textField.text!) {
-//                print(SelectLoginTypeVC.keychain.get("FCMToken"))
                 callLoginAPI(loginRequest) { isSuccess in
                     if isSuccess {
                         self.proceedLoginSuccessful()
@@ -125,7 +139,7 @@ class LoginVC : UIViewController {
     }
     
     @objc func termsTapped() {
-        // TODO : 아이디 저장 api?
+        // TODO: 아이디 저장 api?
         emailSaveCheckBox.isSelected.toggle()
         if emailSaveCheckBox.isSelected {
             isTermsAgreeValid = true

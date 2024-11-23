@@ -35,8 +35,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 print("GET 호출 실패")
             }
         }
-        
     }
+    
     private let homeView: HomeView = {
         let hv = HomeView()
         hv.resetBtn.addTarget(self, action: #selector(resetBtnTapped), for: .touchUpInside)

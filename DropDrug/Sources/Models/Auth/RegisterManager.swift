@@ -4,8 +4,38 @@ import UIKit
 import Moya
 import KeychainSwift
 
-extension SignUpVC {
+extension SplashVC {
+    func refreshAccessToken(completion: @escaping (Bool) -> Void) {
+        guard let refreshToken = SelectLoginTypeVC.keychain.get("refreshToken") else {
+            print("refreshToken not found")
+            completion(false)
+            return
+        }
+        provider.request(.refreshAccessToken(token: refreshToken)) { result in
+            switch result {
+            case .success(let response):
+                print(response)
+                do {
+                    let data = try response.map(TokenDto.self)
+                    SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
+                    SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    completion(true)
+                } catch {
+                    print("Failed to map data : \(error)")
+                    completion(false)
+                }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
+                completion(false)
+            }
+        }
+    }
+}
 
+extension SignUpVC {
     func setupSignUpDTO(_ emailString: String, _ pwString: String, name : String) -> MemberSignupRequest {
         return MemberSignupRequest(email: emailString, name: name, password: pwString)
     }

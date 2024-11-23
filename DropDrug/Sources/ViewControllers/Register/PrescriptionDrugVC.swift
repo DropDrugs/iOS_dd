@@ -2,9 +2,12 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class PrescriptionDrugVC: UIViewController {
-    //TODO: api 연결 시 따로 빼기
+    
+    let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    
     struct PrescriptionDrug {
         let date: String
         let duration: String
