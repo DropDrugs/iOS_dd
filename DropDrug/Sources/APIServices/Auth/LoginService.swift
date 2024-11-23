@@ -5,15 +5,21 @@ import Moya
 
 enum LoginService {
     // 자체 로그인
+
     case postLogin(param: MemberLoginRequest)
     case postRegister(param: MemberSignupRequest)
     
     // SNS 로그인
-    case postGoogleLogin(param: OAuthGoogleLoginRequest)
+    case postGoogleLogin(param: OAuthSocialLoginRequest)
+    case postKakaoLogin(param: OAuthSocialLoginRequest)
+    case postAppleLogin(param: OAuthAppleLoginRequest)
     
     // 기타
     case postLogOut(accessToken: String)
-    case postQuit(accessToken: String)
+    case postQuit(token: String)
+    
+    //리프레시
+    case refreshAccessToken(token: String)
 }
 
 extension LoginService: TargetType {
@@ -28,9 +34,12 @@ extension LoginService: TargetType {
         switch self {
         case .postLogin: return "auth/login/pw"
         case .postRegister: return "auth/signup/pw"
+        case .postKakaoLogin: return "auth/login/kakao"
         case .postGoogleLogin: return "auth/login/google"
+        case .postAppleLogin: return "auth/login/apple"
         case .postLogOut: return "auth/logout"
         case .postQuit: return "auth/quit"
+        case .refreshAccessToken: return "auth/refresh"
         }
     }
     
@@ -46,14 +55,20 @@ extension LoginService: TargetType {
             return .requestJSONEncodable(param)
         case .postGoogleLogin(let param) :
             return .requestJSONEncodable(param)
-        case .postLogOut(let accessToken),
-                .postQuit(let accessToken) :
+        case .postKakaoLogin(let param) :
+            return .requestJSONEncodable(param)
+        case .postAppleLogin(let param) :
+            return .requestJSONEncodable(param)
+        case .postLogOut(let accessToken) :
             return .requestParameters(parameters: ["accessToken": accessToken], encoding: JSONEncoding.default)
+        case .postQuit(let accessToken) :
+            return .requestParameters(parameters: ["token": accessToken], encoding: JSONEncoding.default)
+        case .refreshAccessToken(let accessToken) :
+            return .requestParameters(parameters: ["token": accessToken], encoding: JSONEncoding.default)
         }
     }
     
     var headers: [String : String]? {
         return ["Content-Type": "application/json"]
     }
-    
 }

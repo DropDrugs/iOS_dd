@@ -2,9 +2,14 @@
 
 import UIKit
 import CoreLocation
+import Moya
 import MapKit
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+    
+    let provider = MoyaProvider<HomeAPI>(plugins: [ BearerTokenPlugin(), NetworkLoggerPlugin() ])
+    
+    var selectedCharacterNum: Int = 0
     
     var locationManager = CLLocationManager()
     
@@ -16,6 +21,20 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         configureMapView()
         
         navigationController?.navigationBar.isHidden = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getHomeInfo { [weak self] isSuccess in
+            if isSuccess {
+                DispatchQueue.main.async {
+                    self?.homeView.updateStarter()
+                    self?.homeView.updatePoints()
+                }
+            } else {
+                print("GET 호출 실패")
+            }
+        }
     }
     
     private let homeView: HomeView = {
@@ -98,16 +117,24 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
 //            print(self.processString(placemark.description))
             var strAddr = ""
             var address = ""
-            for i in self.processString(placemark.description) {
-                if i.contains("대한민국") {
-                    address = i
+            let addressArray = self.processString(placemark.description)
+            
+            addressArray.forEach { addr in
+                if addr.contains("대한민국") {
+                    address = addr
                 }
             }
+            if address == "" {
+                address = "서비스 이용 가능 지역이 아닙니다"
+            }
+            
+            print(address)
             for i in address.components(separatedBy: " ") {
                 if !i.contains("대한민국") {
                     strAddr += " \(i)"
                 }
             }
+            
             
             completion(strAddr.trimmingCharacters(in: .whitespaces))
         }
@@ -134,5 +161,28 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         self.homeView.mapView.setRegion(region, animated: true)
     }
     
-    
+    func getHomeInfo(completion: @escaping (Bool) -> Void) {
+        provider.request(.getHomeInfo) { result in
+            switch result {
+            case .success(let response):
+                print(response.statusCode)
+                do {
+                    let responseData = try response.map(HomeResponse.self)
+                    self.homeView.name = responseData.nickname
+                    self.homeView.points = responseData.point
+                    self.selectedCharacterNum = responseData.selectedChar
+                    completion(true)
+                } catch {
+                    print("Failed to decode response: \(error)")
+                    completion(false)
+                }
+            case.failure(let error):
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
+                completion(false)
+            }
+        }
+    }
 }

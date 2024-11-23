@@ -7,7 +7,7 @@ import SnapKit
 class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     private var collectionView: UICollectionView!
-    // TODO : 이미지 에셋 추가
+    // TODO: 이미지 에셋 추가
     let categories = [
         ("일반 의약품", "OB1"),
         ("병원 처방약", "OB1")
@@ -87,16 +87,13 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 선택된 카테고리에 따라 분기 처리
         switch indexPath.item {
-        case 0: // 첫 번째 아이템
-            let SelectDrugTypeVC = SelectDrugTypeVC() // 일반 의약품 화면
+        case 0:
+            let SelectDrugTypeVC = SelectDrugTypeVC()
             navigationController?.pushViewController(SelectDrugTypeVC, animated: true)
-
-        case 1: // 두 번째 아이템
-            let prescriptionMedicineVC = TestVC() // 병원 처방약 화면
-            navigationController?.pushViewController(prescriptionMedicineVC, animated: true)
-
+        case 1:
+            let prescriptionDrugVC = PrescriptionDrugVC()
+            navigationController?.pushViewController(prescriptionDrugVC, animated: true)
         default:
             print("알 수 없는 카테고리 선택됨")
         }

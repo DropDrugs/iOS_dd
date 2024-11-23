@@ -19,7 +19,7 @@ class HomeView: UIView {
     
     public var points = 100
     public var name = "김드롭"
-    public var presentLocation = "기본 주소"
+    public var presentLocation = "서비스 이용 가능 지역이 아닙니다"
     
     public lazy var floatingBtn: UIButton = {
         let fb = UIButton()
@@ -74,6 +74,14 @@ class HomeView: UIView {
         l.font = UIFont.roRegularFont(ofSize: 26)
         l.textColor = Constants.Colors.skyblue
         return l
+    }()
+    
+    public lazy var alarmBtn: UIButton = {
+        let b = UIButton()
+        b.setImage(UIImage(named: "alarm"), for: .normal)
+        b.backgroundColor = .clear
+        b.contentMode = .scaleAspectFill
+        return b
     }()
     
     public lazy var starter: UIButton = {
@@ -151,6 +159,7 @@ class HomeView: UIView {
 
     private func addComponenets() {
         addSubview(appTitle)
+        addSubview(alarmBtn)
         addSubview(starter)
         addSubview(point)
         addSubview(locationBackground)
@@ -164,6 +173,12 @@ class HomeView: UIView {
         appTitle.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(20)
             make.leading.equalTo(safeAreaLayoutGuide.snp.leading).offset(20)
+        }
+        
+        alarmBtn.snp.makeConstraints { make in
+            make.centerY.equalTo(appTitle)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
+            make.width.height.equalTo(24)
         }
         
         starter.snp.makeConstraints { make in
@@ -217,5 +232,16 @@ class HomeView: UIView {
             make.top.equalTo(presLoca.snp.bottom).offset(14)
             make.leading.equalTo(presLoca.snp.leading)
         }
+    }
+    
+    public func updateStarter() {
+        let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
+        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+        starter.setAttributedTitle(attributedString, for: .normal)
+    }
+    
+    public func updatePoints() {
+        point.setTitle("\(points) P", for: .normal)
     }
 }

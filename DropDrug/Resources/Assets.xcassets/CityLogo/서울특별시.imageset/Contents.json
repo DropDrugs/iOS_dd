@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "서울특별시.png",
+      "filename" : "서울특별시.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "서울특별시@2x.png",
+      "filename" : "서울특별시@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "서울특별시@3x.png",
+      "filename" : "서울특별시@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

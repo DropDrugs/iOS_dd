@@ -24,6 +24,8 @@
                        "NaverMapSDK" : .framework,
 //                       "NMapsMap" : .staticLibrary,
 //                       "NMapsGeometry" : .staticLibrary
+                       "SDWebImage" : .framework,
+                       "Toast" : .framework
                       ]
     )
 #endif
@@ -39,6 +41,8 @@ let package = Package(
         .package(url: "https://github.com/kakao/kakao-ios-sdk", from: "2.23.0"),
 //        .package(url: "https://github.com/google/GoogleSignIn-iOS", from: "8.0.0"),
         .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.4.0"),
-        .package(url: "https://github.com/slr-09/Naver-Map-iOS-SPM.git", from: "0.1.0")
+        .package(url: "https://github.com/slr-09/Naver-Map-iOS-SPM.git", from: "0.1.0"),
+        .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.19.7"),
+        .package(url: "https://github.com/scalessec/Toast-Swift.git", from: "5.1.1")
     ]
 )
