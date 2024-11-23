@@ -117,16 +117,24 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
 //            print(self.processString(placemark.description))
             var strAddr = ""
             var address = ""
-            for i in self.processString(placemark.description) {
-                if i.contains("대한민국") {
-                    address = i
+            let addressArray = self.processString(placemark.description)
+            
+            addressArray.forEach { addr in
+                if addr.contains("대한민국") {
+                    address = addr
                 }
             }
+            if address == "" {
+                address = "서비스 이용 가능 지역이 아닙니다"
+            }
+            
+            print(address)
             for i in address.components(separatedBy: " ") {
                 if !i.contains("대한민국") {
                     strAddr += " \(i)"
                 }
             }
+            
             
             completion(strAddr.trimmingCharacters(in: .whitespaces))
         }
