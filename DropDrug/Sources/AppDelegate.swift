@@ -30,8 +30,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let kakaoAPIkey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_NATIVE_APP_KEY") as? String {
             KakaoSDK.initSDK(appKey: "\(kakaoAPIkey)")
         }
-        
         FirebaseApp.configure()
+        if FirebaseApp.app() == nil {
+            print("FirebaseApp is not initialized. Configuring now...")
+            FirebaseApp.configure()
+        } else {
+            print("FirebaseApp is initialized successfully.")
+        }
+        
         UNUserNotificationCenter.current().delegate = self
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound] // 필요한 알림 권한을 설정
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
@@ -119,6 +125,7 @@ extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         print("Firebase registration token: \(String(describing: fcmToken))")
         SelectLoginTypeVC.keychain.set(fcmToken!, forKey: "FCMToken")
+//        print(SelectLoginTypeVC.keychain.get("appleUserFullName") ?? "저장된 이름 없음")
         
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
         NotificationCenter.default.post(

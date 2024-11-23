@@ -2,8 +2,11 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class MyPageVC : UIViewController {
+    
+    let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -21,8 +24,8 @@ class MyPageVC : UIViewController {
         return button
     }()
     
-    private let myPageProfileView = ProfileView()
-    private let rewardView = RewardView()
+    let myPageProfileView = ProfileView()
+    let rewardView = RewardView()
     private let dropCardLabel = SubLabelView()
     private let disposalStateLabel = SubLabelView()
     
@@ -44,7 +47,18 @@ class MyPageVC : UIViewController {
         setConstraints()
         setComponents()
         setupGestures()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchMemberInfo { success in
+            if success {
+                print("Profile updated successfully")
+            } else {
+                print("Failed to update profile")
+            }
         }
+    }
     
     func setComponents() {
         dropCardLabel.text = "나의 드롭카드"

@@ -5,8 +5,6 @@ import SnapKit
 import Moya
 
 class ProfileView: UIView {
-
-    let provider = MoyaProvider<MemberAPI>(plugins: [NetworkLoggerPlugin()])
     
     // MARK: - UI Components
     let profileImageView: UIImageView = {
@@ -39,7 +37,6 @@ class ProfileView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        fetchMemberInfo()
     }
     
     required init?(coder: NSCoder) {

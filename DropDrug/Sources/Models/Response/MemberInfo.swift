@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct MemberInfo: Decodable {
+struct MemberInfo: Codable {
     let email: String
     let nickname: String
     let notificationSetting: NotificationSetting
@@ -11,7 +11,7 @@ struct MemberInfo: Decodable {
     let selectedChar: Int
 }
 
-struct NotificationSetting: Decodable {
+struct NotificationSetting: Codable {
     let disposal: Bool
     let noticeboard: Bool
     let reward: Bool

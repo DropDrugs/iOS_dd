@@ -9,26 +9,29 @@ enum MemberAPI {
     case purchaseCharacter(characterId: Int) // 캐릭터 구매
     case updateCharacter(characterId: Int)  // 캐릭터 변경
     case updateNickname(newNickname: String) // 닉네임 변경
-    case updateNotificationSettings(disposal: Bool, noticeboard: Bool, reward: Bool) // 알림 설정 변경
+    case updateNotificationSettings(param: NotificationSetting) // 알림 설정 변경
 }
 
 extension MemberAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "http://54.180.45.153:8080")!
+        guard let url = URL(string: Constants.NetworkManager.baseURL) else {
+            fatalError("fatal error - invalid url")
+        }
+        return url
     }
     
     var path: String {
         switch self {
         case .fetchMemberInfo:
-            return "/members"
+            return "members"
         case .purchaseCharacter(let characterId):
-            return "/members/character/\(characterId)"
+            return "members/character/\(characterId)"
         case .updateCharacter(let characterId):
-            return "/members/character/\(characterId)"
+            return "members/character/\(characterId)"
         case .updateNickname(let newNickname):
-            return "/members/nickname/\(newNickname)"
+            return "members/nickname/\(newNickname)"
         case .updateNotificationSettings:
-            return "/members/notification"
+            return "members/notification"
         }
     }
     
@@ -53,25 +56,12 @@ extension MemberAPI: TargetType {
             return .requestPlain
         case .updateNickname:
             return .requestPlain
-        case .updateNotificationSettings(let disposal, let noticeboard, let reward):
-            let parameters: [String: Any] = [
-                "disposal": disposal,
-                "noticeboard": noticeboard,
-                "reward": reward
-            ]
-            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+        case .updateNotificationSettings(let param) :
+            return .requestJSONEncodable(param)
         }
     }
     
     var headers: [String: String]? {
-        let keychain = KeychainSwift()
-        if let accessToken = keychain.get("serverRefreshToken") {
-            return [
-                "Authorization": "Bearer \(accessToken)",
-                "Accept": "*/*",
-                "Content-Type": "application/json"
-            ]
-        }
-        return ["Accept": "*/*"]
+        return ["Content-Type": "application/json"]
     }
 }

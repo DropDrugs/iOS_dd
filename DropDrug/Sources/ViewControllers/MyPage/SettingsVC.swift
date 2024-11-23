@@ -43,6 +43,7 @@ class SettingsVC: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.separatorStyle = .none
         tableView.backgroundColor = .white
+        tableView.isScrollEnabled = false
         view.addSubview(tableView)
     }
     

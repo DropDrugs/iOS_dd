@@ -7,7 +7,7 @@ import KeychainSwift
 
 class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    let provider = MoyaProvider<MemberAPI>(plugins: [NetworkLoggerPlugin()])
+    let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     let Authprovider = MoyaProvider<LoginService>(plugins: [NetworkLoggerPlugin(), BearerTokenPlugin()])
     
     private lazy var backButton: CustomBackButton = {
@@ -17,7 +17,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     }()
     
     let tableView = UITableView()
-    private let accountOptions = ["닉네임", "아이디", "비밀번호 변경", "캐릭터 변경", "로그아웃", "계정 삭제"]
+    private let accountOptions = ["닉네임", "아이디", /*"비밀번호 변경",*/ "캐릭터 변경", "로그아웃", "계정 삭제"]
     
     // 가상 데이터
     var nickname: String = "김드롭"
@@ -27,7 +27,13 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         setupView()
-        fetchMemberInfo()
+        fetchMemberInfo { isSucess in
+            if isSucess {
+                self.tableView.reloadData()
+            } else {
+                // 토스트 메세지 띄워서 에러 알려주기
+            }
+        }
     }
     
     private func setupView() {
@@ -40,6 +46,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         tableView.register(AccountOptionCell.self, forCellReuseIdentifier: "AccountOptionCell")
         tableView.separatorStyle = .none
         tableView.backgroundColor = .white
+        tableView.isScrollEnabled = false
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
@@ -78,8 +85,8 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             switch accountOptions[indexPath.row] {
-            case "비밀번호 변경":
-                print("비밀번호 변경 화면 이동")
+//            case "비밀번호 변경":
+//                print("비밀번호 변경 화면 이동")
             case "캐릭터 변경":
                 navigationController?.pushViewController(CharacterSettingsVC(), animated: true)
             case "로그아웃":
@@ -99,10 +106,17 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
             textField.text = currentValue
         }
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "저장", style: .default, handler: { _ in
-            // TODO: 닉네임 변경 api
-            if let text = alert.textFields?.first?.text, !text.isEmpty {
-                completion(text)
+        alert.addAction(UIAlertAction(title: "저장", style: .default, handler: {_ in
+            if let newNickname = alert.textFields?.first?.text, !newNickname.isEmpty {
+                self.updateNickname(newNickname: newNickname) { isSuccess in
+                    if isSuccess {
+                        print("닉네임 변경 성공")
+                        self.nickname = newNickname
+                        self.tableView.reloadData()
+                    } else {
+                        print("닉네임 변경 실패")
+                    }
+                }
             }
         }))
         present(alert, animated: true, completion: nil)
@@ -120,8 +134,6 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                     print("계정 삭제 실패 - 다시 시도해주세요")
                 }
             }
-            
-            
         }))
         present(alert, animated: true, completion: nil)
     }
@@ -144,7 +156,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 SelectLoginTypeVC.keychain.delete("serverAccessToken")
                 SelectLoginTypeVC.keychain.delete("serverRefreshToken")
                 print("로그아웃 처리")
-                self.navigateToSplashScreen()
+                self.showSplashScreen()
             case .failure(let error):
                 print("로그아웃 요청 실패: \(error.localizedDescription)")
             }
@@ -171,10 +183,27 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         }
     }
     
-    private func navigateToSplashScreen() {
-        let SplashVC = SplashVC()
-        SplashVC.modalPresentationStyle = .fullScreen
-        present(SplashVC, animated: true)
+    private func updateNickname(newNickname: String, completion: @escaping (Bool) -> Void) {
+        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
+            print("Access Token 없음")
+            completion(false)
+            return
+        }
+        
+        provider.request(.updateNickname(newNickname: newNickname)) { result in
+            switch result {
+            case .success(let response):
+                if response.statusCode == 200 {
+                    completion(true) // 성공
+                } else {
+                    print("서버 응답 오류: \(response.statusCode)")
+                    completion(false)
+                }
+            case .failure(let error):
+                print("네트워크 오류: \(error.localizedDescription)")
+                completion(false)
+            }
+        }
     }
     
     private func showSplashScreen() {

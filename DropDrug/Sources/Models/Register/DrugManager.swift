@@ -3,15 +3,13 @@
 import Foundation
 import Moya
 
-extension AccountSettingsVC {
+extension PrescriptionDrugVC { //get
     func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
-        provider.request(.fetchMemberInfo) { result in
+        DrugProvider.request(.getDrug) { result in
             switch result {
             case .success(let response):
                 do {
                     let data = try response.map(MemberInfo.self)
-                    self.nickname = data.nickname
-                    self.userId = data.email
                     completion(true)
                 } catch {
                     completion(false)
@@ -27,17 +25,19 @@ extension AccountSettingsVC {
     }
 }
 
-extension MyPageVC {
-    func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
-        MemberProvider.request(.fetchMemberInfo) { result in
+extension EnrollDetailViewController { //post
+    func setupPostDrugDTO() -> drugSaveRequest? {
+        return drugSaveRequest(count: 0, date: "dd")
+    }
+    
+    func fetchMemberInfo(_ userParameter: drugSaveRequest, completion: @escaping (Bool) -> Void) {
+        DrugProvider.request(.postDrug(param: userParameter)) { result in
             switch result {
             case .success(let response):
                 do {
                     let data = try response.map(MemberInfo.self)
                     DispatchQueue.main.async {
-                        self.myPageProfileView.nameLabel.text = data.nickname
-                        self.myPageProfileView.emailLabel.text = data.email
-                        self.rewardView.pointsLabel.text = "\(data.point) P"
+                        //데이터 받아오기
                     }
                     completion(true)
                 } catch {
@@ -50,15 +50,18 @@ extension MyPageVC {
     }
 }
 
-extension CharacterSettingsVC {
-    func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
-        MemberProvider.request(.fetchMemberInfo) { result in
+extension DiscardPrescriptionDrugVC { //delete
+    func setupDeleteDrugDTO() -> drugDeleteRequest? {
+        return drugDeleteRequest(id: [1,2,3])
+    }
+    func fetchMemberInfo(_ userParameter: drugDeleteRequest, completion: @escaping (Bool) -> Void) {
+        DrugProvider.request(.deleteDrug(param: userParameter)) { result in
             switch result {
             case .success(let response):
                 do {
                     let data = try response.map(MemberInfo.self)
                     DispatchQueue.main.async {
-                        self.ownedCharCount = data.ownedChars.count
+                        //데이터 받아오기
                     }
                     completion(true)
                 } catch {

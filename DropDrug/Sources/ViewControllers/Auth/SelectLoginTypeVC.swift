@@ -40,7 +40,7 @@ class SelectLoginTypeVC : UIViewController {
         button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         return button
     }()
-//    let appleLoginButton = ASAuthorizationAppleIDButton()
+    //    let appleLoginButton = ASAuthorizationAppleIDButton()
     
     lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -81,10 +81,10 @@ class SelectLoginTypeVC : UIViewController {
             }
         }
     }
-        
+    
     private func setupGradientBackground() {
         let gradientLayer = CAGradientLayer()
-
+        
         gradientLayer.colors = [
             (Constants.Colors.coralpink?.withAlphaComponent(0.7) ?? UIColor.systemPink.withAlphaComponent(0.7)).cgColor,
             (Constants.Colors.skyblue ?? UIColor.systemTeal).cgColor
@@ -102,7 +102,7 @@ class SelectLoginTypeVC : UIViewController {
         
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
-        
+    
     private func setupUI() {
         let subviews = [mainLabel, kakaoLoginButton, signUpButton, loginButton]
         subviews.forEach { view.addSubview($0) }
@@ -146,34 +146,34 @@ class SelectLoginTypeVC : UIViewController {
         }
     }
     
-//    @objc func kakaoButtonTapped() {
-//        Task {
-//            if await kakaoAuthVM.KakaoLogin() {
-//                UserApi.shared.me() { [weak self] (user, error) in
-//                    guard let self = self else { return }
-//                    
-//                    if let error = error {
-//                        print("에러 발생: \(error.localizedDescription)")
-//                        return
-//                    }
-//                    
-//                    guard let kakaoAccount = user?.kakaoAccount else {
-//                        print("사용자 정보 없음")
-//                        return
-//                    }
-//                    
-//                    let userId = user?.id ?? 123
-//                    
-//                    print("유저: \(userId)")
-//                    let idToken = SelectLoginTypeVC.keychain.get("idToken")
-//                    // TODO: 서버에 카카오 사용자 정보 전달 및 로그인 처리
-//                    self.handleKakaoLoginSuccess()
-//                }
-//            } else {
-//                print("카카오 로그인 실패")
-//            }
-//        }
-//    }
+    //    @objc func kakaoButtonTapped() {
+    //        Task {
+    //            if await kakaoAuthVM.KakaoLogin() {
+    //                UserApi.shared.me() { [weak self] (user, error) in
+    //                    guard let self = self else { return }
+    //
+    //                    if let error = error {
+    //                        print("에러 발생: \(error.localizedDescription)")
+    //                        return
+    //                    }
+    //
+    //                    guard let kakaoAccount = user?.kakaoAccount else {
+    //                        print("사용자 정보 없음")
+    //                        return
+    //                    }
+    //
+    //                    let userId = user?.id ?? 123
+    //
+    //                    print("유저: \(userId)")
+    //                    let idToken = SelectLoginTypeVC.keychain.get("idToken")
+    //                    // TODO: 서버에 카카오 사용자 정보 전달 및 로그인 처리
+    //                    self.handleKakaoLoginSuccess()
+    //                }
+    //            } else {
+    //                print("카카오 로그인 실패")
+    //            }
+    //        }
+    //    }
     
     @objc func kakaoButtonTapped() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -193,7 +193,7 @@ class SelectLoginTypeVC : UIViewController {
                             print("사용자 정보 없음")
                             return
                         }
-                        if let loginRequest = self.setupSocialLoginDTO() {
+                        if let loginRequest = self.setupKakaoLoginDTO() {
                             self.callKakaoLoginAPI(loginRequest) { isSuccess in
                                 if isSuccess {
                                     self.handleKakaoLoginSuccess()
@@ -211,35 +211,35 @@ class SelectLoginTypeVC : UIViewController {
             }
         }
     }
-
+    
     private func handleKakaoLoginSuccess() {
         let mainVC = MainTabBarController()
         mainVC.modalPresentationStyle = .fullScreen
         present(mainVC, animated: true, completion: nil)
     }
     
-//    @objc private func googleButtonTapped() {
-//        // Google login setup
-//        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
-//        let config = GIDConfiguration(clientID: clientID)
-//
-//        GIDSignIn.sharedInstance.signIn(withPresenting: self) {signInResult, error in
-//            guard error == nil else { return }
-//            guard let result = signInResult,
-//                  let token = result.user.idToken?.tokenString else { return }
-//
-//            let user = result.user
-//            let fullName = user.profile?.name
-//            let accesstoken = result.user.accessToken.tokenString
-//            let refreshtoken = result.user.refreshToken.tokenString
-//
-//            print(user)
-//            print(fullName as Any)
-//            print("accesstoken : \(accesstoken)")
-//            print("refreshtoken: \(refreshtoken)")
-//        }
-//
-//    }
+    //    @objc private func googleButtonTapped() {
+    //        // Google login setup
+    //        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+    //        let config = GIDConfiguration(clientID: clientID)
+    //
+    //        GIDSignIn.sharedInstance.signIn(withPresenting: self) {signInResult, error in
+    //            guard error == nil else { return }
+    //            guard let result = signInResult,
+    //                  let token = result.user.idToken?.tokenString else { return }
+    //
+    //            let user = result.user
+    //            let fullName = user.profile?.name
+    //            let accesstoken = result.user.accessToken.tokenString
+    //            let refreshtoken = result.user.refreshToken.tokenString
+    //
+    //            print(user)
+    //            print(fullName as Any)
+    //            print("accesstoken : \(accesstoken)")
+    //            print("refreshtoken: \(refreshtoken)")
+    //        }
+    //
+    //    }
     
     @objc func startTapped() {
         let SignUpVC = SignUpVC()
@@ -254,36 +254,9 @@ class SelectLoginTypeVC : UIViewController {
     }
     
     @objc func handleAppleLogin() {
-        startSignInWithAppleFlow()
-    }
-    
-    func fetchFirebaseIDToken(completion: @escaping (String?) -> Void) {
-        guard let currentUser = Auth.auth().currentUser else {
-            print("User is not logged in")
-            completion(nil)
-            return
-        }
-        
-        currentUser.getIDToken { token, error in
-            if let error = error {
-                print("Error fetching ID token: \(error.localizedDescription)")
-                completion(nil)
-                return
-            }
-            
-            completion(token)
-        }
-    }
-}
-
-extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
-    func startSignInWithAppleFlow() {
-        let nonce = randomNonceString()
-        currentNonce = nonce
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = [.fullName, .email]
-        request.nonce = sha256(nonce)
         
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
         authorizationController.delegate = self
@@ -291,99 +264,69 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
         authorizationController.performRequests()
     }
     
-    func randomNonceString(length: Int = 32) -> String {
-        precondition(length > 0)
-        var randomBytes = [UInt8](repeating: 0, count: length)
-        let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
-        if errorCode != errSecSuccess {
-            fatalError(
-                "Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)"
-            )
-        }
-        let charset: [Character] =
-        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-        let nonce = randomBytes.map { byte in
-            // Pick a random character from the set, wrapping around if needed.
-            charset[Int(byte) % charset.count]
-        }
-        return String(nonce)
-    }
-    
-    func sha256(_ input: String) -> String {
-        let inputData = Data(input.utf8)
-        let hashedData = SHA256.hash(data: inputData)
-        let hashString = hashedData.compactMap {
-            String(format: "%02x", $0)
-        }.joined()
-        
-        return hashString
-    }
-    
+}
+
+extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            guard let nonce = currentNonce else {
-                print("Error: Nonce is missing.")
-                return
-            }
-            guard let appleIDToken = appleIDCredential.identityToken else {
-                print("Error: Unable to fetch identity token.")
-                return
-            }
-            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
-                print("Error: Unable to serialize token string.")
-                return
-            }
-
-            guard let fullName = appleIDCredential.fullName else {
-                print("Unable to fetch full name")
-                return
-            }
-            SelectLoginTypeVC.keychain.set(appleIDToken, forKey: "appleUserIDToken")
-            
-            if let givenName = fullName.givenName, let familyName = fullName.familyName {
-                let completeName = "\(givenName) \(familyName)"
-                SelectLoginTypeVC.keychain.set(completeName, forKey: "appleUserfullName")
-                print("Saved fullName: \(completeName)")
-            } else {
-                print("No full name provided.")
-            }
-            
-            print("idTokenString : \(idTokenString)")
-
-            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: fullName)
-            
-            Auth.auth().signIn(with: credential) { authResult, error in
-                if let error = error {
-                    print("Error Apple sign in: \(error.localizedDescription)")
-                    return
-                }
-
-                print("애플 로그인 성공")
+            let userIdentifier = appleIDCredential.user
+            var formattedName: String = ""
+            var authorizationCode : String = ""
+            if let fullName = appleIDCredential.fullName, ((fullName.givenName?.isEmpty) == nil) && ((fullName.familyName?.isEmpty) == nil) {
+                let givenName = fullName.givenName ?? ""
+                let familyName = fullName.familyName ?? ""
                 
-                self.fetchFirebaseIDToken { idToken in
-                    if let idToken = idToken {
-                        print("Firebase ID Token: \(idToken)")
-                    }
-                    DispatchQueue.main.async {
-                        let mainTabBarVC = MainTabBarController()
-                        self.navigationController?.pushViewController(mainTabBarVC, animated: true)
-                    }
-                }
+                formattedName = "\(familyName)\(givenName)"
+                
+                print("Formatted Full Name: \(formattedName)")
+            } else {
+                print("Full name is nil")
             }
             
+            let email = appleIDCredential.email
+            
+            if let authCode = appleIDCredential.authorizationCode,
+               let codeString = String(data: authCode, encoding: .utf8) {
+                authorizationCode = codeString
+                print("Authorization Code: \(codeString)")
+            } else {
+                print("Authorization Code is nil or could not be decoded.")
+                // login 불가능 처리 로직
+            }
+            
+            if let identityToken = appleIDCredential.identityToken,
+               let identityTokenString = String(data: identityToken, encoding: .utf8),
+               let emailString = email{
+                SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
+                SelectLoginTypeVC.keychain.set(emailString, forKey: "AppleIDEmail")
+                SelectLoginTypeVC.keychain.set(formattedName, forKey: "AppleIDName")
+                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, formattedName, emailString, authorizationCode)!) { isSuccess in
+                    if isSuccess {
+                        self.handleKakaoLoginSuccess()
+                    } else {
+                        print("애플 로그인(바로 로그인) 실패")
+                    }
+                }
+            } else {
+                guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken"),
+                let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
+                let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
+                
+                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, nameString, emailString, authorizationCode)!) { isSuccess in
+                    if isSuccess {
+                        self.handleKakaoLoginSuccess()
+                    } else {
+                        print("애플 로그인 실패")
+                    }
+                }
+                
+            }
         default:
-            print("Error: Unsupported credential type.")
             break
         }
-
+        
     }
-    
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        // Handle error.
-        print("Sign in with Apple errored: \(error)")
-    }
-    
 }
 
 extension SelectLoginTypeVC: ASAuthorizationControllerPresentationContextProviding {

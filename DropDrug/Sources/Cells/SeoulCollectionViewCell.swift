@@ -73,4 +73,7 @@ class SeoulCollectionViewCell: UICollectionViewCell {
             make.centerX.equalToSuperview()
         }
     }
+    func configure(showNameLabel: Bool) {
+        name.isHidden = !showNameLabel
+    }
 }

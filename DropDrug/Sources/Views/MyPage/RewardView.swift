@@ -6,8 +6,6 @@ import Moya
 
 class RewardView: UIView {
     
-    let provider = MoyaProvider<MemberAPI>(plugins: [NetworkLoggerPlugin()])
-    
     private let rewardLabel: UILabel = {
         let label = UILabel()
         label.text = "리워드"
@@ -33,7 +31,6 @@ class RewardView: UIView {
     
     private let gradientLayer = CAGradientLayer()
     
-    /// Property to control chevron visibility
     var isChevronHidden: Bool = false {
         didSet {
             chevronImageView.isHidden = isChevronHidden
@@ -43,7 +40,6 @@ class RewardView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        fetchMemberInfo()
         setupGradientBackground()
     }
     
