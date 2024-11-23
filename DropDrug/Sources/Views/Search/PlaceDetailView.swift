@@ -1,11 +1,21 @@
 // Copyright © 2024 RT4. All rights reserved
 
 import UIKit
+import SDWebImage
 
 class PlaceDetailView: UIView {
     
-    var imageURL: String?
-
+    var imageURL: String? {
+        didSet {
+            // 이미지 URL이 설정될 때 이미지 업데이트
+            if let imageUrl = imageURL, let url = URL(string: imageUrl) {
+                photo.sd_setImage(with: url, placeholderImage: UIImage(named: "OB1"))
+            } else {
+                photo.image = UIImage(named: "OB1")
+            }
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
@@ -22,12 +32,6 @@ class PlaceDetailView: UIView {
         i.contentMode = .scaleAspectFill
         i.layer.cornerRadius = 10
         i.layer.masksToBounds = true
-        i.image = UIImage(named: "OB1")
-//        if let imageUrl = imageURL, let url = URL(string: imageUrl) {
-//            i.sd_setImage(with: url, placeholderImage: UIImage(named: "OB1"))
-//        } else {
-//            i.image = UIImage(named: "OB1")
-//        }
         return i
     }()
     

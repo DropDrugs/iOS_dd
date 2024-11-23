@@ -407,9 +407,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             marker.iconImage = NMFOverlayImage(name: selectedImage)
         }
         if let currentSheet = currentBottomSheet {
-                currentSheet.dismiss(animated: true) { [weak self] in
-                    self?.presentNewBottomSheet(marker, placeName: placeName, address: address, photo: photo)
-                }
+            currentSheet.dismiss(animated: true) { [weak self] in
+                self?.presentNewBottomSheet(marker, placeName: placeName, address: address, photo: photo)
+            }
         } else {
             presentNewBottomSheet(marker, placeName: placeName, address: address, photo: photo)
         }
@@ -420,7 +420,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         bottomSheetVC.modalPresentationStyle = .pageSheet
 
         if let sheetPresentationController = bottomSheetVC.sheetPresentationController {
-            let customDetent = UISheetPresentationController.Detent.custom(identifier: .init("customHeight")) { _ in 200 }
+            let customDetent = UISheetPresentationController.Detent.custom(identifier: .init("customHeight")) { _ in 140 }
             sheetPresentationController.detents = [customDetent]
             sheetPresentationController.prefersGrabberVisible = true
             sheetPresentationController.preferredCornerRadius = 16

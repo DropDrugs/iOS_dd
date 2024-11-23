@@ -1,8 +1,11 @@
 // Copyright © 2024 RT4. All rights reserved
 
 import UIKit
+import SDWebImage
 
 class PlaceListTableViewCell: UITableViewCell {
+    
+    var imageURL: String?
     
     public lazy var photo: UIImageView = {
         let i = UIImageView()
@@ -10,11 +13,6 @@ class PlaceListTableViewCell: UITableViewCell {
         i.layer.cornerRadius = 10
         i.layer.masksToBounds = true
         i.image = UIImage(named: "OB1")
-//        if let imageUrl = imageURL, let url = URL(string: imageUrl) {
-//            i.sd_setImage(with: url, placeholderImage: UIImage(named: "OB1"))
-//        } else {
-//            i.image = UIImage(named: "OB1")
-//        }
         return i
     }()
     
@@ -83,5 +81,11 @@ class PlaceListTableViewCell: UITableViewCell {
     public func configure(place: MapResponse) {
         name.text = place.name
         address.text = place.address
+        imageURL = place.locationPhoto
+        if let imageUrl = imageURL, let url = URL(string: imageUrl) {
+            photo.sd_setImage(with: url, placeholderImage: UIImage(named: "OB1"))
+        } else {
+            photo.image = UIImage(named: "OB1")
+        }
     }
 }
