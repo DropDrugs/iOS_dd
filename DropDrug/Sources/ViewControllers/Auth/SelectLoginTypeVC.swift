@@ -271,28 +271,66 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             let userIdentifier = appleIDCredential.user
-            let fullName = appleIDCredential.fullName
+            var formattedName: String = ""
+            if let authorizationCode = appleIDCredential.authorizationCode,
+               let codeString = String(data: authorizationCode, encoding: .utf8) {
+                print("Authorization Code: \(codeString)")
+            } else {
+                print("Authorization Code is nil or could not be decoded.")
+            }
+            
+            if let fullName = appleIDCredential.fullName, ((fullName.givenName?.isEmpty) == nil) && ((fullName.familyName?.isEmpty) == nil) {
+                let givenName = fullName.givenName ?? ""
+                let familyName = fullName.familyName ?? ""
+                
+                formattedName = "\(familyName)\(givenName)"
+                
+                print("Formatted Full Name: \(formattedName)")
+            } else {
+                print("Full name is nil")
+            }
+            
+            let email = appleIDCredential.email
             
             if let identityToken = appleIDCredential.identityToken,
-               let identityTokenString = String(data: identityToken, encoding: .utf8) {
+               let identityTokenString = String(data: identityToken, encoding: .utf8),
+               let emailString = email{
                 SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
-                callAppleLoginAPI(param: setupAppleDTO(identityTokenString)!) { isSuccess in
+                SelectLoginTypeVC.keychain.set(emailString, forKey: "AppleIDEmail")
+                SelectLoginTypeVC.keychain.set(formattedName, forKey: "AppleIDName")
+                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, formattedName, emailString)!) { isSuccess in
                     if isSuccess {
                         self.handleKakaoLoginSuccess()
                     } else {
                         print("애플 로그인(바로 로그인) 실패")
                     }
                 }
+            } else {
+                guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken"),
+                let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
+                let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
+                
+                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, nameString, emailString)!) { isSuccess in
+                    if isSuccess {
+                        self.handleKakaoLoginSuccess()
+                    } else {
+                        print("애플 로그인 실패")
+                    }
+                }
+                
             }
         case let passwordCredential as ASPasswordCredential:
             let username = passwordCredential.user
             let password = passwordCredential.password
-            guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken") else { return }
-            callAppleLoginAPI(param: setupAppleDTO(identityTokenString)!) { isSuccess in
+            guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken"),
+            let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
+            let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
+            
+            callAppleLoginAPI(param: setupAppleDTO(identityTokenString, nameString, emailString)!) { isSuccess in
                 if isSuccess {
                     self.handleKakaoLoginSuccess()
                 } else {
-                    print("애플 로그인 (패스워드 시도) 실패")
+                    print("애플 로그인 간접 실패")
                 }
             }
             
