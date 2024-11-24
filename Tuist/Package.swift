@@ -25,7 +25,8 @@
 //                       "NMapsMap" : .staticLibrary,
 //                       "NMapsGeometry" : .staticLibrary
                        "SDWebImage" : .framework,
-                       "Toast" : .framework
+                       "Toast" : .framework,
+//                       "Charts" : .framework
                       ]
     )
 #endif
@@ -44,5 +45,6 @@ let package = Package(
         .package(url: "https://github.com/slr-09/Naver-Map-iOS-SPM.git", from: "0.1.0"),
         .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.19.7"),
         .package(url: "https://github.com/scalessec/Toast-Swift.git", from: "5.1.1")
+//        .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0")
     ]
 )
