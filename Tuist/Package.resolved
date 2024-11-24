@@ -1,5 +1,5 @@
 {
-  "originHash" : "3f5a1e6363be67adcb4edec36220e870e932d92ada94dbb38883263b6abf688f",
+  "originHash" : "a26fb2d785bffad538741b22a15f5962cf53174f50357e73cdce7220a19a2d26",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -26,15 +26,6 @@
       "state" : {
         "revision" : "61b85103a1aeed8218f17c794687781505fbbef5",
         "version" : "11.2.0"
-      }
-    },
-    {
-      "identity" : "charts",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/danielgindi/Charts.git",
-      "state" : {
-        "revision" : "dd9c72e3d7e751e769971092a6bd72d39198ae63",
-        "version" : "5.1.0"
       }
     },
     {
