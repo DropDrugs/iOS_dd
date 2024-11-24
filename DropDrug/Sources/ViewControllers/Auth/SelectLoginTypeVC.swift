@@ -40,7 +40,6 @@ class SelectLoginTypeVC : UIViewController {
         button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         return button
     }()
-    //    let appleLoginButton = ASAuthorizationAppleIDButton()
     
     lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -146,35 +145,6 @@ class SelectLoginTypeVC : UIViewController {
         }
     }
     
-    //    @objc func kakaoButtonTapped() {
-    //        Task {
-    //            if await kakaoAuthVM.KakaoLogin() {
-    //                UserApi.shared.me() { [weak self] (user, error) in
-    //                    guard let self = self else { return }
-    //
-    //                    if let error = error {
-    //                        print("에러 발생: \(error.localizedDescription)")
-    //                        return
-    //                    }
-    //
-    //                    guard let kakaoAccount = user?.kakaoAccount else {
-    //                        print("사용자 정보 없음")
-    //                        return
-    //                    }
-    //
-    //                    let userId = user?.id ?? 123
-    //
-    //                    print("유저: \(userId)")
-    //                    let idToken = SelectLoginTypeVC.keychain.get("idToken")
-    //                    // TODO: 서버에 카카오 사용자 정보 전달 및 로그인 처리
-    //                    self.handleKakaoLoginSuccess()
-    //                }
-    //            } else {
-    //                print("카카오 로그인 실패")
-    //            }
-    //        }
-    //    }
-    
     @objc func kakaoButtonTapped() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
@@ -217,29 +187,6 @@ class SelectLoginTypeVC : UIViewController {
         mainVC.modalPresentationStyle = .fullScreen
         present(mainVC, animated: true, completion: nil)
     }
-    
-    //    @objc private func googleButtonTapped() {
-    //        // Google login setup
-    //        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
-    //        let config = GIDConfiguration(clientID: clientID)
-    //
-    //        GIDSignIn.sharedInstance.signIn(withPresenting: self) {signInResult, error in
-    //            guard error == nil else { return }
-    //            guard let result = signInResult,
-    //                  let token = result.user.idToken?.tokenString else { return }
-    //
-    //            let user = result.user
-    //            let fullName = user.profile?.name
-    //            let accesstoken = result.user.accessToken.tokenString
-    //            let refreshtoken = result.user.refreshToken.tokenString
-    //
-    //            print(user)
-    //            print(fullName as Any)
-    //            print("accesstoken : \(accesstoken)")
-    //            print("refreshtoken: \(refreshtoken)")
-    //        }
-    //
-    //    }
     
     @objc func startTapped() {
         let SignUpVC = SignUpVC()
@@ -310,8 +257,8 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                 }
             } else {
                 guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken"),
-                let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
-                let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
+                      let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
+                      let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
                 
                 callAppleLoginAPI(param: setupAppleDTO(identityTokenString, nameString, emailString, authorizationCode)!) { isSuccess in
                     if isSuccess {
