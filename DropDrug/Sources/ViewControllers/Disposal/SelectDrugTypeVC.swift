@@ -52,7 +52,6 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     private func setupView() {
         view.backgroundColor = .white
         
-        // UICollectionView 생성 및 등록
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self

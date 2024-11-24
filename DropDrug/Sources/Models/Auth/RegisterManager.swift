@@ -61,6 +61,22 @@ extension SignUpVC {
             }
         }
     }
+    
+    func checkDuplicateEmail(completion: @escaping (Bool) -> Void) {
+        MemberProvider.request(.fetchMemberInfo) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    completion(true)
+                } catch {
+                    completion(false)
+                }
+            case .failure(let error):
+                completion(false)
+            }
+        }
+    }
+    
 }
 
 extension LoginVC {
