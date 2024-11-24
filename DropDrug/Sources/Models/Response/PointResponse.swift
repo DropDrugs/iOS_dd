@@ -5,3 +5,8 @@ import Foundation
 struct PointResponse: Codable {
     let point: Int
 }
+
+
+struct BadgeEarnedResponse : Codable {
+    let getBadge : Bool
+}

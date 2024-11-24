@@ -5,7 +5,7 @@ import SnapKit
 import Moya
 
 class CertificationSuccessVC: UIViewController {
-    let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    let provider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     // MARK: - UI Elements
     private let imageView: UIImageView = {
@@ -69,6 +69,26 @@ class CertificationSuccessVC: UIViewController {
         setupConstraints()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // call post api
+        postSuccessPoint(data: setupData(point: 100, type: "PHOTO_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, getBadge  in
+            if isSuccess {
+                print("포인트 적립 성공")
+                if let getBadge = getBadge {
+                    // 카드 확인하러가기
+                    if getBadge {
+                        // 카드 확인
+                    } else {
+                        // 포인트 적립 내역 확인
+                    }
+                }
+            } else {
+                print("포인트 적립 실패")
+            }
+        }
+    }
+    
     // MARK: - Setup UI
     private func setupUI() {
         view.backgroundColor = .white
@@ -109,7 +129,39 @@ class CertificationSuccessVC: UIViewController {
     
     // MARK: - Actions
     @objc private func completeButtonTapped() {
-        print("완료 버튼 클릭됨!")
-        dismiss(animated: true, completion: nil) // 팝업 닫기 동작
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+            return
+        }
+        
+        var topController = keyWindow.rootViewController
+        
+        while let presented = topController?.presentedViewController {
+            topController = presented
+        }
+        
+        if let mainTabBarVC = topController as? MainTabBarController {
+            // 2. 네비게이션 스택 초기화
+            if let navigationController = mainTabBarVC.navigationController {
+                navigationController.popToRootViewController(animated: true)
+            }
+            return
+        }
+        
+        topController?.dismiss(animated: true) {
+            self.resetToMainTabBar()
+        }
+    }
+
+    private func resetToMainTabBar() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+            return
+        }
+        
+        let mainTabBarVC = MainTabBarController()
+        let navigationController = UINavigationController(rootViewController: mainTabBarVC)
+        keyWindow.rootViewController = navigationController
+        keyWindow.makeKeyAndVisible()
     }
 }

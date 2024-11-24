@@ -254,13 +254,13 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
         present(loadingVC, animated: true)
     }
     
-    // MARK: Actions
-    @objc private func didTapBackButton() {
-        navigationController?.popViewController(animated: true)
-    }
-    
-    private func moveToMainScreen() {
-        navigationController?.popViewController(animated: true)
-    }
+//    // MARK: Actions
+//    @objc private func didTapBackButton() {
+//        navigationController?.popViewController(animated: true)
+//    }
+//    
+//    private func moveToMainScreen() {
+//        navigationController?.popViewController(animated: true)
+//    }
     
 }

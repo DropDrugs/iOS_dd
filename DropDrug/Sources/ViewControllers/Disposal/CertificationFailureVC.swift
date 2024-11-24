@@ -5,7 +5,7 @@ import SnapKit
 import Moya
 
 class CertificationFailureVC: UIViewController {
-    let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+//    let provider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     // MARK: - UI Elements
     private let imageView: UIImageView = {
@@ -109,7 +109,13 @@ class CertificationFailureVC: UIViewController {
     
     // MARK: - Actions
     @objc private func retryButtonTapped() {
-        print("다시 시도 버튼 클릭됨!")
-        dismiss(animated: true, completion: nil) // 팝업 닫기 동작
+        var currentVC: UIViewController? = self
+        while let presentingVC = currentVC?.presentingViewController {
+            if presentingVC is SelectDrugTypeVC {
+                presentingVC.dismiss(animated: true, completion: nil)
+                return
+            }
+            currentVC = presentingVC
+        }
     }
 }
