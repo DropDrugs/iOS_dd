@@ -16,7 +16,7 @@ class RewardView: UIView {
     
     let pointsLabel: UILabel = {
         let label = UILabel()
-        label.text = "1,200 P"
+        label.text = "0 P"
         label.font = UIFont.ptdSemiBoldFont(ofSize: 17)
         label.textColor = .black
         return label
