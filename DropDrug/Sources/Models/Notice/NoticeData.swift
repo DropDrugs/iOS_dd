@@ -7,3 +7,10 @@ struct NoticeData : Codable {
     let content : String
     let date : String
 }
+
+struct PushNoticeData : Codable {
+    let id : Int
+    let title : String
+    let content : String
+    let date : String
+}
