@@ -18,7 +18,7 @@ class ProfileView: UIView {
     
     let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "김드롭"
+        label.text = ""
         label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.textColor = UIColor.label
         return label
@@ -26,7 +26,7 @@ class ProfileView: UIView {
     
     let emailLabel: UILabel = {
         let label = UILabel()
-        label.text = "kimdrop@gmail.com"
+        label.text = ""
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = UIColor.systemGray
         return label

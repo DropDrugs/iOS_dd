@@ -53,20 +53,7 @@ class SplashVC : UIViewController {
     
     private func checkAuthenticationStatus() {
         if let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") {
-            if isTokenExpired(token: accessToken) {
-                refreshAccessToken { success in
-                    if success {
-                        print("accessToken 재발급 성공")
-                        self.navigateToMainScreen()
-                    } else {
-                        print("accessToken 재발급 실패")
-                        self.navigateToOnBoaringScreen()
-                    }
-                }
-            } else {
-                print("Access Token 유효: \(accessToken)")
-                navigateToMainScreen()
-            }
+            navigateToMainScreen()
         } else {
             print("토큰 없음. 로그인 화면으로 이동.")
             navigateToOnBoaringScreen()
