@@ -1,15 +1,23 @@
 {
   "images" : [
     {
-      "filename" : "디자인 시스템 Group 26791.svg",
-      "idiom" : "universal"
+      "filename" : "디자인 시스템 Group 26791.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "디자인 시스템 Group 26791 (1).png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "디자인 시스템 Group 26791 (2).png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
   }
 }
