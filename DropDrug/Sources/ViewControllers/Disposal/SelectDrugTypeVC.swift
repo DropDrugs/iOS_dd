@@ -5,6 +5,8 @@ import SnapKit
 
 class SelectDrugTypeVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    public var userPickedImageURL : URL?
+    
     private var collectionView: UICollectionView!
     // TODO : 이미지 에셋 추가
     let categories = [
@@ -118,16 +120,64 @@ class SelectDrugTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let selectedImage = info[.editedImage] as? UIImage {
-            // 선택된 이미지를 처리하는 코드 추가
-            print("이미지를 선택했습니다: \(selectedImage)")
-        }
+        picker.dismiss(animated: true)
         
-        picker.dismiss(animated: true, completion: nil)
+        if let image = info[.originalImage] as? UIImage {
+            // PNG 데이터로 변환
+            if let pngData = image.pngData() {
+                // 비동기로 파일 저장
+                saveToDocuments(data: pngData) { [weak self] savedImageURL in
+                    guard let self = self, let url = savedImageURL else {
+                        print("이미지 저장 실패")
+                        return
+                    }
+                    print("PNG 파일 저장 완료: \(url)")
+                    
+                    // 저장 완료 후 새로운 뷰 컨트롤러 띄우기
+                    self.showNewViewController(with: url)
+                }
+            } else {
+                print("PNG로 변환 실패")
+            }
+        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+    
+    private func saveToDocuments(data: Data, completion: @escaping (URL?) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async { // 백그라운드 스레드에서 실행
+            let fileManager = FileManager.default
+            let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+            guard let documentsURL = urls.first else {
+                DispatchQueue.main.async {
+                    completion(nil) // 실패 시 nil 반환
+                }
+                return
+            }
+            
+            let fileURL = documentsURL.appendingPathComponent("captured_image.png")
+            do {
+                try data.write(to: fileURL)
+                print("파일이 저장되었습니다: \(fileURL)")
+                DispatchQueue.main.async {
+                    completion(fileURL) // 성공 시 URL 반환
+                }
+            } catch {
+                print("파일 저장 실패: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    completion(nil) // 실패 시 nil 반환
+                }
+            }
+        }
+    }
+    
+    private func showNewViewController(with imageURL: URL) {
+        let loadingVC = ImageDisplayVC()
+        loadingVC.imageURL = imageURL
+        loadingVC.modalPresentationStyle = .fullScreen
+        present(loadingVC, animated: true)
     }
     
     // MARK: Actions

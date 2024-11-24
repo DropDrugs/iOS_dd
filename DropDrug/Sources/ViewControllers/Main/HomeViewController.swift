@@ -25,6 +25,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isHidden = true
         getHomeInfo { [weak self] isSuccess in
             if isSuccess {
                 DispatchQueue.main.async {
@@ -54,7 +55,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     
     @objc
     private func goToSPBtnTapped() {
-        let vc = TestVC()
+        let vc = MapViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
         

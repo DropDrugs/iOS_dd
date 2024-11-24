@@ -7,12 +7,7 @@ import Moya
 class PrescriptionDrugVC: UIViewController {
     
     let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
-    
-    struct PrescriptionDrug {
-        let date: String
-        let duration: String
-    }
-    
+
     var drugs: [PrescriptionDrug] = []
     
     // MARK: - UI Elements
@@ -67,21 +62,8 @@ class PrescriptionDrugVC: UIViewController {
                 keyWindow.rootViewController?.present(navigationController, animated: true)
             }
         }
-        
         self.navigationController?.isNavigationBarHidden = true
         
-        drugs = [
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/05/01", duration: "3일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/06/15", duration: "7일치")
-            ]
-        drugsTableView.reloadData()
         setupView()
         setConstraints()
         setupGestures()
@@ -90,6 +72,13 @@ class PrescriptionDrugVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
+        
+        self.getDrugsList { isSuccess in
+            if isSuccess {
+                self.drugsTableView.reloadData()
+            } else {
+            }
+        }
     }
     
     // MARK: - Setup Methods
@@ -166,4 +155,9 @@ extension PrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate {
         cell.selectionStyle = .none
         return cell
     }
+}
+
+struct PrescriptionDrug {
+    let date: String
+    let duration: String
 }

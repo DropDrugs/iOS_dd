@@ -6,5 +6,6 @@ struct MapResponse : Codable {
     let lat : String
     let lng: String
     let address: String
-    let detail: String
+    let name: String?
+    let locationPhoto: String
 }

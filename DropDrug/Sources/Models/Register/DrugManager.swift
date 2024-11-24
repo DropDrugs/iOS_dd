@@ -4,14 +4,20 @@ import Foundation
 import Moya
 
 extension PrescriptionDrugVC { //get
-    func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
+    func getDrugsList(completion: @escaping (Bool) -> Void) {
         DrugProvider.request(.getDrug) { result in
             switch result {
             case .success(let response):
                 do {
-                    let data = try response.map(MemberInfo.self)
+                    let response = try response.map([DrugResponse].self)
+                    self.drugs = []
+                    for drugData in response {
+                        let countString = "\(drugData.count)일치"
+                        self.drugs.append(PrescriptionDrug(date: drugData.date, duration: countString))
+                    }
                     completion(true)
                 } catch {
+                    print("Failed to decode response: \(error)")
                     completion(false)
                 }
             case .failure(let error):
@@ -26,24 +32,26 @@ extension PrescriptionDrugVC { //get
 }
 
 extension EnrollDetailViewController { //post
-    func setupPostDrugDTO() -> drugSaveRequest? {
-        return drugSaveRequest(count: 0, date: "dd")
+    func setupPostDrugDTO(_ date: String, _ count : Int) -> drugSaveRequest {
+        return drugSaveRequest(count: count, date: date)
     }
     
-    func fetchMemberInfo(_ userParameter: drugSaveRequest, completion: @escaping (Bool) -> Void) {
+    func postNewDrug(_ userParameter: drugSaveRequest, completion: @escaping (Bool) -> Void) {
         DrugProvider.request(.postDrug(param: userParameter)) { result in
             switch result {
             case .success(let response):
                 do {
-                    let data = try response.map(MemberInfo.self)
-                    DispatchQueue.main.async {
-                        //데이터 받아오기
-                    }
+                    let _ = try response.map(IdResponse.self)
                     completion(true)
                 } catch {
+                    print("Failed to decode response: \(error)")
                     completion(false)
                 }
             case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
                 completion(false)
             }
         }
@@ -51,23 +59,42 @@ extension EnrollDetailViewController { //post
 }
 
 extension DiscardPrescriptionDrugVC { //delete
-    func setupDeleteDrugDTO() -> drugDeleteRequest? {
-        return drugDeleteRequest(id: [1,2,3])
+    func setupDeleteDrugDTO(_ drugIDs : [Int]) -> drugDeleteRequest {
+        return drugDeleteRequest(id: drugIDs)
     }
-    func fetchMemberInfo(_ userParameter: drugDeleteRequest, completion: @escaping (Bool) -> Void) {
-        DrugProvider.request(.deleteDrug(param: userParameter)) { result in
+    
+    func getDrugsList(completion: @escaping (Bool) -> Void) {
+        DrugProvider.request(.getDrug) { result in
             switch result {
             case .success(let response):
                 do {
-                    let data = try response.map(MemberInfo.self)
-                    DispatchQueue.main.async {
-                        //데이터 받아오기
-                    }
+                    let response = try response.map([DrugResponse].self)
+                    self.drugList = response
                     completion(true)
                 } catch {
+                    print("Failed to decode response: \(error)")
                     completion(false)
                 }
             case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
+                completion(false)
+            }
+        }
+    }
+    
+    func deleteDrugs(_ userParameter: drugDeleteRequest, completion: @escaping (Bool) -> Void) {
+        DrugProvider.request(.deleteDrug(param: userParameter)) { result in
+            switch result {
+            case .success(let response):
+                completion(true)
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
                 completion(false)
             }
         }

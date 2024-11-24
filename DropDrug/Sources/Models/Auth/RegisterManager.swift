@@ -6,7 +6,7 @@ import KeychainSwift
 
 extension SplashVC {
     func refreshAccessToken(completion: @escaping (Bool) -> Void) {
-        guard let refreshToken = SelectLoginTypeVC.keychain.get("refreshToken") else {
+        guard let refreshToken = SelectLoginTypeVC.keychain.get("serverRefreshToken") else {
             print("refreshToken not found")
             completion(false)
             return

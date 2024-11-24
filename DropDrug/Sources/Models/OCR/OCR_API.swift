@@ -20,7 +20,7 @@ struct images: Codable {
 }
 
 //MARK: - Response
-struct Response: Codable {
+struct OCRResponse: Codable {
     let version : String
     let requestID: String
     let timestamp: Int
