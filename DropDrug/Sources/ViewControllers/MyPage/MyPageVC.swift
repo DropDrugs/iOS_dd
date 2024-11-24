@@ -28,7 +28,7 @@ class MyPageVC : UIViewController {
     
     let myPageProfileView = ProfileView()
     let rewardView = RewardView()
-//    private let dropCardLabel = SubLabelView()
+    private let dropCardLabel = SubLabelView()
     private let disposalStateLabel = SubLabelView()
     
     override func viewDidLoad() {
