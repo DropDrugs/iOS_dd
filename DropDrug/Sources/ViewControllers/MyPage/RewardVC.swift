@@ -64,14 +64,14 @@ class RewardVC : UIViewController {
         return view
     }()
     
-    private let rewardTableView: UITableView = {
+    let rewardTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(PointHistoryCell.self, forCellReuseIdentifier: PointHistoryCell.identifier)
         tableView.separatorStyle = .none
         return tableView
     }()
     
-    private var rewardData: [PointDetail] = []
+    var rewardData: [PointDetail] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,7 +80,6 @@ class RewardVC : UIViewController {
         setConstraints()
         
         // 데이터 로드
-        rewardData = getMockData()
         rewardTableView.delegate = self
         rewardTableView.dataSource = self
         rewardTableView.reloadData()
@@ -115,18 +114,6 @@ class RewardVC : UIViewController {
             make.top.equalTo(headerView.snp.bottom)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
-    }
-    
-    // MARK: - Mock Data
-    private func getMockData() -> [PointDetail] {
-        return [
-            PointDetail(date: "23/04/29", point: -200, type: "캐릭터 구매"),
-            PointDetail(date: "23/04/23", point: 200, type: "폐기 사진 인증"),
-            PointDetail(date: "23/04/15", point: 300, type: "폐기 장소 문의"),
-            PointDetail(date: "23/04/10", point: 200, type: "폐기 사진 인증"),
-            PointDetail(date: "23/04/08",  point: -200, type: "캐릭터 구매"),
-            PointDetail(date: "23/04/04", point: 200, type: "폐기 사진 인증")
-        ]
     }
     
     // MARK: - Actions

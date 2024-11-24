@@ -2,6 +2,7 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class NoticesVC: UIViewController {
     
@@ -59,7 +60,7 @@ extension NoticesVC :  UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NotificationCell", for: indexPath) as! NotificationCell
-        cell.configure(with: NoticeList[indexPath.row].title)
+        cell.configure(with: NoticeList[indexPath.row].title, isRecent: Constants.Colors.pink!) // 비활성화면 gray300?
         
         return cell
     }

@@ -85,7 +85,10 @@ let project = Project(
                 
                 .external(name: "NaverMapSDK"),
                 .external(name: "SDWebImage"),
-                .external(name: "Toast")
+                .external(name: "Toast"),
+                .external(name: "Lottie"),
+//                .external(name: "Charts")
+//                .sdk(name: "Charts", type: .framework)
 //                .external(name: "GoogleSignIn"),
 //                .external(name: "NMapsGeometry"),
 //                .external(name: "NMapsMap")

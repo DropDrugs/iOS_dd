@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "인증 실패 그래픽.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "인증 실패 그래픽 (1) 1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "인증 실패 그래픽 (2) 1.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

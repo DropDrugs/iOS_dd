@@ -20,8 +20,8 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     private let accountOptions = ["닉네임", "아이디", /*"비밀번호 변경",*/ "캐릭터 변경", "로그아웃", "계정 삭제"]
     
     // 가상 데이터
-    var nickname: String = "김드롭"
-    var userId: String = "kimdrop@gmail.com"
+    var nickname: String = ""
+    var userId: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()

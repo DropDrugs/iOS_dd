@@ -40,11 +40,18 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     
     private let homeView: HomeView = {
         let hv = HomeView()
+        hv.alarmBtn.addTarget(self, action: #selector(AlarmBtnTapped), for: .touchUpInside)
         hv.resetBtn.addTarget(self, action: #selector(resetBtnTapped), for: .touchUpInside)
         hv.goToSearchPlaceBtn.addTarget(self, action: #selector(goToSPBtnTapped), for: .touchUpInside)
         hv.floatingBtn.addTarget(self, action: #selector(didTapFloatingBtn), for: .touchUpInside)
         return hv
     }()
+    
+    @objc
+    private func AlarmBtnTapped() {
+        let alarmVC = PushNoticeVC()
+        navigationController?.pushViewController(alarmVC, animated: true)
+    }
     
     @objc
     private func resetBtnTapped() {
@@ -129,7 +136,9 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 address = "서비스 이용 가능 지역이 아닙니다"
             }
             
-            print(address)
+//            print(address)
+            // TO DO : 시도-시군구 파싱해서 저장
+            Constants.currentPosition = address
             for i in address.components(separatedBy: " ") {
                 if !i.contains("대한민국") {
                     strAddr += " \(i)"

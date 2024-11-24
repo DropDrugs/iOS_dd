@@ -5,70 +5,125 @@ import SDWebImage
 import Moya
 
 class ImageDisplayVC: UIViewController {
+    lazy var progressBar: CircularProgressBar = CircularProgressBar()
+    var currentProgress: CGFloat = 0.0
     
-    private let imageView = UIImageView()
     var imageURL: URL?
     
     var extractedTexts : [String] = []
     
     let provider = MoyaProvider<OCRService>(plugins: [ NetworkLoggerPlugin() ])
     
+    public lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "인증 사진을\n확인하고 있어요"
+        label.textAlignment = .center
+        label.font = UIFont.ptdBoldFont(ofSize: 24)
+        label.textColor = Constants.Colors.gray800
+        label.numberOfLines = 2
+        return label
+    }()
+    
+    public lazy var descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.text = "3분 이내로 인증을 완료할게요"
+        label.textAlignment = .center
+        label.font = UIFont.ptdRegularFont(ofSize: 15)
+        label.textColor = Constants.Colors.gray500
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        setupImageView()
+        setupProgressBar()
         loadImage()
+        
     }
     
-    private func setupImageView() {
-        view.addSubview(imageView)
+    private func setupProgressBar() {
+        // Add progress bar to the view
+        view.addSubview(titleLabel)
+        view.addSubview(descriptionLabel)
+        view.addSubview(progressBar)
         
-        imageView.contentMode = .scaleAspectFit
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(20)
+        // SnapKit Constraints
+        progressBar.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(80)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(superViewWidth*0.8) // 크기 200x200
         }
-    }
-    
-    private func loadImage() {
-        // URL of the PNG image
-        guard let url = self.imageURL else { return }
         
-        // Load image using SDWebImage
-        imageView.sd_setImage(with: url, placeholderImage: nil, options: .continueInBackground, completed: { image, error, cacheType, url in
-            if let error = error {
-                print("Failed to load image: \(error.localizedDescription)")
-            } else {
-                print("Image loaded successfully!")
-                self.compressImage(image!)
-            }
-        })
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(progressBar.snp.bottom).offset(100)
+            make.centerX.equalToSuperview()
+        }
+        
+        descriptionLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(8)
+            make.centerX.equalToSuperview()
+        }
+        
+        // Configure progress bar properties
+        progressBar.innerProgressColor = Constants.Colors.skyblue! // 색상 설정
+        progressBar.innerThickness = 25
+        progressBar.showProgressText = true // 중앙에 텍스트 표시
     }
     
-    private func compressImage(_ image: UIImage) {
+    func loadImage() {
+        // URL of the PNG image
+        updateProgressManually(to: 0.1)
+        guard let url = self.imageURL else { return }
+        self.compressImage(UIImage(contentsOfFile: url.path)!)
+    }
+    
+    func updateProgressManually(to value: CGFloat) {
+        progressBar.updateProgress(to: value)
+    }
+    
+    func compressImage(_ image: UIImage) {
         ImageCompressionModel.shared.compressImageToUnder50MB(image: image) { [weak self] compressedData in
-            guard let self = self, let compressedData = compressedData else {
-                print("압축 실패")
+            guard let self = self else { return }
+            guard let compressedData = compressedData else {
+                self.presentCertificationFailureVC()
                 return
             }
             print("압축된 이미지 크기: \(compressedData.count / 1024 / 1024)MB")
+            updateProgressManually(to: 0.25)
             
             // 압축된 이미지를 저장하거나 다른 작업 수행
             let imageString = ImageCompressionModel.shared.convertToBase64(data: compressedData)
             let requestData = setOCRRequestData(imageData: imageString)
+            updateProgressManually(to: 0.5)
             sendCompressedImage(requestData: requestData) { isSuccess in
+                self.updateProgressManually(to: 0.6)
                 if isSuccess {
                     let combinedString = self.extractedTexts.joined().replacingOccurrences(of: " ", with: "")
                     print(combinedString)
+                    self.updateProgressManually(to: 0.75)
                     if combinedString.contains("폐의약품") {
-                        print("텍스트 추출 성공 -> 성공 페이지로 이동")
+                        self.updateProgressManually(to: 0.99)
+                        self.presentCertificationSuccessVC()
                     }
                 } else {
-                    print("실패 -> 실패 페이지로 이동")
+                    self.presentCertificationFailureVC()
                 }
             }
             
         }
+    }
+    
+    func presentCertificationFailureVC() {
+        let failureVC = CertificationFailureVC()
+        failureVC.modalPresentationStyle = .fullScreen
+        present(failureVC, animated: true)
+    }
+    
+    func presentCertificationSuccessVC() {
+        let successVC = CertificationSuccessVC()
+        successVC.modalPresentationStyle = .fullScreen
+        present(successVC, animated: true)
     }
 }
 
@@ -94,7 +149,6 @@ extension ImageDisplayVC {
                                     self.extractedTexts.append(field.inferText)
                                 } else { continue }
                             }
-                            // 모든 텍스트 추출 완료
                         }
                     }
                     completion(true)
@@ -111,6 +165,5 @@ extension ImageDisplayVC {
             }
         }
     }
-    
     
 }
