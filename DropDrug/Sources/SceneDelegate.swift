@@ -19,6 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
  
         let viewController = SplashVC()
+//        let viewController = CertificationSuccessVC()
 
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
