@@ -4,16 +4,12 @@ import UIKit
 import SnapKit
 import Moya
 
-class NoticesVC: UIViewController {
+class PushNoticeVC: UIViewController {
     
-    let NoticeList : [NoticeData] = [
-        NoticeData(title: "테스트용 공지사항 1", content: "테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.", date: "2024-11-23T16:25:11.183Z"),
-        NoticeData(title: "테스트용 공지사항 2", content: "테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.", date: "2024-11-23T16:25:11.183Z"),
-        NoticeData(title: "테스트용 공지사항 3", content: "테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.", date: "2024-11-23T16:25:11.183Z"),
-    ] // 날짜 기준으로 소팅 필수 (Get 호출 후)
+    let NoticeList : [PushNoticeData] = [] // id 기준으로 역순
     
     private lazy var backButton: CustomBackButton = {
-        let button = CustomBackButton(title: "  공지사항")
+        let button = CustomBackButton(title: "  알림")
         button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         return button
     }()
@@ -53,7 +49,7 @@ class NoticesVC: UIViewController {
 
 }
 
-extension NoticesVC :  UITableViewDataSource, UITableViewDelegate {
+extension PushNoticeVC :  UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return NoticeList.count
     }

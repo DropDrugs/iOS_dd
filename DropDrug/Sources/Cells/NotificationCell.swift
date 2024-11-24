@@ -56,8 +56,9 @@ class NotificationCell: UITableViewCell {
     
     // MARK: - Configure Method
     
-    func configure(with title: String) {
+    func configure(with title: String, isRecent color : UIColor) {
         titleLabel.text = title
+        iconImageView.tintColor = color
     }
     
 }
