@@ -210,17 +210,53 @@ class SignUpVC : UIViewController {
         validateInputs()
     }
     
-    @objc func emailValidate(){
-//        if let email = emailField.text, ValidationUtility.isValidEmail(email) {
-//        TODO: 이메일 주소 유효성 확인 조건문
-        if let email = emailField.text {
-            emailField.validationLabel.isHidden = true
-            emailField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
-            isEmailValid = true
-        } else {
+//    @objc func emailValidate(){
+////        if let email = emailField.text, ValidationUtility.isValidEmail(email) {
+////        TODO: 이메일 주소 유효성 확인 조건문
+//        if let email = emailField.text, checkEmail() {
+//            emailField.validationLabel.isHidden = true
+//            emailField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
+//            isEmailValid = true
+//        } else {
+//            emailField.validationLabel.isHidden = false
+//            emailField.textField.layer.borderColor = Constants.Colors.red?.cgColor
+//            isEmailValid = false
+//        }
+//    }
+    
+    @objc func emailValidate() {
+        guard let email = emailField.text, !email.isEmpty else {
+            // 이메일이 비어있을 때 처리
             emailField.validationLabel.isHidden = false
+            emailField.validationLabel.text = "이메일을 입력해 주세요"
             emailField.textField.layer.borderColor = Constants.Colors.red?.cgColor
             isEmailValid = false
+            return
+        }
+        
+        // 이메일 형식 확인
+        if !ValidationUtility.isValidEmail(email) {
+            emailField.validationLabel.isHidden = false
+            emailField.validationLabel.text = "유효하지 않은 이메일 형식입니다"
+            emailField.textField.layer.borderColor = Constants.Colors.red?.cgColor
+            isEmailValid = false
+            return
+        }
+        
+        // 이메일 중복 검사 (네트워크 요청)
+        checkEmail { [weak self] isDuplicate in
+            DispatchQueue.main.async {
+                if isDuplicate {
+                    self?.emailField.validationLabel.isHidden = false
+                    self?.emailField.validationLabel.text = "이미 사용 중인 이메일입니다"
+                    self?.emailField.textField.layer.borderColor = Constants.Colors.red?.cgColor
+                    self?.isEmailValid = false
+                } else {
+                    self?.emailField.validationLabel.isHidden = true
+                    self?.emailField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
+                    self?.isEmailValid = true
+                }
+            }
         }
     }
     
@@ -269,4 +305,22 @@ class SignUpVC : UIViewController {
         signUpButton.isEnabled = isValid
         signUpButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
     }
+    
+    func checkEmail(completion: @escaping (Bool) -> Void) {
+        guard let email = emailField.text, !email.isEmpty else {
+            completion(false)
+            return
+        }
+        
+        MemberProvider.request(.checkDuplicateEmail(email: email)) { result in
+            switch result {
+            case .success(let response):
+                let isDuplicate = response.statusCode != 200
+                completion(isDuplicate)
+            case .failure:
+                completion(true)
+            }
+        }
+    }
+    
 }
