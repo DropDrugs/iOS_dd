@@ -84,9 +84,9 @@ class ImageDisplayVC: UIViewController {
     
     func compressImage(_ image: UIImage) {
         ImageCompressionModel.shared.compressImageToUnder50MB(image: image) { [weak self] compressedData in
-            guard let self = self, let compressedData = compressedData else {
-                print("압축 실패")
-                // 화면 이동
+            guard let self = self else { return }
+            guard let compressedData = compressedData else {
+                self.presentCertificationFailureVC()
                 return
             }
             print("압축된 이미지 크기: \(compressedData.count / 1024 / 1024)MB")
@@ -104,14 +104,26 @@ class ImageDisplayVC: UIViewController {
                     self.updateProgressManually(to: 0.75)
                     if combinedString.contains("폐의약품") {
                         self.updateProgressManually(to: 0.99)
-                        print("텍스트 추출 성공 -> 성공 페이지로 이동")
+                        self.presentCertificationSuccessVC()
                     }
                 } else {
-                    print("실패 -> 실패 페이지로 이동")
+                    self.presentCertificationFailureVC()
                 }
             }
             
         }
+    }
+    
+    func presentCertificationFailureVC() {
+        let failureVC = CertificationFailureVC()
+        failureVC.modalPresentationStyle = .fullScreen
+        present(failureVC, animated: true)
+    }
+    
+    func presentCertificationSuccessVC() {
+        let successVC = CertificationSuccessVC()
+        successVC.modalPresentationStyle = .fullScreen
+        present(successVC, animated: true)
     }
 }
 
@@ -153,5 +165,5 @@ extension ImageDisplayVC {
             }
         }
     }
-
+    
 }

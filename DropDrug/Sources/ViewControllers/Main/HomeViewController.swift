@@ -129,7 +129,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 address = "서비스 이용 가능 지역이 아닙니다"
             }
             
-            print(address)
+//            print(address)
+            Constants.currentPosition = address
             for i in address.components(separatedBy: " ") {
                 if !i.contains("대한민국") {
                     strAddr += " \(i)"

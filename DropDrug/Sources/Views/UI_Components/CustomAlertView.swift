@@ -56,7 +56,7 @@ class CustomAlertView: UIView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        backgroundColor = UIColor.black.withAlphaComponent(0.5) // 반투명 배경
+        backgroundColor = UIColor.black.withAlphaComponent(0.5)
         
         addSubview(containerView)
         containerView.addSubview(titleLabel)
@@ -66,6 +66,14 @@ class CustomAlertView: UIView {
         setupConstraints()
         
         confirmButton.addTarget(self, action: #selector(didTapConfirmButton), for: .touchUpInside)
+    }
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        // containerView 외부는 터치 이벤트를 무시
+        if !containerView.frame.contains(point) {
+            return false
+        }
+        return true
     }
     
     private func setupConstraints() {
@@ -105,7 +113,7 @@ class CustomAlertView: UIView {
     
     // MARK: - Actions
     @objc private func didTapConfirmButton() {
-        // 팝업을 닫음
+        // 팝업 닫기
         self.removeFromSuperview()
     }
 }

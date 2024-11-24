@@ -2,8 +2,10 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class CertificationFailureVC: UIViewController {
+    let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     // MARK: - UI Elements
     private let imageView: UIImageView = {

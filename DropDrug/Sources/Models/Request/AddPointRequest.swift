@@ -5,4 +5,5 @@ import Foundation
 struct AddPointRequest : Codable{
     let point : Int
     let type : String
+    let location : String
 }

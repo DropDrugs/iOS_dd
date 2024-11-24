@@ -3,6 +3,7 @@
 import UIKit
 
 struct Constants {
+    static var currentPosition : String = ""
     struct NetworkManager {
         static let baseURL = "http://54.180.45.153:8080/"
         static let OCRSecretKey = "Uk1PYVR2RFVaYWVHRlpxcWpxRVZkQUl0bHRvTGpCU3Q="
