@@ -3,10 +3,12 @@
 import UIKit
 import SnapKit
 import Moya
+import Charts
 
 class MyPageVC : UIViewController {
     
     let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    let PointProvider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -26,7 +28,7 @@ class MyPageVC : UIViewController {
     
     let myPageProfileView = ProfileView()
     let rewardView = RewardView()
-    private let dropCardLabel = SubLabelView()
+//    private let dropCardLabel = SubLabelView()
     private let disposalStateLabel = SubLabelView()
     
     override func viewDidLoad() {

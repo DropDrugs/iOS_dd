@@ -7,6 +7,7 @@ import KeychainSwift
 enum MemberAPI {
     case fetchMemberInfo
     case purchaseCharacter(characterId: Int) // 캐릭터 구매
+    case checkDuplicateEmail(email: String) //이메일 중복 확인
     case updateCharacter(characterId: Int)  // 캐릭터 변경
     case updateNickname(newNickname: String) // 닉네임 변경
     case updateNotificationSettings(param: NotificationSetting) // 알림 설정 변경
@@ -30,6 +31,8 @@ extension MemberAPI: TargetType {
             return "members/character/\(characterId)"
         case .updateNickname(let newNickname):
             return "members/nickname/\(newNickname)"
+        case .checkDuplicateEmail(let email):
+            return "members/email/\(email)"
         case .updateNotificationSettings:
             return "members/notification"
         }
@@ -37,7 +40,7 @@ extension MemberAPI: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .fetchMemberInfo:
+        case .fetchMemberInfo, .checkDuplicateEmail:
             return .get
         case .purchaseCharacter:
             return .post
@@ -49,6 +52,8 @@ extension MemberAPI: TargetType {
     var task: Task {
         switch self {
         case .fetchMemberInfo:
+            return .requestPlain
+        case .checkDuplicateEmail:
             return .requestPlain
         case .purchaseCharacter:
             return .requestPlain

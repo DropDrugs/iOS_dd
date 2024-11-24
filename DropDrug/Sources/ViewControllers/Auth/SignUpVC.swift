@@ -6,6 +6,7 @@ import Moya
 
 class SignUpVC : UIViewController {
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
+    let MemberProvider = MoyaProvider<MemberAPI>(plugins: [ NetworkLoggerPlugin()])
     
     private lazy var usernameField = CustomLabelTextFieldView(textFieldPlaceholder: "이름을 입력해 주세요", validationText: "이름을 입력해 주세요")
     private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "사용할 수 없는 이메일입니다")
