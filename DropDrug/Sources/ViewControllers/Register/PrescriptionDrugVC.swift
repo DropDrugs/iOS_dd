@@ -62,14 +62,8 @@ class PrescriptionDrugVC: UIViewController {
                 keyWindow.rootViewController?.present(navigationController, animated: true)
             }
         }
-        
         self.navigationController?.isNavigationBarHidden = true
-        self.getDrugsList { isSuccess in
-            if isSuccess {
-                self.drugsTableView.reloadData()
-            } else {
-            }
-        }
+        
         setupView()
         setConstraints()
         setupGestures()
@@ -78,6 +72,13 @@ class PrescriptionDrugVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
+        
+        self.getDrugsList { isSuccess in
+            if isSuccess {
+                self.drugsTableView.reloadData()
+            } else {
+            }
+        }
     }
     
     // MARK: - Setup Methods

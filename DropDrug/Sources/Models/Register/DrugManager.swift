@@ -12,7 +12,7 @@ extension PrescriptionDrugVC { //get
                     let response = try response.map([DrugResponse].self)
                     self.drugs = []
                     for drugData in response {
-                        let countString = "\(drugData.count)"
+                        let countString = "\(drugData.count)일치"
                         self.drugs.append(PrescriptionDrug(date: drugData.date, duration: countString))
                     }
                     completion(true)
