@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "디자인 시스템 Frame 26794.svg",
-      "idiom" : "universal"
+      "filename" : "Group 26793.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "디자인 시스템 Group 26793.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "디자인 시스템 Group 26793 (1).png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
