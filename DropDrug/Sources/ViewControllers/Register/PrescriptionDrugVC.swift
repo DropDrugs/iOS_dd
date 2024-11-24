@@ -7,12 +7,7 @@ import Moya
 class PrescriptionDrugVC: UIViewController {
     
     let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
-    
-    struct PrescriptionDrug {
-        let date: String
-        let duration: String
-    }
-    
+
     var drugs: [PrescriptionDrug] = []
     
     // MARK: - UI Elements
@@ -69,19 +64,12 @@ class PrescriptionDrugVC: UIViewController {
         }
         
         self.navigationController?.isNavigationBarHidden = true
-        
-        drugs = [
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/05/01", duration: "3일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/04/05", duration: "5일치"),
-                PrescriptionDrug(date: "23/06/15", duration: "7일치")
-            ]
-        drugsTableView.reloadData()
+        self.getDrugsList { isSuccess in
+            if isSuccess {
+                self.drugsTableView.reloadData()
+            } else {
+            }
+        }
         setupView()
         setConstraints()
         setupGestures()
@@ -166,4 +154,9 @@ extension PrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate {
         cell.selectionStyle = .none
         return cell
     }
+}
+
+struct PrescriptionDrug {
+    let date: String
+    let duration: String
 }

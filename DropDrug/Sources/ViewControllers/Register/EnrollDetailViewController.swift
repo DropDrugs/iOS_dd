@@ -7,6 +7,8 @@ import Moya
 class EnrollDetailViewController: UIViewController {
     
     let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    var selectedDate : String?
+    var dateCount : Int?
     
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  의약품 등록하기")
@@ -64,6 +66,7 @@ class EnrollDetailViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
         setupLayout()
+        setDefaultDate()
     }
     
     func setupLayout() {
@@ -108,14 +111,33 @@ class EnrollDetailViewController: UIViewController {
     }
     
     @objc private func didTapCompleteButton() {
-        
+        self.dateCount = self.customStepper.currentValue
+        guard let selectedDate = self.selectedDate else { return }
+        guard let dateCount = self.dateCount else { return }
+        self.postNewDrug(self.setupPostDrugDTO(selectedDate, dateCount)) { isSuccess in
+            if isSuccess {
+                print("약 등록 성공")
+                self.navigationController?.popViewController(animated: false)
+            } else {
+                print("약 등록 실패")
+            }
+            
+        }
     }
     
     @objc private func dateChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.locale = Locale(identifier: "ko_KR")
-//        selectedDateLabel.text = "선택된 날짜: \(formatter.string(from: sender.date))"
+        formatter.dateFormat = "yyyy-MM-dd"
+        selectedDate = formatter.string(from: sender.date)
+        
+    }
+    
+    private func setDefaultDate() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let todayString = formatter.string(from: Date())
+        
+        selectedDate = todayString
     }
     
 

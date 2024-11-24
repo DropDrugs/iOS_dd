@@ -6,6 +6,7 @@ import Moya
 
 class DiscardPrescriptionDrugVC: UIViewController {
     let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    
     // MARK: - UI Elements
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  의약품 삭제하기")
@@ -19,6 +20,7 @@ class DiscardPrescriptionDrugVC: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .none
+        tableView.allowsMultipleSelection = true
         return tableView
     }()
     
@@ -34,13 +36,8 @@ class DiscardPrescriptionDrugVC: UIViewController {
     }()
     
     // MARK: - Data
-    private var drugList = [
-        (date: "23/04/05", duration: "n일치"),
-        (date: "23/04/06", duration: "n일치"),
-        (date: "23/04/07", duration: "n일치"),
-        (date: "23/04/08", duration: "n일치")
-    ]
-    private var selectedIndex: Int?
+    var drugList : [DrugResponse] = []
+    var selectedIndexPaths: Set<IndexPath> = []
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -52,6 +49,14 @@ class DiscardPrescriptionDrugVC: UIViewController {
         
         setupView()
         setConstraints()
+        
+        getDrugsList { isSuccess in
+            if isSuccess {
+                self.tableView.reloadData()
+            } else {
+                print("약 목록 리스트 호출 실패")
+            }
+        }
     }
     
     // MARK: - Setup Methods
@@ -81,18 +86,25 @@ class DiscardPrescriptionDrugVC: UIViewController {
     }
     
     @objc private func didTapCompleteButton() {
-        guard let selectedIndex = selectedIndex else {
+        var drugids : [Int] = []
+        if selectedIndexPaths.isEmpty {
             showAlert(title: "오류", message: "삭제할 항목을 선택해주세요.")
             return
+        } else {
+            for i in selectedIndexPaths {
+                drugids.append(self.drugList[i.row].id)
+            }
         }
         
-        let selectedDrug = drugList[selectedIndex]
-        print("삭제 완료: \(selectedDrug)")
-        
-        // 삭제 후 데이터 갱신
-        drugList.remove(at: selectedIndex)
-        self.selectedIndex = nil
-        tableView.reloadData()
+        // delete
+        deleteDrugs(setupDeleteDrugDTO(drugids)) { isSucces in
+            if isSucces {
+                self.selectedIndexPaths.removeAll()
+                self.tableView.reloadData()
+            } else {
+                print("데이터 삭제 실페")
+            }
+        }
     }
     
     private func showAlert(title: String, message: String) {
@@ -114,10 +126,10 @@ extension DiscardPrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate 
         }
         
         let drug = drugList[indexPath.row]
-        cell.configure(date: drug.date, duration: drug.duration)
+        cell.configure(date: drug.date, duration: "\(drug.count)")
         
         // 선택 상태에 따라 체크마크 또는 빈 동그라미 설정
-        if selectedIndex == indexPath.row {
+        if selectedIndexPaths.contains(indexPath) {
             let checkmarkIcon = UIImageView(image: UIImage(systemName: "checkmark.circle.fill"))
             checkmarkIcon.tintColor = Constants.Colors.skyblue
             cell.accessoryView = checkmarkIcon
@@ -131,7 +143,19 @@ extension DiscardPrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedIndex = indexPath.row
-        tableView.reloadData()
+        if selectedIndexPaths.contains(indexPath) {
+            tableView.deselectRow(at: indexPath, animated: true)
+            selectedIndexPaths.remove(indexPath)
+        } else {
+            selectedIndexPaths.insert(indexPath)
+        }
+        
+        // Reload the specific row to update the checkbox appearance
+        tableView.reloadRows(at: [indexPath], with: .none)
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        selectedIndexPaths.remove(indexPath)
+        tableView.reloadRows(at: [indexPath], with: .none)
     }
 }
