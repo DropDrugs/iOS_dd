@@ -4,21 +4,23 @@ import UIKit
 import Moya
 import KeychainSwift
 
-extension SplashVC {
+extension AppDelegate {
     func refreshAccessToken(completion: @escaping (Bool) -> Void) {
-        guard let refreshToken = SelectLoginTypeVC.keychain.get("serverRefreshToken") else {
+        guard let refreshToken = SelectLoginTypeVC.keychain.get("serverRefreshToken")
+            else {
             print("refreshToken not found")
             completion(false)
             return
         }
-        provider.request(.refreshAccessToken(token: refreshToken)) { result in
+        provider.request(.refreshAccessToken(refreshToken: refreshToken)) { result in
+            print("refreshToken found")
             switch result {
             case .success(let response):
                 print(response)
                 do {
-                    let data = try response.map(TokenDto.self)
-                    SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
+                    let data = try response.map(RefreshTokenDto.self)
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
                     completion(true)
                 } catch {
                     print("Failed to map data : \(error)")
@@ -77,6 +79,7 @@ extension LoginVC {
                     let data = try response.map(TokenDto.self)
                     SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
                     completion(true)
                 } catch {
                     print("Failed to map data : \(error)")

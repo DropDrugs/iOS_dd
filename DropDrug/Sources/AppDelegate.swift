@@ -17,9 +17,13 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseMessaging
 
+import Moya
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     
     var window: UIWindow?
     
@@ -73,6 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+        checkAuthenticationStatus()
         
         return true
     }
@@ -98,7 +103,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //    ) -> Bool {
 //        return GIDSignIn.sharedInstance.handle(url)
 //    }
-    
+    private func checkAuthenticationStatus() {
+        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken"),
+              let accessTokenExpiryMillis = SelectLoginTypeVC.keychain.get("accessTokenExpiresIn"),
+              let expiryMillis = Int64(accessTokenExpiryMillis),
+              let accessTokenExpiryDate = Date(milliseconds: expiryMillis) else {
+            //accessToken 존재 X
+            return
+        }
+            
+        if Date() < accessTokenExpiryDate {
+            print("AccessToken 유효. 갱신 불필요.")
+        } else {
+            print("AccessToken 만료. RefreshToken으로 갱신 시도.")
+            self.refreshAccessToken { success in
+                if success {
+                    print("refresh AccessToken successfully")
+                } else {
+                    print("Failed to refresh AccessToken")
+                }
+            }
+        }
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
@@ -143,5 +169,11 @@ extension AppDelegate: MessagingDelegate {
                 
             }
         }
+    }
+}
+
+extension Date {
+    init?(milliseconds: Int64) {
+        self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000.0)
     }
 }

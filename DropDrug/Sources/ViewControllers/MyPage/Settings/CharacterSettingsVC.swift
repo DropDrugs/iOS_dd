@@ -5,7 +5,6 @@ import SnapKit
 import Moya
 
 class CharacterSettingsVC: UIViewController {
-    //TODO: 캐릭터 불러오기 api 연결
     let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     var ownedChar : [Int] = []
@@ -75,16 +74,9 @@ class CharacterSettingsVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchMemberInfo { success in
-            if success {
-                self.ownedCharCollectionView.reloadData()
-                print(" \(self.ownedChar)")
-            } else {
-                print("Failed to update profile")
-            }
-        }
+        updateChars()
     }
-    
+
     func setupUI() {
         ownedCharLabel.text = "보유 캐릭터"
         allCharLabel.text = "전체 캐릭터"
@@ -133,6 +125,59 @@ class CharacterSettingsVC: UIViewController {
         navigationController?.popViewController(animated: false)
     }
     
+    private func updateChars() {
+        fetchMemberInfo { success in
+            if success {
+                self.ownedCharCollectionView.reloadData()
+                print(" \(self.ownedChar)")
+            } else {
+                print("Failed to update profile")
+            }
+        }
+    }
+    private func showPurchaseAlert(currentValue: Int) {
+//        let alert = UIAlertController(title: "\(Constants.CharacterList[currentValue].name) 캐릭터를 구매하시겠습니까?", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "캐릭터를 구매하시겠습니까?", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "구매", style: .default, handler: {_ in
+            print("선택된 전체 캐릭터의 인덱스는 \(currentValue)입니다.")
+            self.purchaseCharacter(currentValue) { success in
+                if success {
+                    self.showCustomAlert(title: "구매 성공", message: "캐릭터를 성공적으로 구매했어요!")
+                    self.updateChars()
+                } else {
+                    self.showCustomAlert(title: "구매 실패", message: "캐릭터 구매에 실패했어요. 다시 시도해 주세요.")
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func showUpdateAlert(currentValue: Int) {
+        let alert = UIAlertController(title: "캐릭터를 변경하시겠습니까?", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "변경", style: .default, handler: {_ in
+            print("선택된 보유 캐릭터의 인덱스는 \(currentValue)입니다.")
+            self.updateCharacter(currentValue) { success in
+                if success {
+                    self.showCustomAlert(title: "변경 성공", message: "캐릭터가 성공적으로 변경되었습니다.")
+                    self.updateChars()
+                } else {
+                    self.showCustomAlert(title: "변경 실패", message: "캐릭터 변경에 실패했습니다. 다시 시도해 주세요.")
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func showCustomAlert(title: String, message: String) {
+        let customAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "확인", style: .cancel, handler: nil)
+        customAlert.addAction(confirmAction)
+        customAlert.view.tintColor = Constants.Colors.skyblue
+        present(customAlert, animated: true, completion: nil)
+    }
+    
     // MARK: - Compositional Layout 생성
     private func createCompositionalLayout() -> UICollectionViewCompositionalLayout {
         let padding: CGFloat = 8
@@ -159,48 +204,12 @@ extension CharacterSettingsVC: UICollectionViewDataSource, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 {
-            // 보유 캐릭터 변경
             print("보유 캐릭터 변경, 인덱스: \(indexPath.row)")
             self.showUpdateAlert(currentValue: indexPath.row)
         } else if collectionView.tag == 1 {
-            // 전체 캐릭터 구매
             print("캐릭터 구매, 인덱스: \(indexPath.row)")
             self.showPurchaseAlert(currentValue: indexPath.row)
         }
-    }
-    
-    private func showPurchaseAlert(currentValue: Int) {
-        let alert = UIAlertController(title: "캐릭터를 구매하시겠습니까?", message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "구매", style: .default, handler: {_ in
-            print("선택된 전체 캐릭터의 인덱스는 \(currentValue)입니다.")
-            self.purchaseCharacter(currentValue) { success in
-                if success {
-                    print("캐릭터 구매에 성공했습니다")
-                    self.ownedCharCollectionView.reloadData()
-                } else {
-                    print("캐릭터 구매에 실패했습니다")
-                }
-            }
-        }))
-        present(alert, animated: true, completion: nil)
-    }
-    
-    private func showUpdateAlert(currentValue: Int) {
-        let alert = UIAlertController(title: "캐릭터를 변경하시겠습니까?", message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "변경", style: .default, handler: {_ in
-            print("선택된 보유 캐릭터의 인덱스는 \(currentValue)입니다.")
-            self.updateCharacter(currentValue) { success in
-                if success {
-                    print("캐릭터 변경에 성공했습니다")
-                    self.ownedCharCollectionView.reloadData()
-                } else {
-                    print("캐릭터 변경에 실패했습니다")
-                }
-            }
-        }))
-        present(alert, animated: true, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

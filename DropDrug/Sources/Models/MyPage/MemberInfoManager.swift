@@ -36,12 +36,14 @@ extension MyPageVC {
                 do {
                     let data = try response.map(MemberInfo.self)
                     DispatchQueue.main.async {
+                        print(data)
                         self.myPageProfileView.nameLabel.text = data.nickname
                         self.myPageProfileView.emailLabel.text = data.email
                         if let character = self.findCharacter(by: data.selectedChar) {
                             self.myPageProfileView.profileImageView.image = UIImage(named: character.image)
                         }
                         self.rewardView.pointsLabel.text = "\(data.point) P"
+                        print(data.point)
                     }
                     completion(true)
                 } catch {

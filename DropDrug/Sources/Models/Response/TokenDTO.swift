@@ -13,4 +13,8 @@ struct TokenDto : Codable {
     let userId : Int
 }
 
-
+struct RefreshTokenDto : Codable {
+    let accessToken : String
+    let accessTokenExpiresIn : Int
+    let grantType : String
+}

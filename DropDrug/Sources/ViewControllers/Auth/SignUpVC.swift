@@ -51,7 +51,15 @@ class SignUpVC : UIViewController {
     
     private lazy var termsCheckBox = CheckBoxButton(title: " 개인정보 수집에 동의합니다.")
     
-
+    private lazy var privacyPolicyButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("개인 정보 정책 보기", for: .normal)
+        button.setTitleColor(Constants.Colors.gray500, for: .normal)
+        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 14)
+        button.setAttributedTitle(createUnderlinedTitle("개인 정보 정책 보기"), for: .normal)
+        button.addTarget(self, action: #selector(showPDF), for: .touchUpInside)
+        return button
+    }()
     
     private lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -59,7 +67,7 @@ class SignUpVC : UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         button.backgroundColor = Constants.Colors.gray600
-        button.layer.cornerRadius = 30
+        button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(signUpButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -84,15 +92,15 @@ class SignUpVC : UIViewController {
     
     // MARK: - Setup Methods
     private func setupView() {
-        [backButton, loginButton, titleLabel, usernameField, emailField, passwordField, confirmPasswordField, termsCheckBox, signUpButton, termsValidationLabel].forEach {
+        [backButton, loginButton, titleLabel, usernameField, emailField, passwordField, confirmPasswordField, termsCheckBox, privacyPolicyButton, signUpButton, termsValidationLabel].forEach {
             view.addSubview($0)
         }
         view.backgroundColor = .white
     }
     private func setupConstraints() {
         backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.equalToSuperview().inset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(superViewWidth * 0.03)
+            make.leading.equalToSuperview().inset(superViewWidth * 0.07)
         }
         loginButton.snp.makeConstraints { make in
             make.centerY.equalTo(backButton)
@@ -123,12 +131,16 @@ class SignUpVC : UIViewController {
             make.leading.equalToSuperview().inset(20)
         }
         termsCheckBox.snp.makeConstraints { make in
-            make.bottom.equalTo(signUpButton.snp.top).offset(-superViewWidth * 0.03)
+            make.bottom.equalTo(privacyPolicyButton.snp.top).offset(-superViewWidth * 0.01)
             make.leading.equalToSuperview().inset(20)
             make.height.equalTo(20)
         }
+        privacyPolicyButton.snp.makeConstraints { make in
+            make.bottom.equalTo(signUpButton.snp.top).offset(-superViewWidth * 0.03)
+            make.leading.equalToSuperview().inset(20)
+        }
         signUpButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(superViewHeight * 0.1)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(superViewWidth * 0.07)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(superViewWidth * 0.15)
         }
@@ -198,6 +210,17 @@ class SignUpVC : UIViewController {
         termsAgreeValidate()
     }
     
+    private func createUnderlinedTitle(_ text: String) -> NSAttributedString {
+        return NSAttributedString(
+            string: text,
+            attributes: [
+                .underlineStyle: NSUnderlineStyle.single.rawValue,
+                .foregroundColor: Constants.Colors.gray800,
+                .font: UIFont.ptdThinFont(ofSize: 14)
+            ]
+        )
+    }
+    
     // MARK: validation Check
     lazy var isUsernameValid = false
     lazy var isEmailValid = false
@@ -217,20 +240,6 @@ class SignUpVC : UIViewController {
         }
         validateInputs()
     }
-    
-//    @objc func emailValidate(){
-////        if let email = emailField.text, ValidationUtility.isValidEmail(email) {
-////        TODO: 이메일 주소 유효성 확인 조건문
-//        if let email = emailField.text, checkEmail() {
-//            emailField.validationLabel.isHidden = true
-//            emailField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
-//            isEmailValid = true
-//        } else {
-//            emailField.validationLabel.isHidden = false
-//            emailField.textField.layer.borderColor = Constants.Colors.red?.cgColor
-//            isEmailValid = false
-//        }
-//    }
     
     @objc func emailValidate() {
         guard let email = emailField.text, !email.isEmpty else {
@@ -269,9 +278,7 @@ class SignUpVC : UIViewController {
     }
     
     @objc func passwordValidate(){
-//      if let password = passwordField.text, ValidationUtility.isValidPassword(password) {
-//      TODO: 패스워드 유효성 확인 조건문
-        if let password = passwordField.text {
+      if let password = passwordField.text, ValidationUtility.isValidPassword(password) {
             passwordField.validationLabel.isHidden = true
             passwordField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
             isPasswordValid = true

@@ -17,10 +17,10 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     let categories: [DrugCategory] = [
-        DrugCategory(id: 0, name: "알약", imageName: "알약", backgroundColor: Constants.Colors.skyblue!.withAlphaComponent(0.4)),
-        DrugCategory(id: 1, name: "물약", imageName: "물약", backgroundColor: Constants.Colors.coralpink!.withAlphaComponent(0.4)),
-        DrugCategory(id: 2, name: "연고", imageName: "연고", backgroundColor: Constants.Colors.lightblue!.withAlphaComponent(0.4)),
-        DrugCategory(id: 3, name: "가루약", imageName: "가루약", backgroundColor: Constants.Colors.pink!.withAlphaComponent(0.4))
+        DrugCategory(id: 0, name: "알약", imageName: "pill", backgroundColor: Constants.Colors.skyblue!.withAlphaComponent(0.4)),
+        DrugCategory(id: 1, name: "물약", imageName: "liquid", backgroundColor: Constants.Colors.coralpink!.withAlphaComponent(0.4)),
+        DrugCategory(id: 2, name: "연고", imageName: "pot", backgroundColor: Constants.Colors.lightblue!.withAlphaComponent(0.4)),
+        DrugCategory(id: 3, name: "가루약", imageName: "powder", backgroundColor: Constants.Colors.pink!.withAlphaComponent(0.4))
     ]
     
     private lazy var backButton: CustomBackButton = {
@@ -253,14 +253,4 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
         loadingVC.modalPresentationStyle = .fullScreen
         present(loadingVC, animated: true)
     }
-    
-//    // MARK: Actions
-//    @objc private func didTapBackButton() {
-//        navigationController?.popViewController(animated: true)
-//    }
-//    
-//    private func moveToMainScreen() {
-//        navigationController?.popViewController(animated: true)
-//    }
-    
 }
