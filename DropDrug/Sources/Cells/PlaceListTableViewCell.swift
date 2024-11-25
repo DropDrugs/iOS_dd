@@ -12,7 +12,7 @@ class PlaceListTableViewCell: UITableViewCell {
         i.contentMode = .scaleAspectFill
         i.layer.cornerRadius = 10
         i.layer.masksToBounds = true
-        i.image = UIImage(named: "OB1")
+        i.sd_imageIndicator = SDWebImageActivityIndicator.medium // 인디케이터 추가
         return i
     }()
     
@@ -37,7 +37,7 @@ class PlaceListTableViewCell: UITableViewCell {
     public lazy var labelSV: UIStackView = {
         let s = UIStackView(arrangedSubviews: [name, address])
         s.axis = .vertical // 수직으로 배치
-        s.spacing = 0 // 레이블과 텍스트필드 사이 간격
+        s.spacing = 3 // 레이블과 텍스트필드 사이 간격
         s.alignment = .fill
         s.distribution = .fill
         return s
@@ -75,6 +75,7 @@ class PlaceListTableViewCell: UITableViewCell {
         labelSV.snp.makeConstraints { make in
             make.centerY.equalTo(photo)
             make.leading.equalTo(photo.snp.trailing).offset(13)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
         }
     }
     
@@ -83,9 +84,13 @@ class PlaceListTableViewCell: UITableViewCell {
         address.text = place.address
         imageURL = place.locationPhoto
         if let imageUrl = imageURL, let url = URL(string: imageUrl) {
-            photo.sd_setImage(with: url, placeholderImage: UIImage(named: "OB1"))
+            photo.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder")) { [weak self] image, error, cacheType, url in
+                if error != nil {
+                    self?.photo.image = UIImage(named: "default") // 실패 시 default 이미지
+                }
+            }
         } else {
-            photo.image = UIImage(named: "OB1")
+            photo.image = UIImage(named: "default")
         }
     }
 }

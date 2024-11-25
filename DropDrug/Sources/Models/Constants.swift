@@ -44,13 +44,13 @@ struct Constants {
     static let commonDisposalInfoList : [CommonDisposalDataModel] = [
         CommonDisposalDataModel(name: "서울특별시", url: "https://news.seoul.go.kr/env/archives/525122?listPage=1&s=%ED%8F%90%EC%9D%98%EC%95%BD%ED%92%88"),
         CommonDisposalDataModel(name: "세종특별자치시", url: "https://www.sejong.go.kr/recycle/sub03_04_02.do;jsessionid=07F33847FC24393EEC5EA67FF3E3BFAC.portal1"),
-        CommonDisposalDataModel(name: "강원 동해시", url: "https://www.dh.go.kr/www/contents.do?key=797"),
-        CommonDisposalDataModel(name: "전남 나주시", url: "https://www.naju.go.kr/www/field_info/environment/dedicated/medical"),
-        CommonDisposalDataModel(name: "전북 임실군", url: "https://www.imsil.go.kr/board/view.imsil?menuCd=DOM_000000103001008000&boardId=BBS_0000025&dataSid=112737"),
-        CommonDisposalDataModel(name: "전북 순창군", url: "https://www.sunchang.go.kr/index.sunchang?menuCd=DOM_000000105004003002"),
-        CommonDisposalDataModel(name: "광주 광산구", url: "https://www.gwangsan.go.kr/health/boardView.do?boardId=BINFO&pageId=health172&searchSn=202"),
-        CommonDisposalDataModel(name: "광주 동구", url: "https://www.donggu.kr/board.es?mid=a10101010000&bid=0001&act=view&list_no=36859"),
-        CommonDisposalDataModel(name: "강원 삼척시", url: "https://www.samcheok.go.kr/main.web")
+        CommonDisposalDataModel(name: "강원도 동해시", url: "https://www.dh.go.kr/www/contents.do?key=797"),
+        CommonDisposalDataModel(name: "전라남도 나주시", url: "https://www.naju.go.kr/www/field_info/environment/dedicated/medical"),
+        CommonDisposalDataModel(name: "전라북도 임실군", url: "https://www.imsil.go.kr/board/view.imsil?menuCd=DOM_000000103001008000&boardId=BBS_0000025&dataSid=112737"),
+        CommonDisposalDataModel(name: "전라북도 순창군", url: "https://www.sunchang.go.kr/index.sunchang?menuCd=DOM_000000105004003002"),
+        CommonDisposalDataModel(name: "광주광역시 광산구", url: "https://www.gwangsan.go.kr/health/boardView.do?boardId=BINFO&pageId=health172&searchSn=202"),
+        CommonDisposalDataModel(name: "광주광역시 동구", url: "https://www.donggu.kr/board.es?mid=a10101010000&bid=0001&act=view&list_no=36859"),
+        CommonDisposalDataModel(name: "강원도 삼척시", url: "https://www.samcheok.go.kr/main.web")
         
     ]
     

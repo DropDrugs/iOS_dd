@@ -111,6 +111,7 @@ class HomeView: UIView {
         l.text = "현 위치"
         l.textColor = Constants.Colors.gray700
         l.font = UIFont.ptdRegularFont(ofSize: 13)
+        l.numberOfLines = 0
         return l
     }()
     
@@ -145,7 +146,7 @@ class HomeView: UIView {
         // 타이틀 속성 설정
         let attributes: AttributeContainer = AttributeContainer([
             .font: UIFont.ptdSemiBoldFont(ofSize: 14), .foregroundColor: Constants.Colors.skyblue ?? .blue])
-        configuration.attributedTitle = AttributedString("내 주변 드롭 장소 탐색", attributes: attributes)
+        configuration.attributedTitle = AttributedString("내 지역 드롭 방법 확인하기", attributes: attributes)
         configuration.titleAlignment = .center
         
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8) // 여백 설정
@@ -186,7 +187,7 @@ class HomeView: UIView {
             make.top.equalTo(appTitle.snp.bottom).offset(28)
             make.leading.equalTo(appTitle.snp.leading)
             make.height.equalTo(40)
-            make.width.equalTo(calculateButtonWidth(name: name))
+            make.width.equalTo(127)
         }
         
         point.snp.makeConstraints { make in
@@ -216,6 +217,7 @@ class HomeView: UIView {
         location.snp.makeConstraints { make in
             make.top.equalTo(mapView.snp.top)
             make.leading.equalTo(mapView.snp.trailing).offset(24)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
         }
         
         resetBtn.snp.makeConstraints { make in
@@ -226,29 +228,12 @@ class HomeView: UIView {
         presLoca.snp.makeConstraints { make in
             make.top.equalTo(location.snp.bottom).offset(8)
             make.leading.equalTo(location.snp.leading)
-            make.trailing.equalTo(safeAreaLayoutGuide.snp.trailing).offset(-20)
         }
         
         goToSearchPlaceBtn.snp.makeConstraints { make in
             make.top.equalTo(presLoca.snp.bottom).offset(14)
             make.leading.equalTo(presLoca.snp.leading)
         }
-    }
-    
-    func calculateButtonWidth(name: String) -> CGFloat {
-        // 이름 길이 계산
-        let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
-        attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
-        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
-
-        let textSize = attributedString.boundingRect(
-            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40),
-            options: [.usesLineFragmentOrigin, .usesFontLeading],
-            context: nil
-        ).size
-
-        // 텍스트 패딩 추가
-        return textSize.width + 40
     }
     
     public func updateStarter() {

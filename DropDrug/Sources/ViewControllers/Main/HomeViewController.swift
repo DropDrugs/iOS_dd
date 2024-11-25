@@ -4,12 +4,16 @@ import UIKit
 import CoreLocation
 import Moya
 import MapKit
+import SafariServices
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
     let provider = MoyaProvider<HomeAPI>(plugins: [ BearerTokenPlugin(), NetworkLoggerPlugin() ])
     
     var selectedCharacterNum: Int = 0
+    private var siDo = ""
+    private var siGu = ""
+    private var locationUrl = ""
     
     var locationManager = CLLocationManager()
     
@@ -62,8 +66,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     
     @objc
     private func goToSPBtnTapped() {
-        let vc = MapViewController()
-        navigationController?.pushViewController(vc, animated: true)
+        if let url = URL(string: locationUrl) {
+            let safariVC = SFSafariViewController(url: url)
+            present(safariVC, animated: true, completion: nil)
+        }
     }
         
     @objc private func didTapFloatingBtn() {
@@ -83,6 +89,31 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         let vc = SelectDropTypeVC()
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    func updateButtonWidth(name: String) {
+        // 이름 길이 계산
+        let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
+        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+
+        let textSize = attributedString.boundingRect(
+            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            context: nil
+        ).size
+
+        // 텍스트 패딩 추가
+        let buttonWidth = textSize.width + 40
+
+        homeView.starter.snp.updateConstraints { make in
+            make.width.equalTo(buttonWidth)
+        }
+
+        homeView.starter.setAttributedTitle(attributedString, for: .normal)
+        homeView.starter.layoutIfNeeded()
+    }
+    
+    //MARK: - 현 위치 로직
         
     private func configureLocationManager() {
         locationManager.delegate = self
@@ -144,8 +175,33 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                     strAddr += " \(i)"
                 }
             }
+            let components = strAddr.split(separator: " ")
             
-            
+            if let first = components.first, let second = components.dropFirst().first {
+                self.siDo = String(first)
+                self.siGu = String(second)
+                if self.siDo == "서울특별시" {
+                    Constants.seoulDistrictsList.forEach { item in
+                        if self.siGu == item.name {
+                            self.locationUrl = item.url
+                        }
+                    }
+                } else {
+                    if self.siDo == "세종특별자치시" {
+                        self.locationUrl = Constants.commonDisposalInfoList[1].url
+                    } else {
+                        Constants.commonDisposalInfoList.forEach { item in
+                            let location = self.siDo + " " + self.siGu
+                            if location == item.name {
+                                self.locationUrl = item.url
+                            }
+                        }
+                    }
+                }
+            } else {
+                print("값이 충분하지 않습니다.")
+            }
+        
             completion(strAddr.trimmingCharacters(in: .whitespaces))
         }
     }
@@ -171,6 +227,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         self.homeView.mapView.setRegion(region, animated: true)
     }
     
+    //MARK: - API 호출
+    
     func getHomeInfo(completion: @escaping (Bool) -> Void) {
         provider.request(.getHomeInfo) { result in
             switch result {
@@ -178,6 +236,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 print(response.statusCode)
                 do {
                     let responseData = try response.map(HomeResponse.self)
+                    self.updateButtonWidth(name: responseData.nickname)
                     self.homeView.name = responseData.nickname
                     self.homeView.points = responseData.point
                     self.selectedCharacterNum = responseData.selectedChar

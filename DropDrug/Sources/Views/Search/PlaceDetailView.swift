@@ -9,9 +9,13 @@ class PlaceDetailView: UIView {
         didSet {
             // 이미지 URL이 설정될 때 이미지 업데이트
             if let imageUrl = imageURL, let url = URL(string: imageUrl) {
-                photo.sd_setImage(with: url, placeholderImage: UIImage(named: "OB1"))
+                photo.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder")) { [weak self] image, error, cacheType, url in
+                    if error != nil {
+                        self?.photo.image = UIImage(named: "default") // 실패 시 default 이미지
+                    }
+                }
             } else {
-                photo.image = UIImage(named: "OB1")
+                photo.image = UIImage(named: "default")
             }
         }
     }
@@ -32,6 +36,7 @@ class PlaceDetailView: UIView {
         i.contentMode = .scaleAspectFill
         i.layer.cornerRadius = 10
         i.layer.masksToBounds = true
+        i.sd_imageIndicator = SDWebImageActivityIndicator.medium // 인디케이터 추가
         return i
     }()
     
@@ -66,11 +71,13 @@ class PlaceDetailView: UIView {
         name.snp.makeConstraints { make in
             make.top.equalTo(photo.snp.top)
             make.leading.equalTo(photo.snp.trailing).offset(10)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
         }
         
         address.snp.makeConstraints { make in
             make.top.equalTo(name.snp.bottom).offset(5)
             make.leading.equalTo(name.snp.leading)
+            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
         }
     }
 }
