@@ -1,6 +1,7 @@
 import UIKit
 import SnapKit
 import SafariServices
+import MessageUI
 
 class SettingsVC: UIViewController {
     
@@ -77,7 +78,7 @@ extension SettingsVC: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-extension SettingsVC: UITableViewDelegate {
+extension SettingsVC: UITableViewDelegate, MFMailComposeViewControllerDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = menuItems[indexPath.row]
         
@@ -89,8 +90,7 @@ extension SettingsVC: UITableViewDelegate {
         case "공지사항":
             navigationController?.pushViewController(NoticesVC(), animated: true)
         case "문의하기":
-            // TODO: 메일 전송 플로우
-            openWebPage(urlString: "https://www.example.com/privacy-policy")
+            sendMail()
         case "개인정보 처리방침":
             // TODO: 페이지 설정
             openWebPage(urlString: "https://www.example.com/privacy-policy")
@@ -106,5 +106,76 @@ extension SettingsVC: UITableViewDelegate {
         guard let url = URL(string: urlString) else { return }
         let safariVC = SFSafariViewController(url: url)
         present(safariVC, animated: true, completion: nil)
+    }
+    
+    @objc func sendMail() {
+        if MFMailComposeViewController.canSendMail() {
+            let composeVC = MFMailComposeViewController()
+            composeVC.mailComposeDelegate = self
+            
+            let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as?String ?? "Unknown"
+            let osVersion = UIDevice.current.systemVersion
+            let deviceModel = UIDevice.current.model
+                
+            let bodyString = """
+                            이곳에 내용을 작성해 주세요.
+                            
+                            
+                            ================================
+                            App Version : \(appVersion)
+                            Device OS : \(osVersion)
+                            Device Model : \(deviceModel)
+                            ================================
+                            """
+            composeVC.setToRecipients(["dropdrug.cs@gmail.com"])
+            composeVC.setSubject("문의 사항")
+            composeVC.setMessageBody(bodyString, isHTML: false)
+                
+            self.present(composeVC, animated: true)
+        } else {
+            // 만약, 디바이스에 email 기능이 비활성화 일 때, 사용자에게 알림
+            let alertController = UIAlertController(title: "메일 계정 활성화 필요",
+                                                    message: "Mail 앱에서 사용자의 Email을 계정을설정해 주세요.",
+                                                        preferredStyle: .alert)
+            let alertAction = UIAlertAction(title: "확인", style: .default) { _ in
+                guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+            if UIApplication.shared.canOpenURL(settingsURL) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+                }
+            }
+            alertController.addAction(alertAction)
+            
+            self.present(alertController, animated: true)
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        let alertTitle: String
+        let alertMessage: String
+        
+        switch result {
+        case .sent:
+            alertTitle = "성공"
+            alertMessage = "메일을 성공적으로 보냈습니다."
+        case .cancelled:
+            alertTitle = "취소됨"
+            alertMessage = "메일 작성을 취소했습니다."
+        case .saved:
+            alertTitle = "임시 저장"
+            alertMessage = "메일이 임시 저장되었습니다."
+        case .failed:
+            alertTitle = "실패"
+            alertMessage = "메일 전송에 실패했습니다."
+        @unknown default:
+            alertTitle = "알 수 없음"
+            alertMessage = "예기치 않은 결과가 발생했습니다."
+        }
+        
+        // 알림 표시
+        let alertController = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+        controller.dismiss(animated: true) { [weak self] in
+            self?.present(alertController, animated: true)
+        }
     }
 }
