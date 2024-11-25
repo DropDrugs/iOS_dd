@@ -13,7 +13,7 @@ class SettingsVC: UIViewController {
         "공지사항",
         "문의하기",
         "개인정보 처리방침",
-        "위치서비스 이용약관"
+        "위치기반서비스 이용약관"
     ]
     
     private lazy var backButton: CustomBackButton = {
@@ -93,10 +93,9 @@ extension SettingsVC: UITableViewDelegate {
             // TODO: 메일 전송 플로우
             openWebPage(urlString: "https://www.example.com/privacy-policy")
         case "개인정보 처리방침":
-            // TODO: 페이지 설정
-            openWebPage(urlString: "https://www.example.com/privacy-policy")
-        case "위치서비스 이용약관":
-            openWebPage(urlString: "https://www.example.com/location-terms")
+            openWebPage(urlString: "https://wobbly-session-4ae.notion.site/1491b64c5f28801ebc1fc346082c6547?pvs=4")
+        case "위치기반서비스 이용약관":
+            openWebPage(urlString: "https://wobbly-session-4ae.notion.site/1491b64c5f28803e9854e98979072a71?pvs=4")
         default:
             return
         }

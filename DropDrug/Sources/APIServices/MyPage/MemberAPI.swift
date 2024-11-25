@@ -10,6 +10,8 @@ enum MemberAPI {
     case updateCharacter(characterId: Int)  // 캐릭터 변경
     case updateNickname(newNickname: String) // 닉네임 변경
     case updateNotificationSettings(param: NotificationSetting) // 알림 설정 변경
+    case getPushNotificationList
+    
 }
 
 extension MemberAPI: TargetType {
@@ -32,12 +34,14 @@ extension MemberAPI: TargetType {
             return "members/nickname/\(newNickname)"
         case .updateNotificationSettings:
             return "members/notification"
+        case .getPushNotificationList:
+            return "members/alarm"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .fetchMemberInfo:
+        case .fetchMemberInfo, .getPushNotificationList:
             return .get
         case .purchaseCharacter:
             return .post
@@ -48,7 +52,7 @@ extension MemberAPI: TargetType {
     
     var task: Task {
         switch self {
-        case .fetchMemberInfo:
+        case .fetchMemberInfo, .getPushNotificationList :
             return .requestPlain
         case .purchaseCharacter:
             return .requestPlain
