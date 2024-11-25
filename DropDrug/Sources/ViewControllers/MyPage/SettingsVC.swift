@@ -88,6 +88,7 @@ extension SettingsVC: UITableViewDelegate {
             navigationController?.pushViewController(NotificationSettingsVC(), animated: true)
         case "공지사항":
             navigationController?.pushViewController(NoticesVC(), animated: true)
+//            navigationController?.pushViewController(BoardPostTestVC(), animated: true) - 관리자 페이지에서 공지사항 등록할ㄸ 때 사용
         case "문의하기":
             // TODO: 메일 전송 플로우
             openWebPage(urlString: "https://www.example.com/privacy-policy")
