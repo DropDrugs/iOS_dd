@@ -73,7 +73,8 @@ class SeoulCollectionViewCell: UICollectionViewCell {
             make.centerX.equalToSuperview()
         }
     }
-    func configure(showNameLabel: Bool) {
-        name.isHidden = !showNameLabel
-    }
+    func configure(showNameLabel: Bool, showBorder: Bool) {
+            name.isHidden = !showNameLabel
+            image.layer.borderColor = showBorder ? Constants.Colors.gray300?.cgColor : UIColor.clear.cgColor
+        }
 }

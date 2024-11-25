@@ -55,9 +55,9 @@ class MyPageVC : UIViewController {
         super.viewWillAppear(animated)
         fetchMemberInfo { success in
             if success {
-                print("Profile updated successfully")
+                print("fetch Profile successfully")
             } else {
-                print("Failed to update profile")
+                print("Failed to fetch Profile")
             }
         }
     }

@@ -10,10 +10,17 @@ struct Constants {
         static let OCRAPIURL = "https://slpfshoip0.apigw.ntruss.com/custom/v1/36244/694e6b5877aed073a41eb1c45d2be8b6126ed5808e1311a2e48e5800ccdd233f"
     }
     
-    struct AllCharacter {
-        static var allCharCount = 12
-    }
-    
+    static let CharacterList: [CharacterModel] = [
+        CharacterModel(id: 0, name: "웃는 드롭이", image: "char0" , price: 0),
+        CharacterModel(id: 1, name: "화난 드롭이", image: "char1", price: 0),
+        CharacterModel(id: 2, name: "난처 드롭이", image: "char2", price: 0),
+        CharacterModel(id: 3, name: "미안 드롭이", image: "char3", price: 0),
+        CharacterModel(id: 4, name: "웃는 드럭이", image: "char4", price: 0),
+        CharacterModel(id: 5, name: "화난 드럭이", image: "char5", price: 0),
+        CharacterModel(id: 6, name: "난처 드럭이", image: "char6", price: 0),
+        CharacterModel(id: 7, name: "미안 드럭이", image: "char7", price: 0)
+    ]
+
     static let seoulDistrictsList: [DistrictsDataModel] = [
             DistrictsDataModel(name: "강남구", image: "강남구", url: "https://www.gangnam.go.kr/board/waste/list.do?mid=ID02_011109#collapse21"),
             DistrictsDataModel(name: "강동구", image: "강동구", url: "https://www.gangdong.go.kr/web/newportal/contents/gdp_005_004_010_001"),
