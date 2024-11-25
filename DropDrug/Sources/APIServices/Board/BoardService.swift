@@ -5,6 +5,9 @@ import Moya
 
 enum BoardService {
     case getBoard
+    case postBoard(param : AddBoardRequest)
+    case patchBoard(param : BoardUpdateRequest)
+    case deleteBoard(id : Int)
 }
 
 extension BoardService: TargetType {
@@ -16,15 +19,29 @@ extension BoardService: TargetType {
     }
     
     var path: String {
-        return "members"
+        return "board"
     }
     
     var method: Moya.Method {
-        return .get
+        switch self {
+        case .getBoard : return .get
+        case .postBoard : return .post
+        case .patchBoard : return .patch
+        case .deleteBoard : return .delete
+        }
     }
     
     var task: Task {
-        return .requestPlain
+        switch self {
+        case .getBoard :
+            return .requestPlain
+        case .postBoard(let param) :
+            return .requestJSONEncodable(param)
+        case .patchBoard(let param) :
+            return .requestJSONEncodable(param)
+        case .deleteBoard(let id) :
+            return .requestParameters(parameters: ["id" : id], encoding: URLEncoding.queryString)
+        }
     }
     
     var headers: [String : String]? {
