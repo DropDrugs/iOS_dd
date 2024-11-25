@@ -9,7 +9,6 @@ class NoticesVC: UIViewController {
     let boardProvider = MoyaProvider<BoardService>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     var NoticeList : [NoticeData] = [
-        NoticeData(title: "신규 캐릭터 업데이트 안내", content: "신규 캐릭터를 업데이트하였으니 마이페이지 > 캐릭터 변경 창에서 확인하시길 바랍니다.", date: "2024-12-01T10:25:11.183Z")
     ]
 
     
