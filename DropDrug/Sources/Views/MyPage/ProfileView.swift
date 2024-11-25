@@ -10,7 +10,6 @@ class ProfileView: UIView {
     let profileImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(named: "profileExample")
-        view.backgroundColor = .gray
         view.layer.cornerRadius = 30
         view.clipsToBounds = true
         return view
