@@ -6,6 +6,8 @@ import Moya
 
 class PushNoticeVC: UIViewController {
     
+    let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    
     let NoticeList : [PushNoticeData] = [] // id 기준으로 역순
     
     private lazy var backButton: CustomBackButton = {

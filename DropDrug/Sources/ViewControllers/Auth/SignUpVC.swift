@@ -3,6 +3,7 @@
 import UIKit
 import SnapKit
 import Moya
+import QuickLook
 
 class SignUpVC : UIViewController {
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
@@ -49,6 +50,8 @@ class SignUpVC : UIViewController {
     }()
     
     private lazy var termsCheckBox = CheckBoxButton(title: " 개인정보 수집에 동의합니다.")
+    
+
     
     private lazy var signUpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -145,6 +148,11 @@ class SignUpVC : UIViewController {
 
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)
+    }
+    
+    @objc func showPDF() {
+        let previewController = PDFPreviewController()
+        self.present(previewController, animated: true, completion: nil)
     }
     
     // MARK: - Actions

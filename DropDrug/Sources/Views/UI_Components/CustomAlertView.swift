@@ -92,7 +92,7 @@ class CustomAlertView: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
             make.leading.equalTo(containerView).offset(16)
             make.trailing.equalTo(containerView).offset(-16)
-            make.height.lessThanOrEqualTo(200) // 최대 높이 제한
+            make.height.lessThanOrEqualTo(160) // 최대 높이 제한
         }
         
         confirmButton.snp.makeConstraints { make in
