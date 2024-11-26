@@ -146,8 +146,7 @@ extension SelectLoginTypeVC {
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
                     completion(true)
                 } catch {
-//                    print("Failed to map data : \(error)")
-                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error) :

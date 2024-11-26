@@ -237,7 +237,7 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
             
             if let identityToken = appleIDCredential.identityToken,
                let identityTokenString = String(data: identityToken, encoding: .utf8),
-               let emailString = email{
+               let emailString = email {
                 SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
                 SelectLoginTypeVC.keychain.set(emailString, forKey: "AppleIDEmail")
                 SelectLoginTypeVC.keychain.set(formattedName, forKey: "AppleIDName")
