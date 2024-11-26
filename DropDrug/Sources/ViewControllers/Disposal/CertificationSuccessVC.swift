@@ -76,17 +76,28 @@ class CertificationSuccessVC: UIViewController {
             if isSuccess {
                 print("포인트 적립 성공")
                 if let getBadge = getBadge {
-                    // 카드 확인하러가기
-                    if getBadge {
-                        // 카드 확인
-                    } else {
-                        // 포인트 적립 내역 확인
-                    }
+//                    // 카드 확인하러가기
+//                    if getBadge {
+//                        // 카드 확인
+//                        self.goToMyPage()
+//                    } else {
+//                        // 포인트 적립 내역 확인
+//                        self.goToRewardPage()
+//                    }
                 }
             } else {
                 print("포인트 적립 실패")
             }
         }
+    }
+    
+    func goToMyPage() {
+        let vc = MyPageVC()
+        present(vc, animated: true)
+    }
+    func goToRewardPage() {
+        let vc = RewardVC()
+        present(vc, animated: true)
     }
     
     // MARK: - Setup UI

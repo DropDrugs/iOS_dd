@@ -3,6 +3,7 @@
 import UIKit
 import SnapKit
 import Moya
+import SwiftyToaster
 
 class DiscardPrescriptionDrugVC: UIViewController {
     let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
@@ -54,7 +55,7 @@ class DiscardPrescriptionDrugVC: UIViewController {
             if isSuccess {
                 self.tableView.reloadData()
             } else {
-                print("약 목록 리스트 호출 실패")
+//                print("약 목록 리스트 호출 실패")
             }
         }
     }
@@ -104,11 +105,11 @@ class DiscardPrescriptionDrugVC: UIViewController {
                     if isSuccess {
                         self.tableView.reloadData()
                     } else {
-                        print("약 목록 리스트 호출 실패")
+//                        print("약 목록 리스트 호출 실패")
                     }
                 }
             } else {
-                print("데이터 삭제 실페")
+//                print("데이터 삭제 실페")
             }
         }
     }

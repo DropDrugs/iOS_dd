@@ -25,8 +25,9 @@
 //                       "NMapsMap" : .staticLibrary,
 //                       "NMapsGeometry" : .staticLibrary
                        "SDWebImage" : .framework,
-                       "Toast" : .framework,
-                       "Lottie" : .framework
+//                       "Toast" : .framework,
+                       "Lottie" : .framework,
+                       "SwiftyToaster" : .framework,
 //                       "Charts" : .framework
                       ]
     )
@@ -45,8 +46,9 @@ let package = Package(
         .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.4.0"),
         .package(url: "https://github.com/slr-09/Naver-Map-iOS-SPM.git", from: "0.1.0"),
         .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.19.7"),
-        .package(url: "https://github.com/scalessec/Toast-Swift.git", from: "5.1.1"),
+//        .package(url: "https://github.com/scalessec/Toast-Swift.git", from: "5.1.1"),
         .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
+        .package(url: "https://github.com/noeyiz/SwiftyToaster.git", from: "1.0.2"),
         
 //        .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0")
     ]

@@ -3,6 +3,7 @@
 import UIKit
 import SDWebImage
 import Moya
+import SwiftyToaster
 
 class ImageDisplayVC: UIViewController {
     lazy var progressBar: CircularProgressBar = CircularProgressBar()
@@ -105,6 +106,8 @@ class ImageDisplayVC: UIViewController {
                     if combinedString.contains("폐의약품") {
                         self.updateProgressManually(to: 0.99)
                         self.presentCertificationSuccessVC()
+                    } else {
+                        self.presentCertificationFailureVC()
                     }
                 } else {
                     self.presentCertificationFailureVC()
@@ -157,9 +160,8 @@ extension ImageDisplayVC {
                     completion(false)
                 }
             case .failure(let error) :
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }

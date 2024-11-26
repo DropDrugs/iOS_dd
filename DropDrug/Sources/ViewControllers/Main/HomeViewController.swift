@@ -5,6 +5,7 @@ import CoreLocation
 import Moya
 import MapKit
 import SafariServices
+import SwiftyToaster
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
@@ -29,6 +30,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isHidden = true
         self.navigationController?.navigationBar.isHidden = true
         getHomeInfo { [weak self] isSuccess in
             if isSuccess {
@@ -246,9 +248,12 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                     completion(false)
                 }
             case.failure(let error):
-                print("Error: \(error.localizedDescription)")
+//                print("Error: \(error.localizedDescription)")
+//                if let response = error.response {
+//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+//                }
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }

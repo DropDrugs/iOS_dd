@@ -3,6 +3,7 @@
 import UIKit
 import SnapKit
 import Moya
+import SwiftyToaster
 
 class PushNoticeVC: UIViewController {
     
@@ -40,7 +41,7 @@ class PushNoticeVC: UIViewController {
             if isSuccess {
                 self.tableView.reloadData()
             } else {
-                print("알림 데이터 못가져옴")
+//                print("알림 데이터 못가져옴")
             }
         }
     }
@@ -50,18 +51,6 @@ class PushNoticeVC: UIViewController {
         self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.navigationBar.isHidden = false
         
-        // 선택된 셀이 있다면 해제
-        if let indexPath = tableView.indexPathForSelectedRow {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-        
-//        self.callGetPushNotification { isSuccess in
-//            if isSuccess {
-//                self.tableView.reloadData()
-//            } else {
-//                print("알림 데이터 못가져옴")
-//            }
-//        }
     }
     
     // MARK: - Actions
@@ -86,9 +75,12 @@ class PushNoticeVC: UIViewController {
                     completion(false)
                 }
             case .failure(let error) :
-                print("Error: \(error.localizedDescription)")
+//                print("Error: \(error.localizedDescription)")
+//                if let response = error.response {
+//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+//                }
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }
@@ -108,8 +100,5 @@ extension PushNoticeVC :  UITableViewDataSource, UITableViewDelegate {
         
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected row: \(indexPath.row)")
-    }
+
 }
