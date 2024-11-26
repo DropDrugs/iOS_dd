@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "AppLogo.png",
+      "filename" : "Seodaemun.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "AppLogo@2x.png",
+      "filename" : "Seodaemun@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "AppLogo@3x.png",
+      "filename" : "Seodaemun@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

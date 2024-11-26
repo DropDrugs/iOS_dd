@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "AppLogo.png",
+      "filename" : "Songpa.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "AppLogo@2x.png",
+      "filename" : "Songpa@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "AppLogo@3x.png",
+      "filename" : "Songpa@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
