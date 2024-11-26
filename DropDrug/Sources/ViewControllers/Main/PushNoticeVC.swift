@@ -3,10 +3,13 @@
 import UIKit
 import SnapKit
 import Moya
+import SwiftyToaster
 
 class PushNoticeVC: UIViewController {
     
-    let NoticeList : [PushNoticeData] = [] // id 기준으로 역순
+    let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    
+    var NoticeList : [PushNoticeData] = [] // id 기준으로 역순
     
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  알림")
@@ -26,25 +29,57 @@ class PushNoticeVC: UIViewController {
         view.backgroundColor = .white
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
+        
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        
+        self.callGetPushNotification { isSuccess in
+            if isSuccess {
+                self.tableView.reloadData()
+            } else {
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = false
+        self.navigationController?.navigationBar.isHidden = false
         
-        // 선택된 셀이 있다면 해제
-        if let indexPath = tableView.indexPathForSelectedRow {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
     }
     
     // MARK: - Actions
     @objc private func didTapBackButton() {
         navigationController?.popViewController(animated: false)
+    }
+    
+    func callGetPushNotification(completion: @escaping (Bool) -> Void) {
+        provider.request(.getPushNotificationList) { result in
+            switch result {
+            case .success(let response) :
+                do {
+                    let responsedata = try response.map([NotificationResponse].self)
+                    self.NoticeList = []
+                    for noticeData in responsedata {
+                        self.NoticeList.append(PushNoticeData(id: noticeData.id, title: noticeData.title, content: noticeData.message, date: noticeData.createdAt))
+                    }
+                    self.NoticeList.sort(by: { $0.id > $1.id })
+                    completion(true)
+                } catch {
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
+                    completion(false)
+                }
+            case .failure(let error) :
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
+                completion(false)
+            }
+        }
     }
 
 }
@@ -60,8 +95,5 @@ extension PushNoticeVC :  UITableViewDataSource, UITableViewDelegate {
         
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected row: \(indexPath.row)")
-    }
+
 }

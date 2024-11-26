@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Moya
 import Charts
+import SwiftyToaster
 
 class MyPageVC : UIViewController {
     
@@ -55,9 +56,9 @@ class MyPageVC : UIViewController {
         super.viewWillAppear(animated)
         fetchMemberInfo { success in
             if success {
-                print("Profile updated successfully")
+                print("fetch Profile successfully")
             } else {
-                print("Failed to update profile")
+                print("Failed to fetch Profile")
             }
         }
     }
@@ -69,7 +70,10 @@ class MyPageVC : UIViewController {
     
     func setupViews() {
         view.backgroundColor = .white
-        [titleLabel, settingButton, myPageProfileView, rewardView, dropCardLabel, disposalStateLabel].forEach {
+//        [titleLabel, settingButton, myPageProfileView, rewardView, dropCardLabel, disposalStateLabel].forEach {
+//            view.addSubview($0)
+//        }
+        [titleLabel, settingButton, myPageProfileView, rewardView].forEach {
             view.addSubview($0)
         }
     }
@@ -94,14 +98,14 @@ class MyPageVC : UIViewController {
             make.trailing.equalToSuperview().offset(-16)
             make.height.equalTo(60)
         }
-        dropCardLabel.snp.makeConstraints { make in
-            make.top.equalTo(rewardView.snp.bottom).offset(superViewHeight * 0.05)
-            make.left.equalTo(view.safeAreaLayoutGuide).offset(25)
-        }
-        disposalStateLabel.snp.makeConstraints { make in
-            make.top.equalTo(dropCardLabel.snp.bottom).offset(superViewHeight * 0.05)
-            make.left.equalTo(view.safeAreaLayoutGuide).offset(25)
-        }
+//        dropCardLabel.snp.makeConstraints { make in
+//            make.top.equalTo(rewardView.snp.bottom).offset(superViewHeight * 0.05)
+//            make.left.equalTo(view.safeAreaLayoutGuide).offset(25)
+//        }
+//        disposalStateLabel.snp.makeConstraints { make in
+//            make.top.equalTo(dropCardLabel.snp.bottom).offset(superViewHeight * 0.05)
+//            make.left.equalTo(view.safeAreaLayoutGuide).offset(25)
+//        }
         
     }
     
@@ -127,3 +131,4 @@ class MyPageVC : UIViewController {
     }
     
 }
+

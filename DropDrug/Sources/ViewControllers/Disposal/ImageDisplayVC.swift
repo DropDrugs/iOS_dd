@@ -3,6 +3,7 @@
 import UIKit
 import SDWebImage
 import Moya
+import SwiftyToaster
 
 class ImageDisplayVC: UIViewController {
     lazy var progressBar: CircularProgressBar = CircularProgressBar()
@@ -105,6 +106,8 @@ class ImageDisplayVC: UIViewController {
                     if combinedString.contains("폐의약품") {
                         self.updateProgressManually(to: 0.99)
                         self.presentCertificationSuccessVC()
+                    } else {
+                        self.presentCertificationFailureVC()
                     }
                 } else {
                     self.presentCertificationFailureVC()
@@ -115,15 +118,23 @@ class ImageDisplayVC: UIViewController {
     }
     
     func presentCertificationFailureVC() {
-        let failureVC = CertificationFailureVC()
-        failureVC.modalPresentationStyle = .fullScreen
-        present(failureVC, animated: true)
+//        let failureVC = CertificationFailureVC()
+//        failureVC.modalPresentationStyle = .fullScreen
+//        present(failureVC, animated: true)
+        
+        let loadingVC = CertificationFailureVC()
+        loadingVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(loadingVC, animated: true)
     }
     
     func presentCertificationSuccessVC() {
-        let successVC = CertificationSuccessVC()
-        successVC.modalPresentationStyle = .fullScreen
-        present(successVC, animated: true)
+//        let successVC = CertificationSuccessVC()
+//        successVC.modalPresentationStyle = .fullScreen
+//        present(successVC, animated: true)
+        
+        let loadingVC = CertificationSuccessVC()
+        loadingVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(loadingVC, animated: true)
     }
 }
 
@@ -153,13 +164,12 @@ extension ImageDisplayVC {
                     }
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+//                    print("Failed to decode response: \(error)")
                     completion(false)
                 }
             case .failure(let error) :
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }

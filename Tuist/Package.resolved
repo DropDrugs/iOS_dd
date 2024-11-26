@@ -1,5 +1,5 @@
 {
-  "originHash" : "74dce730c590f5b2943b93a252db435bce943753e22387bc04a5f270b33286c9",
+  "originHash" : "f8414776f44f26aeddd2fabd3e583eac92deee8e8d9195cdad84f4f37ee17ee8",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -227,12 +227,12 @@
       }
     },
     {
-      "identity" : "toast-swift",
+      "identity" : "swiftytoaster",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/scalessec/Toast-Swift.git",
+      "location" : "https://github.com/noeyiz/SwiftyToaster.git",
       "state" : {
-        "revision" : "ddccd20d6fb718448d9b179c454c561653fda7d5",
-        "version" : "5.1.1"
+        "revision" : "4ed905fdecf7426e3e7a7af03b09674980f9c1a7",
+        "version" : "1.0.2"
       }
     }
   ],

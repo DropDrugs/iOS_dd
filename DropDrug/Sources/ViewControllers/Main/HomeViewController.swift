@@ -4,12 +4,16 @@ import UIKit
 import CoreLocation
 import Moya
 import MapKit
+import SafariServices
+import SwiftyToaster
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
     let provider = MoyaProvider<HomeAPI>(plugins: [ BearerTokenPlugin(), NetworkLoggerPlugin() ])
     
-    var selectedCharacterNum: Int = 0
+    private var siDo = ""
+    private var siGu = ""
+    private var locationUrl = ""
     
     var locationManager = CLLocationManager()
     
@@ -17,20 +21,22 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         super.viewDidLoad()
         self.view = homeView
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap(_:)))
+        homeView.character.addGestureRecognizer(tapGesture)
         configureLocationManager()
         configureMapView()
-        
-        navigationController?.navigationBar.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true
+        self.navigationController?.isNavigationBarHidden = true
         getHomeInfo { [weak self] isSuccess in
             if isSuccess {
                 DispatchQueue.main.async {
                     self?.homeView.updateStarter()
                     self?.homeView.updatePoints()
+                    self?.homeView.updateChar()
                 }
             } else {
                 print("GET 호출 실패")
@@ -47,6 +53,18 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         return hv
     }()
     
+    @objc private func handleImageTap(_ sender: UITapGestureRecognizer) {
+        guard let tappedView = sender.view else { return }
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            tappedView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: [], animations: {
+                tappedView.transform = .identity
+            }, completion: nil)
+        }
+    }
+    
     @objc
     private func AlarmBtnTapped() {
         let alarmVC = PushNoticeVC()
@@ -62,8 +80,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     
     @objc
     private func goToSPBtnTapped() {
-        let vc = MapViewController()
-        navigationController?.pushViewController(vc, animated: true)
+        if let url = URL(string: locationUrl) {
+            let safariVC = SFSafariViewController(url: url)
+            present(safariVC, animated: true, completion: nil)
+        }
     }
         
     @objc private func didTapFloatingBtn() {
@@ -83,6 +103,31 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         let vc = SelectDropTypeVC()
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    func updateButtonWidth(name: String) {
+        // 이름 길이 계산
+        let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
+        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+
+        let textSize = attributedString.boundingRect(
+            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            context: nil
+        ).size
+
+        // 텍스트 패딩 추가
+        let buttonWidth = textSize.width + 40
+
+        homeView.starter.snp.updateConstraints { make in
+            make.width.equalTo(buttonWidth)
+        }
+
+        homeView.starter.setAttributedTitle(attributedString, for: .normal)
+        homeView.starter.layoutIfNeeded()
+    }
+    
+    //MARK: - 현 위치 로직
         
     private func configureLocationManager() {
         locationManager.delegate = self
@@ -144,8 +189,33 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                     strAddr += " \(i)"
                 }
             }
+            let components = strAddr.split(separator: " ")
             
-            
+            if let first = components.first, let second = components.dropFirst().first {
+                self.siDo = String(first)
+                self.siGu = String(second)
+                if self.siDo == "서울특별시" {
+                    Constants.seoulDistrictsList.forEach { item in
+                        if self.siGu == item.name {
+                            self.locationUrl = item.url
+                        }
+                    }
+                } else {
+                    if self.siDo == "세종특별자치시" {
+                        self.locationUrl = Constants.commonDisposalInfoList[1].url
+                    } else {
+                        Constants.commonDisposalInfoList.forEach { item in
+                            let location = self.siDo + " " + self.siGu
+                            if location == item.name {
+                                self.locationUrl = item.url
+                            }
+                        }
+                    }
+                }
+            } else {
+                print("값이 충분하지 않습니다.")
+            }
+        
             completion(strAddr.trimmingCharacters(in: .whitespaces))
         }
     }
@@ -171,6 +241,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         self.homeView.mapView.setRegion(region, animated: true)
     }
     
+    //MARK: - API 호출
+    
     func getHomeInfo(completion: @escaping (Bool) -> Void) {
         provider.request(.getHomeInfo) { result in
             switch result {
@@ -178,18 +250,23 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 print(response.statusCode)
                 do {
                     let responseData = try response.map(HomeResponse.self)
+                    print(responseData)
+                    self.updateButtonWidth(name: responseData.nickname)
                     self.homeView.name = responseData.nickname
                     self.homeView.points = responseData.point
-                    self.selectedCharacterNum = responseData.selectedChar
+                    self.homeView.selectedCharacterNum = responseData.selectedChar
                     completion(true)
                 } catch {
                     print("Failed to decode response: \(error)")
                     completion(false)
                 }
             case.failure(let error):
-                print("Error: \(error.localizedDescription)")
+//                print("Error: \(error.localizedDescription)")
+//                if let response = error.response {
+//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+//                }
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }

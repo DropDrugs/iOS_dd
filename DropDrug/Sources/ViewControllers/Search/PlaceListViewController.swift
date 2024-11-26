@@ -35,6 +35,7 @@ class PlaceListViewController: UIViewController {
         v.placeListTableView.dataSource = self
         v.placeListTableView.dataSource = self
         v.placeListTableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        v.placeListTableView.allowsSelection = false
         return v
     }()
 

@@ -3,6 +3,7 @@
 import UIKit
 import SnapKit
 import Moya
+import SwiftyToaster
 
 class LoginVC : UIViewController {
 
@@ -40,7 +41,7 @@ class LoginVC : UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         button.backgroundColor = UIColor.systemGray
-        button.layer.cornerRadius = 30
+        button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -64,8 +65,8 @@ class LoginVC : UIViewController {
     
     private func setupConstraints() {
         backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.equalToSuperview().inset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(superViewWidth * 0.03)
+            make.leading.equalToSuperview().inset(superViewWidth * 0.07)
         }
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(backButton.snp.bottom).offset(20)
@@ -108,13 +109,13 @@ class LoginVC : UIViewController {
     
     @objc func didTapBackButton() {
         var currentVC: UIViewController? = self
-            while let presentingVC = currentVC?.presentingViewController {
-                if presentingVC is SelectLoginTypeVC {
-                    presentingVC.dismiss(animated: true, completion: nil)
-                    return
-                }
-                currentVC = presentingVC
+        while let presentingVC = currentVC?.presentingViewController {
+            if presentingVC is SelectLoginTypeVC {
+                presentingVC.dismiss(animated: true, completion: nil)
+                return
             }
+            currentVC = presentingVC
+        }
         print("SelectLoginTypeVC를 찾을 수 없습니다.")
     }
     
@@ -156,8 +157,7 @@ class LoginVC : UIViewController {
     @objc func checkFormValidity() {
         let email = emailField.textField.text ?? ""
         let password = passwordField.textField.text ?? ""
-//        isFormValid = (ValidationUtility.isValidEmail(email)) && (ValidationUtility.isValidPassword(password))
-        isFormValid = !email.isEmpty && !password.isEmpty
+        isFormValid = (ValidationUtility.isValidEmail(email)) && (ValidationUtility.isValidPassword(password))
         validateInputs()
     }
     

@@ -2,6 +2,7 @@
 
 import Foundation
 import Moya
+import SwiftyToaster
 
 extension PrescriptionDrugVC { //get
     func getDrugsList(completion: @escaping (Bool) -> Void) {
@@ -17,13 +18,12 @@ extension PrescriptionDrugVC { //get
                     }
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }
@@ -44,13 +44,12 @@ extension EnrollDetailViewController { //post
                     let _ = try response.map(IdResponse.self)
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }
@@ -72,13 +71,12 @@ extension DiscardPrescriptionDrugVC { //delete
                     self.drugList = response
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }
@@ -88,12 +86,11 @@ extension DiscardPrescriptionDrugVC { //delete
     func deleteDrugs(_ userParameter: drugDeleteRequest, completion: @escaping (Bool) -> Void) {
         DrugProvider.request(.deleteDrug(param: userParameter)) { result in
             switch result {
-            case .success(let response):
+            case .success(_):
                 completion(true)
             case .failure(let error):
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }

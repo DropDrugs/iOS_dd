@@ -59,6 +59,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         vc.lng = lng
         vc.siDo = siDo
         vc.siGu = siGu
+        currentBottomSheet?.dismiss(animated: true)
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -71,6 +72,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         vc.lng = lng
         vc.siDo = siDo
         vc.siGu = siGu
+        currentBottomSheet?.dismiss(animated: true)
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -83,6 +85,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         vc.lng = lng
         vc.siDo = siDo
         vc.siGu = siGu
+        currentBottomSheet?.dismiss(animated: true)
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -95,6 +98,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         vc.lng = lng
         vc.siDo = siDo
         vc.siGu = siGu
+        currentBottomSheet?.dismiss(animated: true)
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -107,6 +111,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         vc.lng = lng
         vc.siDo = siDo
         vc.siGu = siGu
+        currentBottomSheet?.dismiss(animated: true)
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -506,7 +511,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
                                 lng: Double(place.lng)!,
                                 placeName: place.name!,
                                 address: place.address,
-                                photo: place.locationPhoto
+                                photo: place.locationPhoto ?? "OB1"
                             )
                             return true
                         }

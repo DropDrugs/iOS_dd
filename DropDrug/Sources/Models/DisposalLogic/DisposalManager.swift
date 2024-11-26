@@ -2,6 +2,7 @@
 
 import UIKit
 import Moya
+import SwiftyToaster
 
 extension CertificationSuccessVC {
     // post api 보내기
@@ -17,13 +18,12 @@ extension CertificationSuccessVC {
                     let responseData = try response.map(BadgeEarnedResponse.self)
                     completion(true, responseData.getBadge)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false, nil)
                 }
             case .failure(let error) :
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false, nil)
             }

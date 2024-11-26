@@ -116,10 +116,10 @@ class EnrollDetailViewController: UIViewController {
         guard let dateCount = self.dateCount else { return }
         self.postNewDrug(self.setupPostDrugDTO(selectedDate, dateCount)) { isSuccess in
             if isSuccess {
-                print("약 등록 성공")
+//                print("약 등록 성공")
                 self.navigationController?.popViewController(animated: false)
             } else {
-                print("약 등록 실패")
+//                print("약 등록 실패")
             }
             
         }

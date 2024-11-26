@@ -17,10 +17,10 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     let categories: [DrugCategory] = [
-        DrugCategory(id: 0, name: "알약", imageName: "알약", backgroundColor: Constants.Colors.skyblue!.withAlphaComponent(0.4)),
-        DrugCategory(id: 1, name: "물약", imageName: "물약", backgroundColor: Constants.Colors.coralpink!.withAlphaComponent(0.4)),
-        DrugCategory(id: 2, name: "연고", imageName: "연고", backgroundColor: Constants.Colors.lightblue!.withAlphaComponent(0.4)),
-        DrugCategory(id: 3, name: "가루약", imageName: "가루약", backgroundColor: Constants.Colors.pink!.withAlphaComponent(0.4))
+        DrugCategory(id: 0, name: "알약", imageName: "pill", backgroundColor: Constants.Colors.skyblue!.withAlphaComponent(0.4)),
+        DrugCategory(id: 1, name: "물약", imageName: "liquid", backgroundColor: Constants.Colors.coralpink!.withAlphaComponent(0.4)),
+        DrugCategory(id: 2, name: "연고", imageName: "pot", backgroundColor: Constants.Colors.lightblue!.withAlphaComponent(0.4)),
+        DrugCategory(id: 3, name: "가루약", imageName: "powder", backgroundColor: Constants.Colors.pink!.withAlphaComponent(0.4))
     ]
     
     private lazy var backButton: CustomBackButton = {
@@ -44,6 +44,11 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
         super.viewDidLoad()
         setupNavigationBar()
         setupView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = false
     }
     
     private func setupNavigationBar() {
@@ -168,16 +173,36 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
             print("ID: \(category.id)")
         }
         
-        let alert = UIAlertController(title: "실천 사진 인증", message: "실시간 사진 인증을 하시겠습니까?", preferredStyle: .alert)
+        let infoAlertView = CustomAlertView()
+        infoAlertView.configure(title: "폐의약품 분리배출 실천 사진 인증 안내", message: Constants.disposalGuide)
+        view.addSubview(infoAlertView)
+        view.bringSubviewToFront(infoAlertView)
         
-        alert.addAction(UIAlertAction(title: "No", style: .cancel) { [weak self] _ in
-        self?.moveToMainScreen()
-        })
-        alert.addAction(UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
-            self?.presentCamera()
-        })
+        infoAlertView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
-        present(alert, animated: true, completion: nil)
+        
+        // infoAlertView가 닫히면,
+        infoAlertView.onDismiss = { [weak self] in
+            guard let self = self else { return }
+            
+            let alert = UIAlertController(
+                title: "폐기 실천 사진 인증",
+                message: "봉투에 '폐의약품'이라고 표시하였는지 사진을 통해 인증할 수 있습니다.\n 인증하시겠습니까?",
+                preferredStyle: .alert
+            )
+            
+            alert.addAction(UIAlertAction(title: "취소", style: .cancel) { _ in
+                self.moveToMainScreen()
+            })
+            
+            alert.addAction(UIAlertAction(title: "인증하기", style: .default) { _ in
+                self.presentCamera()
+            })
+            
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     private func presentCamera() {
@@ -199,7 +224,6 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
         if let image = info[.originalImage] as? UIImage {
             // PNG 데이터로 변환
             if let pngData = image.pngData() {
-                // 비동기로 파일 저장
                 saveToDocuments(data: pngData) { [weak self] savedImageURL in
                     guard let self = self, let url = savedImageURL else {
                         print("이미지 저장 실패")
@@ -207,8 +231,7 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
                     }
                     print("PNG 파일 저장 완료: \(url)")
                     
-                    // 저장 완료 후 새로운 뷰 컨트롤러 띄우기
-                    self.showNewViewController(with: url)
+                    showNewViewController(with: url)
                 }
             } else {
                 print("PNG로 변환 실패")
@@ -248,19 +271,11 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     private func showNewViewController(with imageURL: URL) {
+        self.navigationController?.navigationBar.isHidden = true
+        
         let loadingVC = ImageDisplayVC()
         loadingVC.imageURL = imageURL
-        loadingVC.modalPresentationStyle = .fullScreen
-        present(loadingVC, animated: true)
+        loadingVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(loadingVC, animated: true)
     }
-    
-//    // MARK: Actions
-//    @objc private func didTapBackButton() {
-//        navigationController?.popViewController(animated: true)
-//    }
-//    
-//    private func moveToMainScreen() {
-//        navigationController?.popViewController(animated: true)
-//    }
-    
 }

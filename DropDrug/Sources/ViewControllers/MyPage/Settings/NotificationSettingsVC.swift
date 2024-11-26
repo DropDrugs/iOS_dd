@@ -3,7 +3,8 @@
 import UIKit
 import SnapKit
 import Moya
-//TODO: 노티 옵션 api 추가 후 셀 정리
+import SwiftyToaster
+
 class NotificationSettingsVC: UIViewController {
     
     // MARK: - Moya Provider
@@ -68,10 +69,12 @@ class NotificationSettingsVC: UIViewController {
                     ]
                     self?.tableView.reloadData()
                 } catch {
-                    print("디코딩 실패: \(error)")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                 }
             case .failure(let error):
-                print("API 호출 실패: \(error)")
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
             }
         }
     }
@@ -85,10 +88,12 @@ class NotificationSettingsVC: UIViewController {
         
         provider.request(.updateNotificationSettings(param: updatedSettings)) { result in
             switch result {
-            case .success:
-                print("알림 설정 업데이트 성공")
+            case .success: break
+                // 성공
             case .failure(let error):
-                print("알림 설정 업데이트 실패: \(error)")
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
             }
         }
     }
@@ -123,7 +128,6 @@ extension NotificationSettingsVC: UITableViewDataSource {
                 self.notificationStates[0] = self.notificationStates[1...3].contains(true)
             }
 
-            print("\(option) 설정 변경됨: \(isOn)")
             self.updateNotificationSetting()
         }
         cell.selectionStyle = .none

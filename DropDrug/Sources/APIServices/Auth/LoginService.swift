@@ -19,7 +19,7 @@ enum LoginService {
     case postQuit(token: String)
     
     //리프레시
-    case refreshAccessToken(token: String)
+    case refreshAccessToken(refreshToken: String)
 }
 
 extension LoginService: TargetType {
@@ -63,8 +63,8 @@ extension LoginService: TargetType {
             return .requestParameters(parameters: ["accessToken": accessToken], encoding: JSONEncoding.default)
         case .postQuit(let accessToken) :
             return .requestParameters(parameters: ["token": accessToken], encoding: JSONEncoding.default)
-        case .refreshAccessToken(let accessToken) :
-            return .requestParameters(parameters: ["token": accessToken], encoding: JSONEncoding.default)
+        case .refreshAccessToken(let refreshToken) :
+            return .requestParameters(parameters: ["refreshToken": refreshToken], encoding: JSONEncoding.default)
         }
     }
     

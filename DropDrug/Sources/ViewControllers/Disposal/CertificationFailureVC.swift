@@ -89,18 +89,16 @@ class CertificationFailureVC: UIViewController {
             make.centerX.equalToSuperview()
             make.width.height.equalTo(superViewWidth * 0.9)
         }
-        
         failureAlertLabel.snp.makeConstraints { make in
             make.bottom.equalTo(messageLabel.snp.top).offset(-20)
             make.centerX.equalToSuperview()
         }
-        
         messageLabel.snp.makeConstraints { make in
             make.bottom.equalTo(retryButton.snp.top).offset(-50)
             make.centerX.equalToSuperview() // 수평 가운데 정렬
         }
         retryButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-60)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(superViewHeight * 0.1)
             make.centerX.equalToSuperview()
             make.width.equalTo(superViewWidth * 0.9)
             make.height.equalTo(50)
@@ -109,13 +107,20 @@ class CertificationFailureVC: UIViewController {
     
     // MARK: - Actions
     @objc private func retryButtonTapped() {
+        print("retryButtonTapped@!!!!!!")
+        
         var currentVC: UIViewController? = self
-        while let presentingVC = currentVC?.presentingViewController {
-            if presentingVC is SelectDrugTypeVC {
-                presentingVC.dismiss(animated: true, completion: nil)
-                return
+        while let parentVC = currentVC?.navigationController?.viewControllers.first(where: { $0 is SelectDrugTypeVC }) {
+            
+            if parentVC is SelectDrugTypeVC {
+                if let navigationController = parentVC.navigationController {
+                    navigationController.popToViewController(parentVC, animated: true)
+                    return
+                }
+                currentVC = parentVC
             }
-            currentVC = presentingVC
+            print("SelectDrugTypeVC not found")
         }
+//        navigationController?.navigationBar.isHidden = false
     }
 }

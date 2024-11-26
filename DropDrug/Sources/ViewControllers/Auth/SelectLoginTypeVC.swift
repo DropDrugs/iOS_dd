@@ -15,14 +15,14 @@ class SelectLoginTypeVC : UIViewController {
     
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     
-    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, KakaoAccessToken, KakaoRefreshToken, KakaoIdToken
+    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, serverRefreshToken, KakaoAccessToken, KakaoRefreshToken, KakaoIdToken, accessTokenExpiresIn
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     fileprivate var currentNonce: String?
     
     lazy var mainLabel: UILabel = {
         let label = UILabel()
-        label.text = "드롭드럭에서\n올바른 의약품 폐기를 함께하고\n나와 지구를 치료해요!"
+        label.text = "드롭드락에서\n올바른 의약품 폐기를 함께하고\n나와 지구를 치료해요!"
         label.textColor = .white
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -35,7 +35,7 @@ class SelectLoginTypeVC : UIViewController {
         button.backgroundColor = UIColor(hex: "#FEE500")
         button.setTitle("   카카오로 시작하기", for: .normal)
         button.setTitleColor(UIColor(hex: "#191919"), for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 20)
         button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         return button
@@ -46,11 +46,13 @@ class SelectLoginTypeVC : UIViewController {
         button.setTitle("E-mail로 시작하기", for: .normal)
         button.backgroundColor = Constants.Colors.gray900
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 20)
         button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(startTapped), for: .touchUpInside)
         return button
     }()
+    
+    let appleButton = ASAuthorizationAppleIDButton()
     
     lazy var loginButton: UIButton = {
         let button = UIButton()
@@ -67,6 +69,9 @@ class SelectLoginTypeVC : UIViewController {
         setupUI()
         setupGradientBackground()
         setupConstraints()
+        
+        appleButton.addTarget(self, action: #selector(handleAppleLogin), for: .touchUpInside)
+        appleButton.cornerRadius =  superViewWidth * 0.075
         
         if let image = UIImage(named: "kakao_logo")?.withRenderingMode(.alwaysOriginal) {
             let resizedImage = resizeImage(image: image, targetSize: CGSize(width: 24, height: 24))
@@ -103,23 +108,27 @@ class SelectLoginTypeVC : UIViewController {
     }
     
     private func setupUI() {
-        let subviews = [mainLabel, kakaoLoginButton, signUpButton, loginButton]
+        let subviews = [mainLabel, kakaoLoginButton, signUpButton, appleButton, loginButton]
         subviews.forEach { view.addSubview($0) }
     }
     
     private func setupConstraints() {
         mainLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(superViewHeight * 0.45)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(superViewHeight * 0.35)
             make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(superViewWidth * 0.1)
         }
-        kakaoLoginButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(superViewHeight * 0.76)
+        signUpButton.snp.makeConstraints { make in
+            make.bottom.equalTo(kakaoLoginButton.snp.top).inset(-superViewHeight * 0.01)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(superViewWidth * 0.15)
         }
-        signUpButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(superViewHeight * 0.68)
+        kakaoLoginButton.snp.makeConstraints { make in
+            make.bottom.equalTo(appleButton.snp.top).inset(-superViewHeight * 0.01)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(superViewWidth * 0.15)
+        }
+        appleButton.snp.makeConstraints { make in
+            make.bottom.equalTo(loginButton.snp.top).inset(-superViewHeight * 0.01)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(superViewWidth * 0.15)
         }
@@ -127,24 +136,8 @@ class SelectLoginTypeVC : UIViewController {
             make.top.equalToSuperview().offset(superViewHeight * 0.92)
             make.leading.trailing.equalToSuperview().inset(20)
         }
-        
-        setupAppleLoginButton()
     }
-    
-    func setupAppleLoginButton() {
-        let appleButton = ASAuthorizationAppleIDButton()
-        appleButton.addTarget(self, action: #selector(handleAppleLogin), for: .touchUpInside)
-        appleButton.cornerRadius =  superViewWidth * 0.075
-        self.view.addSubview(appleButton)
-        
-        // SnapKit을 사용하는 경우 위치 설정
-        appleButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(superViewHeight * 0.84)
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(superViewWidth * 0.15)
-        }
-    }
-    
+
     @objc func kakaoButtonTapped() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
@@ -244,7 +237,7 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
             
             if let identityToken = appleIDCredential.identityToken,
                let identityTokenString = String(data: identityToken, encoding: .utf8),
-               let emailString = email{
+               let emailString = email {
                 SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
                 SelectLoginTypeVC.keychain.set(emailString, forKey: "AppleIDEmail")
                 SelectLoginTypeVC.keychain.set(formattedName, forKey: "AppleIDName")

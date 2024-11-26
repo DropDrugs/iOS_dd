@@ -4,5 +4,6 @@ import UIKit
 
 struct CommonDisposalDataModel: Codable {
     let name : String
+    let image : String
     let url : String
 }

@@ -10,7 +10,7 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     // TODO: 이미지 에셋 추가
     let categories = [
         ("일반 의약품", "OB1"),
-        ("병원 처방약", "OB1")
+        ("병원 처방약", "OB3")
     ]
     
     private lazy var backButton: CustomBackButton = {
@@ -21,11 +21,13 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.isNavigationBarHidden = false
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         setupView()
     
     }
+    
     
     private func setupView() {
         view.backgroundColor = .white
@@ -92,20 +94,19 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
             let SelectDrugTypeVC = SelectDrugTypeVC()
             navigationController?.pushViewController(SelectDrugTypeVC, animated: true)
         case 1:
-            let prescriptionDrugVC = PrescriptionDrugVC()
-            navigationController?.pushViewController(prescriptionDrugVC, animated: true)
+            let SelectDrugTypeVC = SelectDrugTypeVC()
+            navigationController?.pushViewController(SelectDrugTypeVC, animated: true)
+//            let prescriptionDrugVC = PrescriptionDrugVC()
+//            navigationController?.pushViewController(prescriptionDrugVC, animated: true)
         default:
             print("알 수 없는 카테고리 선택됨")
         }
     }
     
     // MARK: Actions
-    private func moveToMainScreen() {
-        navigationController?.popViewController(animated: true)
-    }
-    
     @objc private func didTapBackButton() {
-        navigationController?.popViewController(animated: true)
-        navigationController?.navigationBar.isHidden = true
+        self.navigationController?.navigationBar.isHidden = true
+        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.popViewController(animated: true)
     }
 }

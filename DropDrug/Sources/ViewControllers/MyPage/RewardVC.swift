@@ -4,8 +4,6 @@ import UIKit
 import SnapKit
 import Moya
 
-//TODO: api 연결
-
 class RewardVC : UIViewController {
     
     let PointProvider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
@@ -134,8 +132,10 @@ extension RewardVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: PointHistoryCell.identifier, for: indexPath) as? PointHistoryCell else {
             return UITableViewCell()
         }
-        let item = rewardData[indexPath.row]
+        let reverseIndex = rewardData.count - 1 - indexPath.row
+        let item = rewardData[reverseIndex]
         cell.configure(with: item)
+        cell.selectionStyle = .none
         return cell
     }
 }

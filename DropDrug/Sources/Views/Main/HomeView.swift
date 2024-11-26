@@ -7,16 +7,20 @@ import CoreLocation
 
 class HomeView: UIView {
     
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = Constants.Colors.lightblue
-        self.addComponenets()
+        self.setUpUI()
+        self.setUpConstaraints()
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public var selectedCharacterNum: Int = 0
     public var points = 100
     public var name = "김드롭"
     public var presentLocation = "서비스 이용 가능 지역이 아닙니다"
@@ -111,6 +115,7 @@ class HomeView: UIView {
         l.text = "현 위치"
         l.textColor = Constants.Colors.gray700
         l.font = UIFont.ptdRegularFont(ofSize: 13)
+        l.numberOfLines = 0
         return l
     }()
     
@@ -145,7 +150,7 @@ class HomeView: UIView {
         // 타이틀 속성 설정
         let attributes: AttributeContainer = AttributeContainer([
             .font: UIFont.ptdSemiBoldFont(ofSize: 14), .foregroundColor: Constants.Colors.skyblue ?? .blue])
-        configuration.attributedTitle = AttributedString("내 주변 드롭 장소 탐색", attributes: attributes)
+        configuration.attributedTitle = AttributedString("내 지역 드롭 방법 확인하기", attributes: attributes)
         configuration.titleAlignment = .center
         
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8) // 여백 설정
@@ -157,20 +162,32 @@ class HomeView: UIView {
         return b
         
     }()
+    
+    public lazy var characterView: UIView = {
+        let v = UIView()
+        v.backgroundColor = .clear
+        return v
+    }()
+    
+    public lazy var character: UIImageView = {
+        let i = UIImageView()
+        i.contentMode = .scaleAspectFill
+        i.backgroundColor = .clear
+        i.isUserInteractionEnabled = true
+        return i
+    }()
 
-    private func addComponenets() {
-        addSubview(appTitle)
-        addSubview(alarmBtn)
-        addSubview(starter)
-        addSubview(point)
-        addSubview(locationBackground)
-        addSubview(floatingBtn)
-        locationBackground.addSubview(mapView)
-        locationBackground.addSubview(location)
-        locationBackground.addSubview(resetBtn)
-        locationBackground.addSubview(presLoca)
-        locationBackground.addSubview(goToSearchPlaceBtn)
-        
+    func setUpUI() {
+        characterView.addSubview(character)
+        [appTitle, alarmBtn, starter, point, locationBackground, floatingBtn, characterView].forEach {
+            addSubview($0)
+        }
+        [mapView, location, resetBtn, presLoca, goToSearchPlaceBtn].forEach {
+            locationBackground.addSubview($0)
+        }
+    }
+    
+    private func setUpConstaraints() {
         appTitle.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(20)
             make.leading.equalTo(safeAreaLayoutGuide.snp.leading).offset(20)
@@ -186,7 +203,7 @@ class HomeView: UIView {
             make.top.equalTo(appTitle.snp.bottom).offset(28)
             make.leading.equalTo(appTitle.snp.leading)
             make.height.equalTo(40)
-            make.width.equalTo(calculateButtonWidth(name: name))
+            make.width.equalTo(127)
         }
         
         point.snp.makeConstraints { make in
@@ -209,8 +226,8 @@ class HomeView: UIView {
         }
         
         mapView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(20)
-            make.width.height.equalTo(110)
+            make.top.leading.bottom.equalTo(locationBackground).inset(20)
+            make.width.equalTo(mapView.snp.height)
         }
         
         location.snp.makeConstraints { make in
@@ -233,22 +250,17 @@ class HomeView: UIView {
             make.top.equalTo(presLoca.snp.bottom).offset(14)
             make.leading.equalTo(presLoca.snp.leading)
         }
-    }
-    
-    func calculateButtonWidth(name: String) -> CGFloat {
-        // 이름 길이 계산
-        let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
-        attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
-        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
-
-        let textSize = attributedString.boundingRect(
-            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40),
-            options: [.usesLineFragmentOrigin, .usesFontLeading],
-            context: nil
-        ).size
-
-        // 텍스트 패딩 추가
-        return textSize.width + 40
+        
+        characterView.snp.makeConstraints { make in
+            make.top.equalTo(point.snp.bottom)
+            make.bottom.equalTo(floatingBtn.snp.top)
+            make.leading.trailing.equalTo(safeAreaLayoutGuide)
+        }
+        
+        character.snp.makeConstraints { make in
+            make.centerX.centerY.equalTo(characterView)
+            make.height.equalTo(characterView.snp.height).multipliedBy(0.7)
+        }
     }
     
     public func updateStarter() {
@@ -260,5 +272,9 @@ class HomeView: UIView {
     
     public func updatePoints() {
         point.setTitle("\(points) P", for: .normal)
+    }
+    
+    public func updateChar() {
+        character.image = UIImage(named: "body\(selectedCharacterNum)")
     }
 }

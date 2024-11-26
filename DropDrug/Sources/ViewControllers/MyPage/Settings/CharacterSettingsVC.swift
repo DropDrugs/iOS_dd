@@ -3,12 +3,13 @@
 import UIKit
 import SnapKit
 import Moya
+import SwiftyToaster
 
 class CharacterSettingsVC: UIViewController {
-    //TODO: 캐릭터 불러오기 api 연결
     let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
-    var ownedCharCount : Int = 0
+    var ownedChar : [Int] = []
+    var selectedChar : Int = 0
     
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  캐릭터 설정")
@@ -16,29 +17,16 @@ class CharacterSettingsVC: UIViewController {
         return button
     }()
     
-    public lazy var scrollView: UIScrollView = {
-        let s = UIScrollView()
-        s.showsVerticalScrollIndicator = false
-        s.showsHorizontalScrollIndicator = false
-        return s
-    }()
-    
     public lazy var contentView: UIView = {
         let v = UIView()
         return v
     }()
+    
     private let ownedCharLabel = SubLabelView()
     private let allCharLabel = SubLabelView()
     
     private lazy var ownedCharCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 100, height: 100)
-        layout.minimumInteritemSpacing = 12
-        layout.minimumLineSpacing = 16
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        layout.scrollDirection = .horizontal
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .white
@@ -59,18 +47,7 @@ class CharacterSettingsVC: UIViewController {
     }()
     
     private lazy var allCharCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        let screenWidth = UIScreen.main.bounds.width
-        let itemsPerRow: CGFloat = 4
-        let totalSpacing = (screenWidth / (itemsPerRow * 2 - 1)) * 0.6
-        let itemWidth = (screenWidth - totalSpacing * 3) / 4
-        
-        layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
-        layout.minimumInteritemSpacing = totalSpacing * 0.5
-        layout.minimumLineSpacing = totalSpacing * 0.3
-        layout.sectionInset = UIEdgeInsets(top: 0, left: totalSpacing * 0.3, bottom: 0, right: totalSpacing * 0.5)
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .white
@@ -95,37 +72,28 @@ class CharacterSettingsVC: UIViewController {
         
         setupUI()
         setConstraints()
-        
-        fetchMemberInfo { success in
-            if success {
-                self.ownedCharCollectionView.reloadData()
-            } else {
-                print("Failed to update profile")
-            }
-        }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateChars()
+    }
+
     func setupUI() {
         ownedCharLabel.text = "보유 캐릭터"
         allCharLabel.text = "전체 캐릭터"
-        [scrollView].forEach {
+        [contentView].forEach {
             view.addSubview($0)
         }
-        scrollView.addSubview(contentView)
         [ownedCharLabel, ownedCharCollectionView, emptyStateLabel, allCharLabel, allCharCollectionView].forEach {
             contentView.addSubview($0)
         }
     }
     
     func setConstraints() {
-        scrollView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
-        }
-
         contentView.snp.makeConstraints { make in
-            make.edges.equalTo(scrollView) // 스크롤뷰의 모든 가장자리에 맞춰 배치
-            make.width.equalTo(scrollView) // 가로 스크롤을 방지, 스크롤뷰와 같은 너비로 설정
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.width.equalTo(superViewWidth)
         }
         
         ownedCharLabel.snp.makeConstraints { make in
@@ -134,9 +102,9 @@ class CharacterSettingsVC: UIViewController {
             make.height.equalTo(20)
         }
         ownedCharCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(ownedCharLabel.snp.bottom)
+            make.top.equalTo(ownedCharLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(80)
+            make.height.equalTo(superViewHeight * 0.2)
         }
         emptyStateLabel.snp.makeConstraints { make in
             make.center.equalTo(ownedCharCollectionView)
@@ -147,9 +115,9 @@ class CharacterSettingsVC: UIViewController {
             make.height.equalTo(20)
         }
         allCharCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(allCharLabel.snp.bottom)
+            make.top.equalTo(allCharLabel.snp.bottom).offset(10)
             make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(850)
+            make.height.equalTo(superViewHeight * 0.5)
             make.bottom.equalToSuperview().offset(-15)
         }
     }
@@ -158,6 +126,79 @@ class CharacterSettingsVC: UIViewController {
     @objc private func didTapBackButton() {
         navigationController?.popViewController(animated: false)
     }
+    
+    private func updateChars() {
+        fetchMemberInfo { success in
+            if success {
+                self.ownedCharCollectionView.reloadData()
+//                print(" \(self.ownedChar)")
+            } else {
+//                print("Failed to update profile")
+            }
+        }
+    }
+    private func showPurchaseAlert(currentValue: Int) {
+//        let alert = UIAlertController(title: "\(Constants.CharacterList[currentValue].name) 캐릭터를 구매하시겠습니까?", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "캐릭터를 구매하시겠습니까?", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "구매", style: .default, handler: {_ in
+            print("선택된 전체 캐릭터의 인덱스는 \(currentValue)입니다.")
+            self.purchaseCharacter(currentValue) { success in
+                if success {
+                    self.showCustomAlert(title: "구매 성공", message: "캐릭터를 성공적으로 구매했어요!")
+                    self.updateChars()
+                } else {
+                    self.showCustomAlert(title: "구매 실패", message: "캐릭터 구매에 실패했어요. 다시 시도해 주세요.")
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func showUpdateAlert(currentValue: Int) {
+        let alert = UIAlertController(title: "캐릭터를 변경하시겠습니까?", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "변경", style: .default, handler: {_ in
+            print("선택된 보유 캐릭터의 인덱스는 \(currentValue)입니다.")
+            self.updateCharacter(currentValue) { success in
+                if success {
+                    self.showCustomAlert(title: "변경 성공", message: "캐릭터가 성공적으로 변경되었습니다.")
+                    self.updateChars()
+                } else {
+                    self.showCustomAlert(title: "변경 실패", message: "캐릭터 변경에 실패했습니다. 다시 시도해 주세요.")
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func showCustomAlert(title: String, message: String) {
+        let customAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "확인", style: .cancel, handler: nil)
+        customAlert.addAction(confirmAction)
+        customAlert.view.tintColor = Constants.Colors.skyblue
+        present(customAlert, animated: true, completion: nil)
+    }
+    
+    // MARK: - Compositional Layout 생성
+    private func createCompositionalLayout() -> UICollectionViewCompositionalLayout {
+        let padding: CGFloat = 8
+        let cardSize: CGFloat = (UIScreen.main.bounds.width - padding * 5) / 4
+
+        let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(cardSize), heightDimension: .absolute(cardSize))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(cardSize))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item, item, item, item])
+        group.interItemSpacing = .fixed(padding)
+
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 0)
+
+        return UICollectionViewCompositionalLayout(section: section)
+    }
 }
 
 
@@ -165,21 +206,20 @@ extension CharacterSettingsVC: UICollectionViewDataSource, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 {
-            //TODO: 캐릭터 변경
-            print("캐릭터 변경")
-        }
-        else if collectionView.tag == 1 {
-            //TODO: 캐릭터 구매
-            print("캐릭터 구매")
+//            print("보유 캐릭터 변경, 인덱스: \(ownedChar[indexPath.row])")
+            self.showUpdateAlert(currentValue: ownedChar[indexPath.row])
+        } else if collectionView.tag == 1 {
+//            print("캐릭터 구매, 인덱스: \(indexPath.row)")
+            self.showPurchaseAlert(currentValue: indexPath.row)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.tag == 0 {
-            emptyStateLabel.isHidden = ownedCharCount > 0
-            return ownedCharCount
+            emptyStateLabel.isHidden = ownedChar.count > 0
+            return ownedChar.count
         } else if collectionView.tag == 1 {
-            return Constants.AllCharacter.allCharCount
+            return Constants.CharacterList.count
         } else {
             return 0
         }
@@ -190,27 +230,22 @@ extension CharacterSettingsVC: UICollectionViewDataSource, UICollectionViewDeleg
             return UICollectionViewCell()
         }
 
-        if collectionView == ownedCharCollectionView {
-            cell.configure(showNameLabel: false)
-        } else if collectionView == allCharCollectionView {
-            cell.configure(showNameLabel: false)
+        if collectionView.tag == 0 { // 보유 캐릭터 목록
+            let characterID = ownedChar[indexPath.row]
+            if let character = findCharacter(by: characterID) {
+                cell.image.image = UIImage(named: character.image)
+                let isSelected = characterID == selectedChar
+                cell.configure(showNameLabel: false, showBorder: isSelected, borderColor: isSelected ? Constants.Colors.red : nil)
+            }
+        } else if collectionView.tag == 1 { // 전체 캐릭터 목록
+            cell.image.image = UIImage(named: Constants.CharacterList[indexPath.row].image)
+            cell.configure(showNameLabel: false, showBorder: false, borderColor: nil)
         }
 
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if collectionView.tag == 0 {
-            return CGSize(width: 100, height: 100) // 아이템 크기 설정
-        }
-        else if collectionView.tag == 1 {
-            let screenWidth = UIScreen.main.bounds.width
-            let itemsPerRow: CGFloat = 4
-            let totalSpacing = (screenWidth / (itemsPerRow * 2 - 1))*0.6
-            let itemWidth = (screenWidth - totalSpacing * 3)/4
-            return CGSize(width: itemWidth, height: itemWidth * 1.25) // 원하는 높이 비율로 설정
-        }
-        return CGSize()
+    private func findCharacter(by id: Int) -> CharacterModel? {
+        return Constants.CharacterList.first { $0.id == id }
     }
-    
 }
