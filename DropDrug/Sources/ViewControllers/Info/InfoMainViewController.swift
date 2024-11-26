@@ -118,6 +118,8 @@ class InfoMainViewController: UIViewController {
         commonPageCollectionView.backgroundColor = .white
         commonPageCollectionView.register(KindCollectionViewCell.self, forCellWithReuseIdentifier: "KindCollectionViewCell")
         commonPageCollectionView.tag = 0
+        commonPageCollectionView.showsHorizontalScrollIndicator = false
+        commonPageCollectionView.showsVerticalScrollIndicator = false
     }
     
     func setCommonCollectionViewLayout() {
@@ -178,10 +180,10 @@ extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         var urlString : String = ""
         if collectionView.tag == 0 {
-            urlString = Constants.commonDisposalInfoList[indexPath.row].url
+            urlString = self.sortedCommonList[indexPath.row].url
         }
         else if collectionView.tag == 1 {
-            urlString = Constants.seoulDistrictsList[indexPath.row].url
+            urlString = self.sortedSeoulList[indexPath.row].url
         }
         if let url = URL(string: urlString) {
             let safariVC = SFSafariViewController(url: url)
@@ -191,10 +193,10 @@ extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.tag == 0 {
-            return Constants.commonDisposalInfoList.count
+            return sortedCommonList.count
         }
         else if collectionView.tag == 1 {
-            return Constants.seoulDistrictsList.count
+            return sortedSeoulList.count
         }
         return 0
     }
@@ -205,7 +207,7 @@ extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDe
                 return KindCollectionViewCell()
             }
             
-            cell.configure(backgroundImg: sortedCommonList[indexPath.row].name, name: sortedCommonList[indexPath.row].name)
+            cell.configure(backgroundImg: sortedCommonList[indexPath.row].image, name: sortedCommonList[indexPath.row].name)
             
             return cell
         }
