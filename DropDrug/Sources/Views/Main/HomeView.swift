@@ -217,7 +217,6 @@ class HomeView: UIView {
         location.snp.makeConstraints { make in
             make.top.equalTo(mapView.snp.top)
             make.leading.equalTo(mapView.snp.trailing).offset(24)
-            make.trailing.equalTo(safeAreaLayoutGuide).offset(-20)
         }
         
         resetBtn.snp.makeConstraints { make in
@@ -228,6 +227,7 @@ class HomeView: UIView {
         presLoca.snp.makeConstraints { make in
             make.top.equalTo(location.snp.bottom).offset(8)
             make.leading.equalTo(location.snp.leading)
+            make.trailing.equalTo(safeAreaLayoutGuide.snp.trailing).offset(-20)
         }
         
         goToSearchPlaceBtn.snp.makeConstraints { make in
