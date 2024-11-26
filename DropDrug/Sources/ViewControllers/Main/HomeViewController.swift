@@ -252,6 +252,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 print(response.statusCode)
                 do {
                     let responseData = try response.map(HomeResponse.self)
+                    print(responseData)
                     self.updateButtonWidth(name: responseData.nickname)
                     self.homeView.name = responseData.nickname
                     self.homeView.points = responseData.point

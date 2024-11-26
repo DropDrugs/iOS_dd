@@ -227,8 +227,8 @@ class HomeView: UIView {
         }
         
         mapView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(20)
-            make.width.height.equalTo(110)
+            make.top.leading.bottom.equalToSuperview().inset(20)
+            make.width.equalTo(mapView.snp.height)
         }
         
         location.snp.makeConstraints { make in
