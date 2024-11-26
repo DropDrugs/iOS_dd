@@ -7,10 +7,13 @@ import CoreLocation
 
 class HomeView: UIView {
     
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = Constants.Colors.lightblue
-        self.addComponents()
+        self.setUpUI()
+        self.setUpConstaraints()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -174,16 +177,17 @@ class HomeView: UIView {
         return i
     }()
 
-    private func addComponents() {
+    func setUpUI() {
+        characterView.addSubview(character)
         [appTitle, alarmBtn, starter, point, locationBackground, floatingBtn, characterView].forEach {
             addSubview($0)
         }
-        characterView.addSubview(character)
-        
         [mapView, location, resetBtn, presLoca, goToSearchPlaceBtn].forEach {
             locationBackground.addSubview($0)
         }
-        
+    }
+    
+    private func setUpConstaraints() {
         appTitle.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(20)
             make.leading.equalTo(safeAreaLayoutGuide.snp.leading).offset(20)
@@ -222,7 +226,7 @@ class HomeView: UIView {
         }
         
         mapView.snp.makeConstraints { make in
-            make.top.leading.bottom.equalToSuperview().inset(20)
+            make.top.leading.bottom.equalTo(locationBackground).inset(20)
             make.width.equalTo(mapView.snp.height)
         }
         
@@ -254,8 +258,8 @@ class HomeView: UIView {
         }
         
         character.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.top.bottom.equalTo(characterView).inset(superViewHeight * 0.05)
+            make.centerX.centerY.equalTo(characterView)
+            make.height.equalTo(characterView.snp.height).multipliedBy(0.7)
         }
     }
     
