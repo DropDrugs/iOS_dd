@@ -11,6 +11,7 @@ extension CharacterSettingsVC {
                 do {
                     let data = try response.map(MemberInfo.self)
                     self.ownedChar = data.ownedChars
+                    self.selectedChar = data.selectedChar
                     completion(true)
                 } catch {
                     completion(false)

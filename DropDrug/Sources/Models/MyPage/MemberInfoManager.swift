@@ -12,6 +12,7 @@ extension AccountSettingsVC {
                 do {
                     let data = try response.map(MemberInfo.self)
                     self.nickname = data.nickname
+                    let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
                     self.userId = data.email
                     completion(true)
                 } catch {
