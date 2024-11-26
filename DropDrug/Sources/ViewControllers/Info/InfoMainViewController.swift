@@ -226,7 +226,8 @@ extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView.tag == 0 {
-            return CGSize(width: superViewWidth * 0.3, height: superViewWidth * 0.3) // 아이템 크기 설정
+            let cardSize = superViewWidth * 0.4
+            return CGSize(width: cardSize, height: cardSize) // 아이템 크기 설정
         }
         else if collectionView.tag == 1 {
             let screenWidth = UIScreen.main.bounds.width
