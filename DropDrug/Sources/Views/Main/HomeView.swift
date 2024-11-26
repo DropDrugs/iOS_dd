@@ -10,7 +10,7 @@ class HomeView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = Constants.Colors.lightblue
-        self.addComponenets()
+        self.addComponents()
     }
     
     required init?(coder: NSCoder) {
@@ -174,20 +174,15 @@ class HomeView: UIView {
         return i
     }()
 
-    private func addComponenets() {
-        addSubview(appTitle)
-        addSubview(alarmBtn)
-        addSubview(starter)
-        addSubview(point)
-        addSubview(locationBackground)
-        addSubview(floatingBtn)
-        addSubview(characterView)
+    private func addComponents() {
+        [appTitle, alarmBtn, starter, point, locationBackground, floatingBtn, characterView].forEach {
+            addSubview($0)
+        }
         characterView.addSubview(character)
-        locationBackground.addSubview(mapView)
-        locationBackground.addSubview(location)
-        locationBackground.addSubview(resetBtn)
-        locationBackground.addSubview(presLoca)
-        locationBackground.addSubview(goToSearchPlaceBtn)
+        
+        [mapView, location, resetBtn, presLoca, goToSearchPlaceBtn].forEach {
+            locationBackground.addSubview($0)
+        }
         
         appTitle.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(20)
@@ -255,11 +250,12 @@ class HomeView: UIView {
         characterView.snp.makeConstraints { make in
             make.top.equalTo(point.snp.bottom)
             make.bottom.equalTo(floatingBtn.snp.top)
-            make.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            make.leading.trailing.equalTo(safeAreaLayoutGuide)
         }
         
         character.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
+            make.top.bottom.equalTo(characterView).inset(superViewHeight * 0.05)
         }
     }
     

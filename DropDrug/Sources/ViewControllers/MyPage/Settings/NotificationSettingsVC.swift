@@ -88,7 +88,7 @@ class NotificationSettingsVC: UIViewController {
         
         provider.request(.updateNotificationSettings(param: updatedSettings)) { result in
             switch result {
-            case .success:
+            case .success: break
                 // 성공
             case .failure(let error):
                 if let response = error.response {
