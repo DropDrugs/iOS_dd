@@ -58,6 +58,7 @@ let project = Project(
                     "FirebaseAppDelegateProxyEnabled" : false,
                     "NSRemoteNotificationUsageDescription" : "푸시 알림을 통해 개인화된 최신 소식을 받아보세요.",
                     "UIBackgroundModes" : ["remote-notification"],
+                    "ITSAppUsesNonExemptEncryption" : false,
                     // 새로운 거 추가
                 ]
             ),
