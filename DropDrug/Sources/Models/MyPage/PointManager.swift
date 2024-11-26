@@ -2,6 +2,7 @@
 
 import UIKit
 import Moya
+import SwiftyToaster
 
 extension RewardVC {
     func fetchPoint(completion: @escaping (Bool) -> Void) {
@@ -9,7 +10,6 @@ extension RewardVC {
             switch result {
             case .success(let response):
                 do {
-                    // JSON 디코딩
                     let data = try response.map(PointHistoryResponse.self)
                     DispatchQueue.main.async {
                         self.rewardData = data.pointHistory
@@ -18,11 +18,13 @@ extension RewardVC {
                         completion(true)
                     }
                 } catch {
-                    print("JSON 파싱 에러: \(error)")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
-                print("네트워크 에러: \(error.localizedDescription)")
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
                 completion(false)
             }
         }
@@ -38,11 +40,13 @@ extension MyPageVC {
                     let data = try response.map(MonthlyStatsResponse.self)
                     completion(true)
                 } catch {
-                    print("JSON 파싱 에러: \(error)")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
-                print("네트워크 에러: \(error.localizedDescription)")
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
                 completion(false)
             }
         }

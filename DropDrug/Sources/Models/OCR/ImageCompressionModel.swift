@@ -18,7 +18,7 @@ class ImageCompressionModel {
             while let imageData = resizedImage.jpegData(compressionQuality: compressionQuality),
                   imageData.count > maxFileSize {
                 
-                print("현재 크기: \(imageData.count / 1024 / 1024)MB, 압축률: \(compressionQuality)")
+//                print("현재 크기: \(imageData.count / 1024 / 1024)MB, 압축률: \(compressionQuality)")
                 
                 // 압축률을 낮춰서 재시도
                 compressionQuality -= 0.1
@@ -50,7 +50,6 @@ class ImageCompressionModel {
     
     func convertToBase64(data: Data) -> String {
         let base64String = data.base64EncodedString()
-        print("Base64 String 생성 완료")
         return base64String
     }
 }

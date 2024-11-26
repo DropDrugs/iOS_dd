@@ -3,6 +3,7 @@
 import UIKit
 import SnapKit
 import Moya
+import SwiftyToaster
 
 class NoticesVC: UIViewController {
 
@@ -109,7 +110,6 @@ extension NoticesVC {
             case .success(let response) :
                 do {
                     let responsedata = try response.map([BoardResponse].self)
-                    print(responsedata)
                     self.NoticeList = []
                     for noticeData in responsedata {
                         self.NoticeList.append(NoticeData(title: noticeData.title, content: noticeData.content, date: noticeData.createdAt))
@@ -117,13 +117,12 @@ extension NoticesVC {
                     self.NoticeList.sort(by: { $0.date < $1.date })
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error) :
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }

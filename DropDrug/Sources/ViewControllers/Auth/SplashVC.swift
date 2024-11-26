@@ -5,10 +5,11 @@ import Moya
 import SnapKit
 import PinLayout
 import KeychainSwift
+import SwiftyToaster
 
 class SplashVC : UIViewController {
     
-    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
+    let tokenPlugin = BearerTokenPlugin()
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -24,9 +25,15 @@ class SplashVC : UIViewController {
         setupViews()
         setConstraints()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.checkAuthenticationStatus()
+            self.tokenPlugin.checkAuthenticationStatus { token in
+                if let token = token {
+                    self.navigateToMainScreen()
+                } else {
+                    Toaster.shared.makeToast("자동로그인에 실패했습니다.")
+                    self.navigateToOnBoaringScreen()
+                }
+            }
         }
-        print("refreshToken : \(SelectLoginTypeVC.keychain.get("serverRefreshToken"))")
     }
     
     func setupViews() {
@@ -52,12 +59,4 @@ class SplashVC : UIViewController {
         }
     }
     
-    private func checkAuthenticationStatus() {
-        if let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") {
-            navigateToMainScreen()
-        } else {
-            print("토큰 없음. 로그인 화면으로 이동.")
-            navigateToOnBoaringScreen()
-        }
-    }
 }

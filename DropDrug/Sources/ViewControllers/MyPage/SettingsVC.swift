@@ -135,7 +135,7 @@ extension SettingsVC: UITableViewDelegate, MFMailComposeViewControllerDelegate {
         } else {
             // 만약, 디바이스에 email 기능이 비활성화 일 때, 사용자에게 알림
             let alertController = UIAlertController(title: "메일 계정 활성화 필요",
-                                                    message: "Mail 앱에서 사용자의 Email을 계정을설정해 주세요.",
+                                                    message: "Mail 앱에서 사용자의 Email을 계정을 설정해 주세요.",
                                                         preferredStyle: .alert)
             let alertAction = UIAlertAction(title: "확인", style: .default) { _ in
                 guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }

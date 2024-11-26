@@ -3,11 +3,13 @@
 import UIKit
 import SnapKit
 import Moya
+import SwiftyToaster
 
 class CharacterSettingsVC: UIViewController {
     let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     var ownedChar : [Int] = []
+    var selectedChar : Int = 0
     
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  캐릭터 설정")
@@ -129,9 +131,9 @@ class CharacterSettingsVC: UIViewController {
         fetchMemberInfo { success in
             if success {
                 self.ownedCharCollectionView.reloadData()
-                print(" \(self.ownedChar)")
+//                print(" \(self.ownedChar)")
             } else {
-                print("Failed to update profile")
+//                print("Failed to update profile")
             }
         }
     }
@@ -204,10 +206,10 @@ extension CharacterSettingsVC: UICollectionViewDataSource, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 {
-            print("보유 캐릭터 변경, 인덱스: \(indexPath.row)")
-            self.showUpdateAlert(currentValue: indexPath.row)
+//            print("보유 캐릭터 변경, 인덱스: \(ownedChar[indexPath.row])")
+            self.showUpdateAlert(currentValue: ownedChar[indexPath.row])
         } else if collectionView.tag == 1 {
-            print("캐릭터 구매, 인덱스: \(indexPath.row)")
+//            print("캐릭터 구매, 인덱스: \(indexPath.row)")
             self.showPurchaseAlert(currentValue: indexPath.row)
         }
     }
@@ -228,15 +230,16 @@ extension CharacterSettingsVC: UICollectionViewDataSource, UICollectionViewDeleg
             return UICollectionViewCell()
         }
 
-        if collectionView.tag == 0 {
+        if collectionView.tag == 0 { // 보유 캐릭터 목록
             let characterID = ownedChar[indexPath.row]
-                if let character = findCharacter(by: characterID) {
-                    cell.image.image = UIImage(named: character.image)
-                    cell.configure(showNameLabel: false,showBorder: false)
-                }
-        } else if collectionView.tag == 1 {
+            if let character = findCharacter(by: characterID) {
+                cell.image.image = UIImage(named: character.image)
+                let isSelected = characterID == selectedChar
+                cell.configure(showNameLabel: false, showBorder: isSelected, borderColor: isSelected ? Constants.Colors.red : nil)
+            }
+        } else if collectionView.tag == 1 { // 전체 캐릭터 목록
             cell.image.image = UIImage(named: Constants.CharacterList[indexPath.row].image)
-            cell.configure(showNameLabel: false,showBorder: false)
+            cell.configure(showNameLabel: false, showBorder: false, borderColor: nil)
         }
 
         return cell

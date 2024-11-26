@@ -18,7 +18,7 @@ extension PrescriptionDrugVC { //get
                     }
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
@@ -44,7 +44,7 @@ extension EnrollDetailViewController { //post
                     let _ = try response.map(IdResponse.self)
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
@@ -71,7 +71,7 @@ extension DiscardPrescriptionDrugVC { //delete
                     self.drugList = response
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):

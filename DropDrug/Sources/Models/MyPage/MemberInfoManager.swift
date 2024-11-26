@@ -3,6 +3,7 @@
 import Foundation
 import Moya
 import UIKit
+import SwiftyToaster
 
 extension AccountSettingsVC {
     func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
@@ -12,15 +13,16 @@ extension AccountSettingsVC {
                 do {
                     let data = try response.map(MemberInfo.self)
                     self.nickname = data.nickname
+                    let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
                     self.userId = data.email
                     completion(true)
                 } catch {
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }
@@ -36,20 +38,22 @@ extension MyPageVC {
                 do {
                     let data = try response.map(MemberInfo.self)
                     DispatchQueue.main.async {
-                        print(data)
                         self.myPageProfileView.nameLabel.text = data.nickname
                         self.myPageProfileView.emailLabel.text = data.email
                         if let character = self.findCharacter(by: data.selectedChar) {
                             self.myPageProfileView.profileImageView.image = UIImage(named: character.image)
                         }
                         self.rewardView.pointsLabel.text = "\(data.point) P"
-                        print(data.point)
                     }
                     completion(true)
                 } catch {
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
                 completion(false)
             }
         }

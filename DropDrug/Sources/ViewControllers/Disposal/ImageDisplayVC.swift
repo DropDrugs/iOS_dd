@@ -156,7 +156,7 @@ extension ImageDisplayVC {
                     }
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+//                    print("Failed to decode response: \(error)")
                     completion(false)
                 }
             case .failure(let error) :

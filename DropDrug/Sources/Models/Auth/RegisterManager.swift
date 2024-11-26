@@ -5,41 +5,6 @@ import Moya
 import KeychainSwift
 import SwiftyToaster
 
-extension AppDelegate {
-    func refreshAccessToken(completion: @escaping (Bool) -> Void) {
-        guard let refreshToken = SelectLoginTypeVC.keychain.get("serverRefreshToken")
-            else {
-            Toaster.shared.makeToast("리프레시 토큰을 찾을 수 없습니다")
-            completion(false)
-            return
-        }
-        provider.request(.refreshAccessToken(refreshToken: refreshToken)) { result in
-            print("refreshToken found")
-            switch result {
-            case .success(let response):
-                print(response)
-                do {
-                    let data = try response.map(RefreshTokenDto.self)
-                    SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
-                    SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
-                    completion(true)
-                } catch {
-//                    print("Failed to map data : \(error)")
-                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
-                    completion(false)
-                }
-            case .failure(let error):
-                Toaster.shared.makeToast("\(error.localizedDescription)")
-//                print("Error: \(error.localizedDescription)")
-                if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
-                }
-                completion(false)
-            }
-        }
-    }
-}
-
 extension SignUpVC {
     func setupSignUpDTO(_ emailString: String, _ pwString: String, name : String) -> MemberSignupRequest {
         return MemberSignupRequest(email: emailString, name: name, password: pwString)
@@ -54,7 +19,6 @@ extension SignUpVC {
                     let _ = try response.map(IdResponse.self)
                     completion(true)
                 } catch {
-//                    print("Failed to map data : \(error)")
                     Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
@@ -85,14 +49,11 @@ extension LoginVC {
                     SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
                     completion(true)
                 } catch {
-//                    print("Failed to map data : \(error)")
-                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                 }
             case .failure(let error) :
-//                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
-//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
                 completion(false)
             }
@@ -118,14 +79,12 @@ extension SelectLoginTypeVC {
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
                     completion(true)
                 } catch {
-//                    print("Failed to map data : \(error)")
-                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error) :
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
-//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
                 completion(false)
             }
@@ -146,14 +105,12 @@ extension SelectLoginTypeVC {
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
                     completion(true)
                 } catch {
-//                    print("Failed to map data : \(error)")
-                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error) :
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
-//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
                 completion(false)
             }

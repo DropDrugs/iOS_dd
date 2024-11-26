@@ -71,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        checkAuthenticationStatus()
+//        checkAuthenticationStatus()
         
         return true
     }
@@ -85,28 +85,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
     }
     
-    private func checkAuthenticationStatus() {
-        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken"),
-              let accessTokenExpiryMillis = SelectLoginTypeVC.keychain.get("accessTokenExpiresIn"),
-              let expiryMillis = Int64(accessTokenExpiryMillis),
-              let accessTokenExpiryDate = Date(milliseconds: expiryMillis) else {
-            //accessToken 존재 X
-            return
-        }
-            
-        if Date() < accessTokenExpiryDate {
-            print("AccessToken 유효. 갱신 불필요.")
-        } else {
-            print("AccessToken 만료. RefreshToken으로 갱신 시도.")
-            self.refreshAccessToken { success in
-                if success {
-                    print("refresh AccessToken successfully")
-                } else {
-                    print("Failed to refresh AccessToken")
-                }
-            }
-        }
-    }
+//    private func checkAuthenticationStatus() {
+//        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken"),
+//              let accessTokenExpiryMillis = SelectLoginTypeVC.keychain.get("accessTokenExpiresIn"),
+//              let expiryMillis = Int64(accessTokenExpiryMillis),
+//              let accessTokenExpiryDate = Date(milliseconds: expiryMillis) else {
+//            //accessToken 존재 X
+//            return
+//        }
+//            
+//        if Date() < accessTokenExpiryDate {
+//            print("AccessToken 유효. 갱신 불필요.")
+//        } else {
+//            print("AccessToken 만료. RefreshToken으로 갱신 시도.")
+//            self.refreshAccessToken { success in
+//                if success {
+//                    print("refresh AccessToken successfully")
+//                } else {
+//                    print("Failed to refresh AccessToken")
+//                }
+//            }
+//        }
+//    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {

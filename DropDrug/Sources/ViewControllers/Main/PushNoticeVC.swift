@@ -41,7 +41,6 @@ class PushNoticeVC: UIViewController {
             if isSuccess {
                 self.tableView.reloadData()
             } else {
-//                print("알림 데이터 못가져옴")
             }
         }
     }
@@ -71,14 +70,10 @@ class PushNoticeVC: UIViewController {
                     self.NoticeList.sort(by: { $0.id > $1.id })
                     completion(true)
                 } catch {
-                    print("Failed to decode response: \(error)")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error) :
-//                print("Error: \(error.localizedDescription)")
-//                if let response = error.response {
-//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
-//                }
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }

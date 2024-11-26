@@ -73,8 +73,14 @@ class SeoulCollectionViewCell: UICollectionViewCell {
             make.centerX.equalToSuperview()
         }
     }
-    func configure(showNameLabel: Bool, showBorder: Bool) {
-            name.isHidden = !showNameLabel
-            image.layer.borderColor = showBorder ? Constants.Colors.gray300?.cgColor : UIColor.clear.cgColor
+    func configure(showNameLabel: Bool, showBorder: Bool, borderColor: UIColor?) {
+        name.isHidden = !showNameLabel
+        if showBorder {
+            image.layer.borderWidth = 4.0 // 원하는 두께 설정
+            image.layer.borderColor = borderColor?.cgColor ?? UIColor.clear.cgColor
+        } else {
+            image.layer.borderWidth = 0.0
+            image.layer.borderColor = UIColor.clear.cgColor
         }
+    }
 }
