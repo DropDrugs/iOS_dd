@@ -118,15 +118,23 @@ class ImageDisplayVC: UIViewController {
     }
     
     func presentCertificationFailureVC() {
-        let failureVC = CertificationFailureVC()
-        failureVC.modalPresentationStyle = .fullScreen
-        present(failureVC, animated: true)
+//        let failureVC = CertificationFailureVC()
+//        failureVC.modalPresentationStyle = .fullScreen
+//        present(failureVC, animated: true)
+        
+        let loadingVC = CertificationFailureVC()
+        loadingVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(loadingVC, animated: true)
     }
     
     func presentCertificationSuccessVC() {
-        let successVC = CertificationSuccessVC()
-        successVC.modalPresentationStyle = .fullScreen
-        present(successVC, animated: true)
+//        let successVC = CertificationSuccessVC()
+//        successVC.modalPresentationStyle = .fullScreen
+//        present(successVC, animated: true)
+        
+        let loadingVC = CertificationSuccessVC()
+        loadingVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(loadingVC, animated: true)
     }
 }
 

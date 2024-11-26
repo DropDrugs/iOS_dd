@@ -107,13 +107,20 @@ class CertificationFailureVC: UIViewController {
     
     // MARK: - Actions
     @objc private func retryButtonTapped() {
+        print("retryButtonTapped@!!!!!!")
+        
         var currentVC: UIViewController? = self
-        while let presentingVC = currentVC?.presentingViewController {
-            if presentingVC is SelectDrugTypeVC {
-                presentingVC.dismiss(animated: true, completion: nil)
-                return
+        while let parentVC = currentVC?.navigationController?.viewControllers.first(where: { $0 is SelectDrugTypeVC }) {
+            
+            if parentVC is SelectDrugTypeVC {
+                if let navigationController = parentVC.navigationController {
+                    navigationController.popToViewController(parentVC, animated: true)
+                    return
+                }
+                currentVC = parentVC
             }
-            currentVC = presentingVC
+            print("SelectDrugTypeVC not found")
         }
+//        navigationController?.navigationBar.isHidden = false
     }
 }

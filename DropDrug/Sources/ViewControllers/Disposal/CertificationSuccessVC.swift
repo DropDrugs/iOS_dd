@@ -172,6 +172,8 @@ class CertificationSuccessVC: UIViewController {
         
         let mainTabBarVC = MainTabBarController()
         let navigationController = UINavigationController(rootViewController: mainTabBarVC)
+        navigationController.navigationBar.isHidden = true
+            
         keyWindow.rootViewController = navigationController
         keyWindow.makeKeyAndVisible()
     }

@@ -46,6 +46,11 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
         setupView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = false
+    }
+    
     private func setupNavigationBar() {
         // 뒤로 가기 버튼 추가
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
@@ -188,11 +193,11 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
                 preferredStyle: .alert
             )
             
-            alert.addAction(UIAlertAction(title: "No", style: .cancel) { _ in
+            alert.addAction(UIAlertAction(title: "취소", style: .cancel) { _ in
                 self.moveToMainScreen()
             })
             
-            alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
+            alert.addAction(UIAlertAction(title: "인증하기", style: .default) { _ in
                 self.presentCamera()
             })
             
@@ -219,7 +224,6 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
         if let image = info[.originalImage] as? UIImage {
             // PNG 데이터로 변환
             if let pngData = image.pngData() {
-                // 비동기로 파일 저장
                 saveToDocuments(data: pngData) { [weak self] savedImageURL in
                     guard let self = self, let url = savedImageURL else {
                         print("이미지 저장 실패")
@@ -227,8 +231,7 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
                     }
                     print("PNG 파일 저장 완료: \(url)")
                     
-                    // 저장 완료 후 새로운 뷰 컨트롤러 띄우기
-                    self.showNewViewController(with: url)
+                    showNewViewController(with: url)
                 }
             } else {
                 print("PNG로 변환 실패")
@@ -268,9 +271,11 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     private func showNewViewController(with imageURL: URL) {
+        self.navigationController?.navigationBar.isHidden = true
+        
         let loadingVC = ImageDisplayVC()
         loadingVC.imageURL = imageURL
-        loadingVC.modalPresentationStyle = .fullScreen
-        present(loadingVC, animated: true)
+        loadingVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(loadingVC, animated: true)
     }
 }

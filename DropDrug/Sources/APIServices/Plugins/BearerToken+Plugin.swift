@@ -31,7 +31,7 @@ final class BearerTokenPlugin: PluginType {
     private func refreshAccessToken(completion: @escaping (String?) -> Void) {
         guard let refreshToken = SelectLoginTypeVC.keychain.get("serverRefreshToken") else {
             print("RefreshToken이 존재하지 않음.")
-            Toaster.shared.makeToast("다시 로그인 해 주세요")
+//            Toaster.shared.makeToast("다시 로그인 해 주세요")
             completion(nil)
             return
         }
@@ -48,7 +48,7 @@ final class BearerTokenPlugin: PluginType {
                     print("AccessToken 갱신 성공.")
                     completion(data.accessToken)
                 } catch {
-                    Toaster.shared.makeToast("데이터를 불러오는 데 실패했습니다.")
+//                    Toaster.shared.makeToast("데이터를 불러오는 데 실패했습니다.")
                     completion(nil)
                 }
             case .failure(let error):

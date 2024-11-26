@@ -25,14 +25,12 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         homeView.character.addGestureRecognizer(tapGesture)
         configureLocationManager()
         configureMapView()
-        
-        navigationController?.navigationBar.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true
-        self.navigationController?.navigationBar.isHidden = true
+        self.navigationController?.isNavigationBarHidden = true
         getHomeInfo { [weak self] isSuccess in
             if isSuccess {
                 DispatchQueue.main.async {

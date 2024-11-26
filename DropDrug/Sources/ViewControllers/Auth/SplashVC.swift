@@ -29,7 +29,7 @@ class SplashVC : UIViewController {
                 if let token = token {
                     self.navigateToMainScreen()
                 } else {
-                    Toaster.shared.makeToast("자동로그인에 실패했습니다.")
+//                    Toaster.shared.makeToast("자동로그인에 실패했습니다.")
                     self.navigateToOnBoaringScreen()
                 }
             }
