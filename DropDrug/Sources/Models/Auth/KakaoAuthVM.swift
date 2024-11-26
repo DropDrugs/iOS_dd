@@ -8,8 +8,6 @@ import KeychainSwift
 
 class KakaoAuthVM: ObservableObject {
     
-    static let keychain = KeychainSwift()
-    
     var subscriptions = Set<AnyCancellable>()
     
     @Published var isLoggedIn: Bool = false
@@ -110,10 +108,36 @@ class KakaoAuthVM: ObservableObject {
         }
     }
     
+    @MainActor
+    func unlinkKakaoAccount(completion: @escaping (Bool) -> Void) {
+        Task {
+            let success = await handleKakaoUnlink()
+            if success {
+                clearToken() // 연동 해제 성공 시 토큰 삭제
+                self.isLoggedIn = false
+            }
+            completion(success)
+        }
+    }
+
+    func handleKakaoUnlink() async -> Bool {
+        await withCheckedContinuation { continuation in
+            UserApi.shared.unlink { [weak self] error in
+                if let error = error {
+                    print("카카오 계정 연동 해제 실패: \(error.localizedDescription)")
+                    self?.errorMessage = "연동 해제 실패: \(error.localizedDescription)"
+                    continuation.resume(returning: false)
+                } else {
+                    print("카카오 계정 연동 해제 성공")
+                    continuation.resume(returning: true)
+                }
+            }
+        }
+    }
+    
     // 저장된 토큰을 삭제
     private func clearToken() {
-        //TODO: keychain kakotoken clear
-        UserDefaults.standard.removeObject(forKey: "kakaoToken")
+        SelectLoginTypeVC.keychain.clear()
         oauthToken = nil
     }
 }

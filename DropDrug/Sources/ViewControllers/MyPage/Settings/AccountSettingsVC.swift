@@ -4,11 +4,14 @@ import UIKit
 import SnapKit
 import Moya
 import KeychainSwift
+import KakaoSDKUser
 
 class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     let Authprovider = MoyaProvider<LoginService>(plugins: [NetworkLoggerPlugin(), BearerTokenPlugin()])
+    
+    lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  계정 관리")
@@ -143,6 +146,29 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         navigationController?.popViewController(animated: false)
     }
     
+    private func updateNickname(newNickname: String, completion: @escaping (Bool) -> Void) {
+        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
+            print("Access Token 없음")
+            completion(false)
+            return
+        }
+        
+        provider.request(.updateNickname(newNickname: newNickname)) { result in
+            switch result {
+            case .success(let response):
+                if response.statusCode == 200 {
+                    completion(true) // 성공
+                } else {
+                    print("서버 응답 오류: \(response.statusCode)")
+                    completion(false)
+                }
+            case .failure(let error):
+                print("네트워크 오류: \(error.localizedDescription)")
+                completion(false)
+            }
+        }
+    }
+    
     @objc func logoutButtonTapped() {
         guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
             print("Access Token 없음")
@@ -168,39 +194,33 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
             print("Access Token 없음")
             return
         }
+        
         Authprovider.request(.postQuit(token: accessToken)) { result in
             switch result {
-            case .success(let response) :
+            case .success(let response):
+                print("서버로 Quit 요청 성공")
+                
+                let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
+                
                 SelectLoginTypeVC.keychain.clear()
+                
+                // 카카오 연동 해제
+                if hasKakaoTokens {
+                    self.kakaoAuthVM.unlinkKakaoAccount { success in
+                        if success {
+                            print("카카오 계정 연동 해제 성공")
+                        } else {
+                            print("카카오 계정 연동 해제 실패")
+                        }
+                    }
+                }
+                
                 completion(true)
-            case .failure(let error) :
+            case .failure(let error):
                 print("Error: \(error.localizedDescription)")
                 if let response = error.response {
                     print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
-                completion(false)
-            }
-        }
-    }
-    
-    private func updateNickname(newNickname: String, completion: @escaping (Bool) -> Void) {
-        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
-            print("Access Token 없음")
-            completion(false)
-            return
-        }
-        
-        provider.request(.updateNickname(newNickname: newNickname)) { result in
-            switch result {
-            case .success(let response):
-                if response.statusCode == 200 {
-                    completion(true) // 성공
-                } else {
-                    print("서버 응답 오류: \(response.statusCode)")
-                    completion(false)
-                }
-            case .failure(let error):
-                print("네트워크 오류: \(error.localizedDescription)")
                 completion(false)
             }
         }
