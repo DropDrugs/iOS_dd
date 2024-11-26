@@ -10,7 +10,7 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     // TODO: 이미지 에셋 추가
     let categories = [
         ("일반 의약품", "OB1"),
-        ("병원 처방약", "OB1")
+        ("병원 처방약", "OB2")
     ]
     
     private lazy var backButton: CustomBackButton = {
