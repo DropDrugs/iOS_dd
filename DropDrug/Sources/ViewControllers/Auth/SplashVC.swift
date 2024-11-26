@@ -5,6 +5,7 @@ import Moya
 import SnapKit
 import PinLayout
 import KeychainSwift
+import SwiftyToaster
 
 class SplashVC : UIViewController {
     
@@ -26,10 +27,9 @@ class SplashVC : UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.tokenPlugin.checkAuthenticationStatus { token in
                 if let token = token {
-                    print("토큰 확인 완료: \(token)")
                     self.navigateToMainScreen()
                 } else {
-                    print("토큰 확인 실패")
+                    Toaster.shared.makeToast("자동로그인에 실패했습니다.")
                     self.navigateToOnBoaringScreen()
                 }
             }
@@ -59,12 +59,4 @@ class SplashVC : UIViewController {
         }
     }
     
-//    private func checkAuthenticationStatus() {
-//        if let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") {
-//            navigateToMainScreen()
-//        } else {
-//            print("토큰 없음. 로그인 화면으로 이동.")
-//            navigateToOnBoaringScreen()
-//        }
-//    }
 }

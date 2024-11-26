@@ -5,6 +5,7 @@ import SnapKit
 import Moya
 import KeychainSwift
 import KakaoSDKUser
+import SwiftyToaster
 
 class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -113,11 +114,11 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
             if let newNickname = alert.textFields?.first?.text, !newNickname.isEmpty {
                 self.updateNickname(newNickname: newNickname) { isSuccess in
                     if isSuccess {
-                        print("닉네임 변경 성공")
+                        Toaster.shared.makeToast("닉네임 변경 성공")
                         self.nickname = newNickname
                         self.tableView.reloadData()
                     } else {
-                        print("닉네임 변경 실패")
+                        Toaster.shared.makeToast("닉네임 변경 성공")
                     }
                 }
             }
@@ -131,10 +132,10 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
             self.callQuit { isSuccess in
                 if isSuccess {
-                    print("계정 삭제 완료")
+                    Toaster.shared.makeToast("계정 삭제 완료")
                     self.showSplashScreen()
                 } else {
-                    print("계정 삭제 실패 - 다시 시도해주세요")
+                    Toaster.shared.makeToast("계정 삭제 실패 - 다시 시도해주세요")
                 }
             }
         }))
@@ -148,7 +149,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     
     private func updateNickname(newNickname: String, completion: @escaping (Bool) -> Void) {
         guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
-            print("Access Token 없음")
+            Toaster.shared.makeToast("계정 삭제 완료")
             completion(false)
             return
         }
@@ -159,11 +160,13 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 if response.statusCode == 200 {
                     completion(true) // 성공
                 } else {
-                    print("서버 응답 오류: \(response.statusCode)")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):
-                print("네트워크 오류: \(error.localizedDescription)")
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
                 completion(false)
             }
         }
@@ -178,13 +181,14 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         Authprovider.request(.postLogOut(accessToken: accessToken)) { result in
             switch result {
             case .success(let response):
-                print("로그아웃 성공")
                 SelectLoginTypeVC.keychain.delete("serverAccessToken")
                 SelectLoginTypeVC.keychain.delete("serverRefreshToken")
-                print("로그아웃 처리")
+                Toaster.shared.makeToast("로그아웃")
                 self.showSplashScreen()
             case .failure(let error):
-                print("로그아웃 요청 실패: \(error.localizedDescription)")
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
             }
         }
     }
@@ -198,7 +202,6 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         Authprovider.request(.postQuit(token: accessToken)) { result in
             switch result {
             case .success(let response):
-                print("서버로 Quit 요청 성공")
                 
                 let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
                 
@@ -217,9 +220,8 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 
                 completion(true)
             case .failure(let error):
-                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
-                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
             }

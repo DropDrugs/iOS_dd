@@ -2,6 +2,7 @@
 
 import Foundation
 import Moya
+import SwiftyToaster
 
 extension CharacterSettingsVC {
     func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
@@ -14,6 +15,7 @@ extension CharacterSettingsVC {
                     self.selectedChar = data.selectedChar
                     completion(true)
                 } catch {
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error):

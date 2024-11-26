@@ -19,7 +19,6 @@ extension SignUpVC {
                     let _ = try response.map(IdResponse.self)
                     completion(true)
                 } catch {
-//                    print("Failed to map data : \(error)")
                     Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
@@ -50,14 +49,11 @@ extension LoginVC {
                     SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
                     completion(true)
                 } catch {
-//                    print("Failed to map data : \(error)")
-                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                 }
             case .failure(let error) :
-//                print("Error: \(error.localizedDescription)")
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
-//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
                 completion(false)
             }
@@ -83,14 +79,12 @@ extension SelectLoginTypeVC {
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
                     completion(true)
                 } catch {
-//                    print("Failed to map data : \(error)")
-                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
+                    Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
                     completion(false)
                 }
             case .failure(let error) :
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
-//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
                 completion(false)
             }
@@ -117,7 +111,6 @@ extension SelectLoginTypeVC {
             case .failure(let error) :
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
-//                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
                 completion(false)
             }

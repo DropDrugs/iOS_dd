@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Moya
 import Charts
+import SwiftyToaster
 
 class MyPageVC : UIViewController {
     

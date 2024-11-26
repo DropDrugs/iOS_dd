@@ -3,6 +3,7 @@
 import UIKit
 import SnapKit
 import Moya
+import SwiftyToaster
 
 class CharacterSettingsVC: UIViewController {
     let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
@@ -130,9 +131,9 @@ class CharacterSettingsVC: UIViewController {
         fetchMemberInfo { success in
             if success {
                 self.ownedCharCollectionView.reloadData()
-                print(" \(self.ownedChar)")
+//                print(" \(self.ownedChar)")
             } else {
-                print("Failed to update profile")
+//                print("Failed to update profile")
             }
         }
     }
@@ -205,10 +206,10 @@ extension CharacterSettingsVC: UICollectionViewDataSource, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 {
-            print("보유 캐릭터 변경, 인덱스: \(ownedChar[indexPath.row])")
+//            print("보유 캐릭터 변경, 인덱스: \(ownedChar[indexPath.row])")
             self.showUpdateAlert(currentValue: ownedChar[indexPath.row])
         } else if collectionView.tag == 1 {
-            print("캐릭터 구매, 인덱스: \(indexPath.row)")
+//            print("캐릭터 구매, 인덱스: \(indexPath.row)")
             self.showPurchaseAlert(currentValue: indexPath.row)
         }
     }
