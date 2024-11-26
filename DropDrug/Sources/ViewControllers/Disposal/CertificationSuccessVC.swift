@@ -120,7 +120,7 @@ class CertificationSuccessVC: UIViewController {
             make.centerX.equalToSuperview() // 수평 가운데 정렬
         }
         completeButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-60)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(superViewHeight * 0.1)
             make.centerX.equalToSuperview()
             make.width.equalTo(superViewWidth * 0.9)
             make.height.equalTo(50)

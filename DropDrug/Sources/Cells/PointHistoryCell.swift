@@ -1,6 +1,5 @@
 // Copyright © 2024 RT4. All rights reserved
 
-import Foundation
 import UIKit
 import SnapKit
 
@@ -62,36 +61,45 @@ class PointHistoryCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // 업데이트된 configure 메서드
     func configure(with item: PointDetail) {
         dateLabel.text = formatDate(item.date)
         
-        // type에 따라 descriptionLabel과 pointsLabel 스타일 조정
         switch item.type {
-        case "캐릭터 구매":
+        case "CHARACTER_PURCHASE":
             descriptionLabel.text = "캐릭터 구매"
-            descriptionLabel.textColor = Constants.Colors.gray800
         case "PHOTO_CERTIFICATION":
             descriptionLabel.text = "사진 인증 성공"
-            descriptionLabel.textColor = Constants.Colors.gray800
         case "폐기 장소 문의":
             descriptionLabel.text = "장소 문의 완료"
-            descriptionLabel.textColor = Constants.Colors.gray800
         default:
             descriptionLabel.text = item.type
-            descriptionLabel.textColor = Constants.Colors.gray800
         }
         
         pointsLabel.text = "\(item.point > 0 ? "+" : "")\(item.point) P"
     }
     
-    private func formatDate(_ isoDate: String) -> String {
-        let dateFormatter = ISO8601DateFormatter()
-        if let date = dateFormatter.date(from: isoDate) {
-            let displayFormatter = DateFormatter()
-            displayFormatter.dateFormat = "yyyy/MM/dd"
-            return displayFormatter.string(from: date)
+    private func formatDate(
+        _ isoDate: String,
+        to outputFormat: String = "yyyy/MM/dd",
+        defaultString: String = "Invalid Date"
+    ) -> String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = outputFormat
+        outputFormatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        if let date = isoFormatter.date(from: isoDate) {
+            return outputFormatter.string(from: date)
+        } else {
+            let flexibleFormatter = DateFormatter()
+            flexibleFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+            if let date = flexibleFormatter.date(from: isoDate) {
+                return outputFormatter.string(from: date)
+            }
         }
-        return isoDate
+        
+        return defaultString
     }
 }

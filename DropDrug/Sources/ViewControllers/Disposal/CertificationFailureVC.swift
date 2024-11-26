@@ -89,18 +89,16 @@ class CertificationFailureVC: UIViewController {
             make.centerX.equalToSuperview()
             make.width.height.equalTo(superViewWidth * 0.9)
         }
-        
         failureAlertLabel.snp.makeConstraints { make in
             make.bottom.equalTo(messageLabel.snp.top).offset(-20)
             make.centerX.equalToSuperview()
         }
-        
         messageLabel.snp.makeConstraints { make in
             make.bottom.equalTo(retryButton.snp.top).offset(-50)
             make.centerX.equalToSuperview() // 수평 가운데 정렬
         }
         retryButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-60)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(superViewHeight * 0.1)
             make.centerX.equalToSuperview()
             make.width.equalTo(superViewWidth * 0.9)
             make.height.equalTo(50)

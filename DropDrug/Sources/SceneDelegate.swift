@@ -1,9 +1,4 @@
-//
-//  SceneDelegate.swift
-//  DropDrug
-//
-//  Created by 김도연 on 10/25/24.
-//
+// Copyright © 2024 RT4. All rights reserved
 
 import Foundation
 import UIKit

@@ -26,6 +26,7 @@ class SplashVC : UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.checkAuthenticationStatus()
         }
+        print("refreshToken : \(SelectLoginTypeVC.keychain.get("serverRefreshToken"))")
     }
     
     func setupViews() {
@@ -59,30 +60,4 @@ class SplashVC : UIViewController {
             navigateToOnBoaringScreen()
         }
     }
-    
-    func isTokenExpired(token: String) -> Bool {
-        let segments = token.split(separator: ".")
-        guard segments.count == 3 else {
-            print("Invalid JWT token format")
-            return true // 만료된 것으로 간주
-        }
-        
-        let payloadSegment = segments[1]
-        guard let payloadData = Data(base64Encoded: String(payloadSegment)) else {
-            print("Failed to decode payload")
-            return true
-        }
-        
-        do {
-            if let payload = try JSONSerialization.jsonObject(with: payloadData, options: []) as? [String: Any],
-               let exp = payload["exp"] as? TimeInterval {
-                let expirationDate = Date(timeIntervalSince1970: exp)
-                return expirationDate < Date()
-            }
-        } catch {
-            print("Failed to parse payload: \(error)")
-        }
-        return true // 만료된 것으로 간주
-    }
-    
 }

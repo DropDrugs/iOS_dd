@@ -16,3 +16,10 @@ struct NotificationSetting: Codable {
     let noticeboard: Bool
     let reward: Bool
 }
+
+struct NotificationResponse: Codable {
+    let id : Int
+    let title : String
+    let message  : String
+    let createdAt : String
+}

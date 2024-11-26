@@ -1,15 +1,9 @@
-//
-//  AppDelegate.swift
-//  DropDrug
-//
-//  Created by 김도연 on 10/25/24.
-//
+// Copyright © 2024 RT4. All rights reserved
 
 import Foundation
 import UIKit
 import KakaoSDKCommon
 import AuthenticationServices
-//import GoogleSignIn
 
 import FirebaseCore
 import FirebaseAuth
@@ -17,9 +11,13 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseMessaging
 
+import Moya
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     
     var window: UIWindow?
     
@@ -73,6 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+        checkAuthenticationStatus()
         
         return true
     }
@@ -80,25 +79,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: UISceneSession Lifecycle
     
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
-//    func application(
-//        _ app: UIApplication,
-//        open url: URL,
-//        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
-//    ) -> Bool {
-//        return GIDSignIn.sharedInstance.handle(url)
-//    }
-    
+    private func checkAuthenticationStatus() {
+        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken"),
+              let accessTokenExpiryMillis = SelectLoginTypeVC.keychain.get("accessTokenExpiresIn"),
+              let expiryMillis = Int64(accessTokenExpiryMillis),
+              let accessTokenExpiryDate = Date(milliseconds: expiryMillis) else {
+            //accessToken 존재 X
+            return
+        }
+            
+        if Date() < accessTokenExpiryDate {
+            print("AccessToken 유효. 갱신 불필요.")
+        } else {
+            print("AccessToken 만료. RefreshToken으로 갱신 시도.")
+            self.refreshAccessToken { success in
+                if success {
+                    print("refresh AccessToken successfully")
+                } else {
+                    print("Failed to refresh AccessToken")
+                }
+            }
+        }
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
@@ -106,7 +114,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     // 백그라운드에서 푸시 알림을 탭했을 때 실행
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("APNS token: \(deviceToken.debugDescription)")
+//        print("APNS token: \(deviceToken.debugDescription)")
         Messaging.messaging().apnsToken = deviceToken
     }
     
@@ -120,12 +128,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 extension AppDelegate: MessagingDelegate {
-    
     // 파이어베이스 MessagingDelegate 설정
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("Firebase registration token: \(String(describing: fcmToken))")
+//        print("Firebase registration token: \(String(describing: fcmToken))")
         SelectLoginTypeVC.keychain.set(fcmToken!, forKey: "FCMToken")
-//        print(SelectLoginTypeVC.keychain.get("appleUserFullName") ?? "저장된 이름 없음")
         
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
         NotificationCenter.default.post(
@@ -143,5 +149,11 @@ extension AppDelegate: MessagingDelegate {
                 
             }
         }
+    }
+}
+
+extension Date {
+    init?(milliseconds: Int64) {
+        self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000.0)
     }
 }

@@ -5,12 +5,12 @@ import SnapKit
 import Moya
 
 class NoticesVC: UIViewController {
+
+    let boardProvider = MoyaProvider<BoardService>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
-    let NoticeList : [NoticeData] = [
-        NoticeData(title: "테스트용 공지사항 1", content: "테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.", date: "2024-11-23T16:25:11.183Z"),
-        NoticeData(title: "테스트용 공지사항 2", content: "테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.", date: "2024-11-23T16:25:11.183Z"),
-        NoticeData(title: "테스트용 공지사항 3", content: "테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.테스트용 공지사항입니다.", date: "2024-11-23T16:25:11.183Z"),
-    ] // 날짜 기준으로 소팅 필수 (Get 호출 후)
+    var NoticeList : [NoticeData] = [
+    ]
+
     
     private lazy var backButton: CustomBackButton = {
         let button = CustomBackButton(title: "  공지사항")
@@ -30,19 +30,37 @@ class NoticesVC: UIViewController {
         view.backgroundColor = .white
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
+        tableView.delegate = self
+        
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         tableView.separatorStyle = .none
+        self.tableView.reloadData()
+        
+        self.callgetNotices { isSucces in
+            if isSucces {
+                self.tableView.reloadData()
+            } else {
+                print("getNotices 실패")
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         // 선택된 셀이 있다면 해제
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
+        }
+        
+        self.callgetNotices { isSuccess in
+            if isSuccess {
+                self.tableView.reloadData()
+            } else {
+                print("getNotices 실패")
+            }
         }
     }
     
@@ -66,6 +84,49 @@ extension NoticesVC :  UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected row: \(indexPath.row)")
+        let titleString = self.NoticeList[indexPath.row].title
+        let contentString = self.NoticeList[indexPath.row].content
+        print(titleString)
+        
+        let alertView = CustomAlertView()
+        alertView.configure(title: titleString, message: contentString)
+        
+        // Add to the current view and set constraints
+        view.addSubview(alertView)
+        view.bringSubviewToFront(alertView)
+        
+        alertView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension NoticesVC {
+    func callgetNotices(completion: @escaping (Bool) -> Void) {
+        boardProvider.request(.getBoard) { result in
+            switch result {
+            case .success(let response) :
+                do {
+                    let responsedata = try response.map([BoardResponse].self)
+                    print(responsedata)
+                    self.NoticeList = []
+                    for noticeData in responsedata {
+                        self.NoticeList.append(NoticeData(title: noticeData.title, content: noticeData.content, date: noticeData.createdAt))
+                    }
+                    self.NoticeList.sort(by: { $0.date < $1.date })
+                    completion(true)
+                } catch {
+                    print("Failed to decode response: \(error)")
+                    completion(false)
+                }
+            case .failure(let error) :
+                print("Error: \(error.localizedDescription)")
+                if let response = error.response {
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
+                completion(false)
+            }
+        }
     }
 }

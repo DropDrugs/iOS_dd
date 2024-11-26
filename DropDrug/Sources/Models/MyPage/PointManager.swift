@@ -12,9 +12,9 @@ extension RewardVC {
                     // JSON 디코딩
                     let data = try response.map(PointHistoryResponse.self)
                     DispatchQueue.main.async {
-                        self.rewardData = data.pointHistory // 데이터 업데이트
+                        self.rewardData = data.pointHistory
                         self.rewardView.pointsLabel.text = "\(data.totalPoint) P"
-                        self.rewardTableView.reloadData() // 테이블 리로드
+                        self.rewardTableView.reloadData()
                         completion(true)
                     }
                 } catch {

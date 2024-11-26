@@ -13,6 +13,13 @@ class AddDrugView: UIView {
         return imageView
     }()
     
+    private let gradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.colors = [UIColor(named: "gray500")?.withAlphaComponent(0.3).cgColor ?? UIColor.gray, UIColor.black.withAlphaComponent(0.3).cgColor]
+        layer.locations = [0.0, 1.0]
+        return layer
+    }()
+    
     public lazy var addDrugLabel: UILabel = {
         let label = UILabel()
         label.text = "의약품 등록하기"
@@ -31,6 +38,7 @@ class AddDrugView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = Constants.Colors.coralpink
         setupView()
         setConstraints()
     }
@@ -40,9 +48,13 @@ class AddDrugView: UIView {
     }
     
     private func setupView() {
-        [headerImageView, addDrugLabel, chevronImageView].forEach {
+        addSubview(headerImageView)
+        headerImageView.layer.addSublayer(gradientLayer)
+        
+        [addDrugLabel, chevronImageView].forEach {
             addSubview($0)
         }
+        
     }
     
     private func setConstraints() {
@@ -59,5 +71,10 @@ class AddDrugView: UIView {
             make.centerY.equalTo(addDrugLabel)
             make.leading.equalTo(addDrugLabel.snp.trailing).offset(10)
         }
+        gradientLayer.frame = headerImageView.bounds
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = headerImageView.bounds // Gradient Layer의 프레임 갱신
     }
 }

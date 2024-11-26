@@ -3,7 +3,7 @@
 import UIKit
 import SnapKit
 import Moya
-//TODO: 노티 옵션 api 추가 후 셀 정리
+
 class NotificationSettingsVC: UIViewController {
     
     // MARK: - Moya Provider

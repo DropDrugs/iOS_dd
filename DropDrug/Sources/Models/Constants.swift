@@ -4,16 +4,33 @@ import UIKit
 
 struct Constants {
     static var currentPosition : String = ""
+    static let disposalGuide = """
+    전용 수거함 및 우체통 : 모든 약을 봉투에 모아서 배출(겉표기에 ‘폐의약품’ 표시 후 배출)하거나 전용 봉투를 주민센터나 우체국에서 받아서 사용
+    - 물약 : 마개를 잘 잠그고 용기 그대로 배출. (우체통에 배출 불가)
+    - 알약(조제약) : 포장지 그대로 개봉하지 말고 배출
+    - 알약(정제형) : 겉 포장지(종이)만 제거 후 플라스틱 등으로 포장된 알약은 개봉하지 말고 배출
+    - 가루약 : 포장된 상태 그대로 배출
+    - 특수용기 : 연고, 천식 흡입제, 스프레이 등 겉포장(종이)박스만 제거 후 마개를 잠그고 용기 그대로 배출
+    - 폐의약품 수거함에 버리면 안되는 물품 : 폐의약품 외 물품(홍삼, 자양강장제 등)
+    """
+    
     struct NetworkManager {
         static let baseURL = "http://54.180.45.153:8080/"
         static let OCRSecretKey = "Uk1PYVR2RFVaYWVHRlpxcWpxRVZkQUl0bHRvTGpCU3Q="
         static let OCRAPIURL = "https://slpfshoip0.apigw.ntruss.com/custom/v1/36244/694e6b5877aed073a41eb1c45d2be8b6126ed5808e1311a2e48e5800ccdd233f"
     }
     
-    struct AllCharacter {
-        static var allCharCount = 12
-    }
-    
+    static let CharacterList: [CharacterModel] = [
+        CharacterModel(id: 0, name: "웃는 드롭이", image: "char0" , price: 0),
+        CharacterModel(id: 1, name: "화난 드롭이", image: "char1", price: 0),
+        CharacterModel(id: 2, name: "난처 드롭이", image: "char2", price: 0),
+        CharacterModel(id: 3, name: "미안 드롭이", image: "char3", price: 0),
+        CharacterModel(id: 4, name: "웃는 드럭이", image: "char4", price: 0),
+        CharacterModel(id: 5, name: "화난 드럭이", image: "char5", price: 0),
+        CharacterModel(id: 6, name: "난처 드럭이", image: "char6", price: 0),
+        CharacterModel(id: 7, name: "미안 드럭이", image: "char7", price: 0)
+    ]
+
     static let seoulDistrictsList: [DistrictsDataModel] = [
             DistrictsDataModel(name: "강남구", image: "강남구", url: "https://www.gangnam.go.kr/board/waste/list.do?mid=ID02_011109#collapse21"),
             DistrictsDataModel(name: "강동구", image: "강동구", url: "https://www.gangdong.go.kr/web/newportal/contents/gdp_005_004_010_001"),

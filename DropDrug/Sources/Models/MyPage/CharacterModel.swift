@@ -2,6 +2,9 @@
 
 import Foundation
 
-struct CharacterModel : Codable {
-    
+struct CharacterModel {
+    let id: Int
+    let name: String
+    let image: String // 이미지 파일 이름
+    let price: Int    // 캐릭터 가격 (예: 구매 시)
 }
