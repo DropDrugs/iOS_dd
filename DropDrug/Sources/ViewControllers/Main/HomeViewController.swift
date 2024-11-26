@@ -11,7 +11,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     
     let provider = MoyaProvider<HomeAPI>(plugins: [ BearerTokenPlugin(), NetworkLoggerPlugin() ])
     
-    var selectedCharacterNum: Int = 0
     private var siDo = ""
     private var siGu = ""
     private var locationUrl = ""
@@ -22,6 +21,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         super.viewDidLoad()
         self.view = homeView
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap(_:)))
+        homeView.character.addGestureRecognizer(tapGesture)
         configureLocationManager()
         configureMapView()
         
@@ -37,6 +38,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                 DispatchQueue.main.async {
                     self?.homeView.updateStarter()
                     self?.homeView.updatePoints()
+                    self?.homeView.updateChar()
                 }
             } else {
                 print("GET 호출 실패")
@@ -52,6 +54,18 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         hv.floatingBtn.addTarget(self, action: #selector(didTapFloatingBtn), for: .touchUpInside)
         return hv
     }()
+    
+    @objc private func handleImageTap(_ sender: UITapGestureRecognizer) {
+        guard let tappedView = sender.view else { return }
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            tappedView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: [], animations: {
+                tappedView.transform = .identity
+            }, completion: nil)
+        }
+    }
     
     @objc
     private func AlarmBtnTapped() {
@@ -241,7 +255,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
                     self.updateButtonWidth(name: responseData.nickname)
                     self.homeView.name = responseData.nickname
                     self.homeView.points = responseData.point
-                    self.selectedCharacterNum = responseData.selectedChar
+                    self.homeView.selectedCharacterNum = responseData.selectedChar
                     completion(true)
                 } catch {
                     print("Failed to decode response: \(error)")

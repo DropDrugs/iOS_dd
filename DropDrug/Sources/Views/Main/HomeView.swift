@@ -17,6 +17,7 @@ class HomeView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public var selectedCharacterNum: Int = 0
     public var points = 100
     public var name = "김드롭"
     public var presentLocation = "서비스 이용 가능 지역이 아닙니다"
@@ -158,6 +159,20 @@ class HomeView: UIView {
         return b
         
     }()
+    
+    public lazy var characterView: UIView = {
+        let v = UIView()
+        v.backgroundColor = .clear
+        return v
+    }()
+    
+    public lazy var character: UIImageView = {
+        let i = UIImageView()
+        i.contentMode = .scaleAspectFill
+        i.backgroundColor = .clear
+        i.isUserInteractionEnabled = true
+        return i
+    }()
 
     private func addComponenets() {
         addSubview(appTitle)
@@ -166,6 +181,8 @@ class HomeView: UIView {
         addSubview(point)
         addSubview(locationBackground)
         addSubview(floatingBtn)
+        addSubview(characterView)
+        characterView.addSubview(character)
         locationBackground.addSubview(mapView)
         locationBackground.addSubview(location)
         locationBackground.addSubview(resetBtn)
@@ -234,6 +251,16 @@ class HomeView: UIView {
             make.top.equalTo(presLoca.snp.bottom).offset(14)
             make.leading.equalTo(presLoca.snp.leading)
         }
+        
+        characterView.snp.makeConstraints { make in
+            make.top.equalTo(point.snp.bottom)
+            make.bottom.equalTo(floatingBtn.snp.top)
+            make.horizontalEdges.equalTo(safeAreaLayoutGuide)
+        }
+        
+        character.snp.makeConstraints { make in
+            make.centerX.centerY.equalToSuperview()
+        }
     }
     
     public func updateStarter() {
@@ -245,5 +272,9 @@ class HomeView: UIView {
     
     public func updatePoints() {
         point.setTitle("\(points) P", for: .normal)
+    }
+    
+    public func updateChar() {
+        character.image = UIImage(named: "body\(selectedCharacterNum)")
     }
 }
