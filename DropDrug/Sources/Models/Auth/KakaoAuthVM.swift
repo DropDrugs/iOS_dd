@@ -1,6 +1,6 @@
 // Copyright © 2024 RT4. All rights reserved
 
-import Foundation
+import UIKit
 import Combine
 import KakaoSDKAuth
 import KakaoSDKUser

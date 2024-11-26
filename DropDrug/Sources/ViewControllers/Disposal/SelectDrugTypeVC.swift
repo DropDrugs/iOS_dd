@@ -168,16 +168,36 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
             print("ID: \(category.id)")
         }
         
-        let alert = UIAlertController(title: "실천 사진 인증", message: "실시간 사진 인증을 하시겠습니까?", preferredStyle: .alert)
+        let infoAlertView = CustomAlertView()
+        infoAlertView.configure(title: "폐의약품 분리배출 실천 사진 인증 안내", message: Constants.disposalGuide)
+        view.addSubview(infoAlertView)
+        view.bringSubviewToFront(infoAlertView)
         
-        alert.addAction(UIAlertAction(title: "No", style: .cancel) { [weak self] _ in
-        self?.moveToMainScreen()
-        })
-        alert.addAction(UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
-            self?.presentCamera()
-        })
+        infoAlertView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
-        present(alert, animated: true, completion: nil)
+        
+        // infoAlertView가 닫히면,
+        infoAlertView.onDismiss = { [weak self] in
+            guard let self = self else { return }
+            
+            let alert = UIAlertController(
+                title: "폐기 실천 사진 인증",
+                message: "봉투에 '폐의약품'이라고 표시하였는지 사진을 통해 인증할 수 있습니다.\n 인증하시겠습니까?",
+                preferredStyle: .alert
+            )
+            
+            alert.addAction(UIAlertAction(title: "No", style: .cancel) { _ in
+                self.moveToMainScreen()
+            })
+            
+            alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
+                self.presentCamera()
+            })
+            
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     private func presentCamera() {

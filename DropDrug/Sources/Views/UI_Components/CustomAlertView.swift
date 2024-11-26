@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 
 class CustomAlertView: UIView {
+    var onDismiss: (() -> Void)?
     
     // MARK: - UI Elements
     private let containerView: UIView = {
@@ -115,5 +116,6 @@ class CustomAlertView: UIView {
     @objc private func didTapConfirmButton() {
         // 팝업 닫기
         self.removeFromSuperview()
+        onDismiss?()
     }
 }
