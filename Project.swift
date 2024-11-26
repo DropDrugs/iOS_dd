@@ -5,12 +5,24 @@ let project = Project(
     targets: [
         .target(
             name: "DropDrug",
-            destinations: .iOS,
+            destinations: .init([.iPhone]),
             product: .app,
             bundleId: "io.tuist.DropDrug",
+            deploymentTargets: .iOS("16.6"),
             infoPlist: .extendingDefault(
                 with: [
-                    "UILaunchStoryboardName": "LaunchScreen.storyboard",
+                    "UILaunchStoryboardName": "",
+                    "CFBundleDisplayName" : "드롭드락",
+                    "CFBundleShortVersionString" : "1.0",
+                    "CFBundleVersion" : "1",
+                    "CFBundleIcons": [
+                                "CFBundlePrimaryIcon": [
+                                    "CFBundleIconFiles": ["AppIcon"],
+                                    "UIPrerenderedIcon": true
+                                ]
+                            ],
+                    "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"
+                                                         ],
                     "UIApplicationSceneManifest": [
                         "UIApplicationSupportsMultipleScenes": false,
                         "UISceneConfigurations": [
@@ -34,10 +46,10 @@ let project = Project(
                                    "RussoOne-Regular.ttf"
                     ],
                     "KAKAO_NATIVE_APP_KEY" : "74177ce7b14b89614c47ac7d51464b95",
-                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
-                    "NSLocationWhenInUseUsageDescription" : "위치 권한을 앱 활성 시에만 허용하시겠습니까?",
-                    "NSLocationAlwaysUsageDescription" : "위치 권한을 항상 허용하시겠습니까?",
-                    "NSCameraUsageDescription" : "카메라 사용 권한을 허용하시겠습니까?",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "주변 폐의약품 수거함 정보 제공을 위한 위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
+                    "NSLocationWhenInUseUsageDescription" : "주변 폐의약품 수거함 정보 제공을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
+                    "NSLocationAlwaysUsageDescription" : "주변 폐의약품 수거함 정보 제공을 위한 위치 권한을 항상 허용하시겠습니까?",
+                    "NSCameraUsageDescription" : "폐의약품 사진 인증을 위한 카메라 사용 권한을 허용하시겠습니까?",
                     "NSAppTransportSecurity" : [
                         "NSAllowsArbitraryLoads" : true
                     ],
