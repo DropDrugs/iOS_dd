@@ -9,7 +9,7 @@ class CustomAlertView: UIView {
     // MARK: - UI Elements
     private let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 12
         view.clipsToBounds = true
         return view
@@ -57,7 +57,7 @@ class CustomAlertView: UIView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        backgroundColor = Constants.Colors.black?.withAlphaComponent(0.5)
         
         addSubview(containerView)
         containerView.addSubview(titleLabel)

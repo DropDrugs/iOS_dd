@@ -17,7 +17,7 @@ class SeoulCollectionViewCell: UICollectionViewCell {
     
     public lazy var image: UIImageView = {
         let i = UIImageView()
-        i.backgroundColor = .white
+        i.backgroundColor = Constants.Colors.white
         i.contentMode = .scaleAspectFit
         i.layer.borderColor = Constants.Colors.gray300?.cgColor
         i.layer.borderWidth = 1

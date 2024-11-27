@@ -41,7 +41,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     }
     
     private func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         
         // TableView 설정
         tableView.rowHeight = view.bounds.height * 0.06
@@ -49,7 +49,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         tableView.delegate = self
         tableView.register(AccountOptionCell.self, forCellReuseIdentifier: "AccountOptionCell")
         tableView.separatorStyle = .none
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .systemBackground
         tableView.isScrollEnabled = false
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in

@@ -89,7 +89,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     @objc private func didTapFloatingBtn() {
         // 눌렸을 때 애니메이션
         let originalColor = homeView.floatingBtn.backgroundColor
-        let highlightColor = UIColor(named: "Gray700")?.withAlphaComponent(0.7) // 원하는 강조 색상
+        let highlightColor = Constants.Colors.gray700?.withAlphaComponent(0.7) // 원하는 강조 색상
         
         // 버튼 색상을 변경하는 애니메이션
         UIView.animate(withDuration: 0.1, animations: {
@@ -108,7 +108,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         // 이름 길이 계산
         let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
         attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
-        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
 
         let textSize = attributedString.boundingRect(
             with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40),

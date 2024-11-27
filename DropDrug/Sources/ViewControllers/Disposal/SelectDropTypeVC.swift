@@ -30,13 +30,13 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     
     
     private func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(KindCollectionViewCell.self, forCellWithReuseIdentifier: "KindCell")
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = Constants.Colors.white
         collectionView.isScrollEnabled = false
         
         view.addSubview(collectionView)

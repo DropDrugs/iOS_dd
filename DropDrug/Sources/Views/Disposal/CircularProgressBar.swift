@@ -67,7 +67,7 @@ class CircularProgressBar: UIView {
                 progressText = UILabel(frame: CGRect(x: 0, y: 0, width: labelSize, height: labelSize))
                 progressText?.textAlignment = .center
                 progressText?.textColor = Constants.Colors.skyblue!
-                progressText?.backgroundColor = .clear
+                progressText?.backgroundColor = .systemBackground
                 addSubview(progressText!)
             }
             progressText?.font = UIFont.ptdBoldFont(ofSize: labelSize / 4)

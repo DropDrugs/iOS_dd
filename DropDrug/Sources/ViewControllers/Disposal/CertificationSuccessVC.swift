@@ -102,7 +102,7 @@ class CertificationSuccessVC: UIViewController {
     
     // MARK: - Setup UI
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         [ checkImageView, messageLabel].forEach {
             checkMessageLabel.addArrangedSubview($0)
         }
@@ -140,27 +140,17 @@ class CertificationSuccessVC: UIViewController {
     
     // MARK: - Actions
     @objc private func completeButtonTapped() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) else {
-            return
-        }
-        
-        var topController = keyWindow.rootViewController
-        
-        while let presented = topController?.presentedViewController {
-            topController = presented
-        }
-        
-        if let mainTabBarVC = topController as? MainTabBarController {
-            // 2. 네비게이션 스택 초기화
-            if let navigationController = mainTabBarVC.navigationController {
-                navigationController.popToRootViewController(animated: true)
+        var currentVC: UIViewController? = self
+        while let parentVC = currentVC?.navigationController?.viewControllers.first(where: { $0 is HomeViewController }) {
+            
+            if parentVC is HomeViewController {
+                if let navigationController = parentVC.navigationController {
+                    navigationController.popToViewController(parentVC, animated: true)
+                    return
+                }
+                currentVC = parentVC
             }
-            return
-        }
-        
-        topController?.dismiss(animated: true) {
-            self.resetToMainTabBar()
+            print("SelectDrugTypeVC not found")
         }
     }
 

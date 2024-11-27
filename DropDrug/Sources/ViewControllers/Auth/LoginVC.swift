@@ -40,7 +40,7 @@ class LoginVC : UIViewController {
         button.setTitle("로그인", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 16)
-        button.backgroundColor = UIColor.systemGray
+        button.backgroundColor = Constants.Colors.gray600
         button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         return button
@@ -60,7 +60,7 @@ class LoginVC : UIViewController {
         [backButton, titleLabel, emailField, passwordField, emailSaveCheckBox, loginButton].forEach {
             view.addSubview($0)
         }
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
     }
     
     private func setupConstraints() {

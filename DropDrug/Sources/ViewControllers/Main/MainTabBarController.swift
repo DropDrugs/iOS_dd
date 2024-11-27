@@ -17,13 +17,13 @@ class MainTabBarController: UITabBarController {
     
     private func setupTabBar() {
         
-        self.tabBar.backgroundColor = .white
+        self.tabBar.backgroundColor = .systemBackground
         
         UITabBar.clearShadow()
         tabBar.layer.applyShadow(color: .gray, alpha: 0.3, x: 0, y: 0, blur: 15)
         
-        self.tabBar.tintColor = UIColor(named: "skyblue")
-        self.tabBar.unselectedItemTintColor = UIColor(named: "Gray500")
+        self.tabBar.tintColor = Constants.Colors.skyblue
+        self.tabBar.unselectedItemTintColor = Constants.Colors.gray500
         HomeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(named: "Home")?.withRenderingMode(.alwaysTemplate), tag: 0)
         
         SearchVC.tabBarItem = UITabBarItem(title: "등록", image: UIImage(named: "register")?.withRenderingMode(.alwaysTemplate), tag: 1)

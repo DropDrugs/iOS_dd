@@ -6,8 +6,7 @@ import MapKit
 import CoreLocation
 
 class HomeView: UIView {
-    
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = Constants.Colors.lightblue
@@ -27,7 +26,7 @@ class HomeView: UIView {
     
     public lazy var floatingBtn: UIButton = {
         let fb = UIButton()
-        fb.backgroundColor = Constants.Colors.gray900
+        fb.backgroundColor = UIColor(hex: "#212526")
         fb.layer.cornerRadius = 20
         fb.layer.shadowColor = UIColor.black.cgColor
         fb.layer.shadowOpacity = 0.3
@@ -39,7 +38,7 @@ class HomeView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .medium) // 원하는 크기와 굵기
         configuration.image = UIImage(systemName: "plus", withConfiguration: imageConfig)?
             .withRenderingMode(.alwaysOriginal)
-            .withTintColor(.white)
+            .withTintColor(UIColor.white)
         configuration.imagePlacement = .leading
         configuration.imagePadding = 8
 
@@ -65,7 +64,7 @@ class HomeView: UIView {
     
     public lazy var locationBackground: UIView = {
         let v = UIView()
-        v.backgroundColor = .white
+        v.backgroundColor = .systemBackground
         v.clipsToBounds = true
         v.layer.cornerRadius = 10
         v.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
@@ -90,7 +89,7 @@ class HomeView: UIView {
     
     public lazy var starter: UIButton = {
         let b = UIButton()
-        b.backgroundColor = .white
+        b.backgroundColor = .systemBackground
         b.layer.cornerRadius = 20
         let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
         attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
@@ -102,7 +101,7 @@ class HomeView: UIView {
     
     public lazy var point: UIButton = {
         let b = UIButton()
-        b.backgroundColor = .white
+        b.backgroundColor = .systemBackground
         b.layer.cornerRadius = 20
         b.setTitle("\(points) P", for: .normal)
         b.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 14)
@@ -266,7 +265,7 @@ class HomeView: UIView {
     public func updateStarter() {
         let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
         attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
-        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
         starter.setAttributedTitle(attributedString, for: .normal)
     }
     

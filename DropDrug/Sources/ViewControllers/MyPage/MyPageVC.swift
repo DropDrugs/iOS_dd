@@ -15,7 +15,7 @@ class MyPageVC : UIViewController {
         let label = UILabel()
         label.text = "마이페이지"
         label.font = UIFont.ptdSemiBoldFont(ofSize: 20)
-        label.textColor = .black
+        label.textColor = Constants.Colors.black
         label.textAlignment = .center
         return label
     }()
@@ -69,7 +69,7 @@ class MyPageVC : UIViewController {
     }
     
     func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
 //        [titleLabel, settingButton, myPageProfileView, rewardView, dropCardLabel, disposalStateLabel].forEach {
 //            view.addSubview($0)
 //        }

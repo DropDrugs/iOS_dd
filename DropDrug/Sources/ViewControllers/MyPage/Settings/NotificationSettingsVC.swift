@@ -29,7 +29,7 @@ class NotificationSettingsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
         setupTableView()

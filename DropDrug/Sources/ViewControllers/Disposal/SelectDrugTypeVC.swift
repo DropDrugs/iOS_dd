@@ -57,13 +57,13 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     private func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(DrugTypeCollectionViewCell.self, forCellWithReuseIdentifier: "DrugTypeCell")
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = Constants.Colors.white
         collectionView.isScrollEnabled = false
         collectionView.allowsMultipleSelection = true
         

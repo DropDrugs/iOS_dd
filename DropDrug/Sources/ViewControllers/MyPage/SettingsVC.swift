@@ -33,7 +33,7 @@ class SettingsVC: UIViewController {
     
     // MARK: - UI Setup
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
@@ -43,7 +43,7 @@ class SettingsVC: UIViewController {
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.separatorStyle = .none
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .systemBackground
         tableView.isScrollEnabled = false
         view.addSubview(tableView)
     }
@@ -71,7 +71,7 @@ extension SettingsVC: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = menuItems[indexPath.row]
         cell.textLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 17)
-        cell.textLabel?.textColor = .black
+        cell.textLabel?.textColor = Constants.Colors.black
         cell.selectionStyle = .none
         return cell
     }

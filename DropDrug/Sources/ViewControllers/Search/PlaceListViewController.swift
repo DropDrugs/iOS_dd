@@ -9,7 +9,7 @@ class PlaceListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         self.view = placeListView
         getPlaceInfo(addrLvl1: siDo, addrLvl2: siGu, type: type) { [weak self] isSuccess in
             if isSuccess {

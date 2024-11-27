@@ -19,10 +19,10 @@ class CustomBackButton: UIButton {
     // MARK: - Setup Method
     private func setupButton(title: String) {
         self.setImage(UIImage(systemName: "chevron.left")?
-                        .withTintColor(UIColor(named: "gray500") ?? .systemGray, renderingMode: .alwaysOriginal),
+            .withTintColor(Constants.Colors.gray500 ?? .systemGray, renderingMode: .alwaysOriginal),
                       for: .normal)
         self.setTitle("\(title)", for: .normal)
-        self.setTitleColor(.black, for: .normal)
+        self.setTitleColor(Constants.Colors.black, for: .normal)
         self.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 21)
     }
 }

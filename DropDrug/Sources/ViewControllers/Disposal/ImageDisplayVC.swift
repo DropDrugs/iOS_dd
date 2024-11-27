@@ -36,7 +36,7 @@ class ImageDisplayVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         
         setupProgressBar()
         loadImage()

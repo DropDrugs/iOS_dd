@@ -95,7 +95,7 @@ class SignUpVC : UIViewController {
         [backButton, loginButton, titleLabel, usernameField, emailField, passwordField, confirmPasswordField, termsCheckBox, privacyPolicyButton, signUpButton, termsValidationLabel].forEach {
             view.addSubview($0)
         }
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
     }
     private func setupConstraints() {
         backButton.snp.makeConstraints { make in
