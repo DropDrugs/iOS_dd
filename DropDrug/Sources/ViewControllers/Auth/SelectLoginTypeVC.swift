@@ -209,62 +209,48 @@ class SelectLoginTypeVC : UIViewController {
 extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
-        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+        case let appleIDCredential as ASAuthorizationAppleIDCredential :
             let userIdentifier = appleIDCredential.user
-            var formattedName: String = ""
             var authorizationCode : String = ""
-            if let fullName = appleIDCredential.fullName, ((fullName.givenName?.isEmpty) == nil) && ((fullName.familyName?.isEmpty) == nil) {
-                let givenName = fullName.givenName ?? ""
-                let familyName = fullName.familyName ?? ""
-                
-                formattedName = "\(familyName)\(givenName)"
-                
-                print("Formatted Full Name: \(formattedName)")
-            } else {
-                print("Full name is nil")
-            }
-            
-            let email = appleIDCredential.email
             
             if let authCode = appleIDCredential.authorizationCode,
-               let codeString = String(data: authCode, encoding: .utf8) {
-                authorizationCode = codeString
-                print("Authorization Code: \(codeString)")
+               let authCodeString = String(data: authCode, encoding: .utf8) {
+                authorizationCode = authCodeString
             } else {
-                print("Authorization Code is nil or could not be decoded.")
-                // login 불가능 처리 로직
+                print("authcode 발급 실패")
             }
+            
+            if let identityToken = appleIDCredential.identityToken {
+                if let identityTokenString = String(data: identityToken, encoding: .utf8) {
+                    SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
+                    print("idToken: \(identityToken)")
+                    
+                }
+            }
+            
+        default :
+            break
+        }
             
             if let identityToken = appleIDCredential.identityToken,
                let identityTokenString = String(data: identityToken, encoding: .utf8),
                let emailString = email {
-                SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
                 SelectLoginTypeVC.keychain.set(emailString, forKey: "AppleIDEmail")
                 SelectLoginTypeVC.keychain.set(formattedName, forKey: "AppleIDName")
-                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, formattedName, emailString, authorizationCode)!) { isSuccess in
-                    if isSuccess {
-                        self.handleKakaoLoginSuccess()
-                    } else {
-                        print("애플 로그인(바로 로그인) 실패")
-                    }
-                }
+//                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, formattedName, emailString, authorizationCode)!) { isSuccess in
+//                    if isSuccess {
+//                        self.handleKakaoLoginSuccess()
+//                    } else {
+//                        print("애플 로그인(바로 로그인) 실패")
+//                    }
+//                }
             } else {
                 guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken"),
                       let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
                       let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
-                
-                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, nameString, emailString, authorizationCode)!) { isSuccess in
-                    if isSuccess {
-                        self.handleKakaoLoginSuccess()
-                    } else {
-                        print("애플 로그인 실패")
-                    }
-                }
+
                 
             }
-        default:
-            break
-        }
         
     }
 }

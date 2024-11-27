@@ -111,6 +111,7 @@ extension SelectLoginTypeVC {
             case .failure(let error) :
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
                 completion(false)
             }
