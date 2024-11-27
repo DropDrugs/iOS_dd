@@ -91,10 +91,11 @@ extension SelectLoginTypeVC {
         }
     }
     
-    func setupAppleDTO(_ idToken: String, _ name: String, _ email: String, _ authorizationCode : String) -> OAuthAppleLoginRequest? {
+    func setupAppleDTO(_ idToken: String, _ authorizationCode : String) -> OAuthAppleLoginRequest? {
         guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
-        return OAuthAppleLoginRequest(fcmToken: fcmToken, name: name, email: email, authorizationCode: authorizationCode)
+        return OAuthAppleLoginRequest(fcmToken: fcmToken, idToken: idToken, authorizationCode: authorizationCode)
     }
+    
     func callAppleLoginAPI(param : OAuthAppleLoginRequest, completion: @escaping (Bool) -> Void) {
         provider.request(.postAppleLogin(param: param)) { result in
             switch result {
@@ -111,6 +112,7 @@ extension SelectLoginTypeVC {
             case .failure(let error) :
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
                 completion(false)
             }

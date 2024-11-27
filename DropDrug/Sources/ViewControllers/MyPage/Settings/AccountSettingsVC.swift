@@ -149,7 +149,6 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     
     private func updateNickname(newNickname: String, completion: @escaping (Bool) -> Void) {
         guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
-            Toaster.shared.makeToast("계정 삭제 완료")
             completion(false)
             return
         }
