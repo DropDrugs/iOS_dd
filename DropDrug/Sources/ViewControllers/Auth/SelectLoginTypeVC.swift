@@ -36,7 +36,7 @@ class SelectLoginTypeVC : UIViewController {
         button.backgroundColor = UIColor(hex: "#FEE500")
         button.setTitle("   카카오로 시작하기", for: .normal)
         button.setTitleColor(UIColor(hex: "#191919"), for: .normal)
-        button.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         return button
@@ -47,7 +47,7 @@ class SelectLoginTypeVC : UIViewController {
         button.setTitle("E-mail로 시작하기", for: .normal)
         button.backgroundColor = Constants.Colors.gray900
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(startTapped), for: .touchUpInside)
         return button

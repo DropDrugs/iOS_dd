@@ -9,7 +9,13 @@ class LoginVC : UIViewController {
 
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     
-    private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")
+    var textFields: [UITextField] = []
+    
+    private lazy var emailField: CustomLabelTextFieldView = {
+        let field = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")
+        field.textField.keyboardType = .emailAddress
+        return field
+    }()
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: " ")
         field.textField.isSecureTextEntry = true
@@ -53,7 +59,13 @@ class LoginVC : UIViewController {
         setupConstraints()
         setupActions()
         validateInputs()
+        
+        textFields = [emailField.textField, passwordField.textField]
+        
+        for textField in textFields {
+            textField.delegate = self
         }
+    }
     
     // MARK: - Setup Methods
     private func setupView() {
@@ -165,5 +177,16 @@ class LoginVC : UIViewController {
         isValid = isFormValid
         loginButton.isEnabled = isValid
         loginButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
+    }
+}
+
+extension LoginVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+            textFields[index + 1].becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
     }
 }

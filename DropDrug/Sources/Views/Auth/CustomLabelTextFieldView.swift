@@ -22,7 +22,7 @@ class CustomLabelTextFieldView: UIView {
         textField.backgroundColor = .systemBackground
         
         textField.layer.borderColor = Constants.Colors.gray300?.cgColor
-        textField.layer.borderWidth = 1.0  // 원하는 테두리 두께로 설정
+        textField.layer.borderWidth = 1.0  // 원하 는 테두리 두께로 설정
         textField.layer.cornerRadius = 8.0  // 테두리에 둥근 모서리를 주고 싶을 때 설정
 
         let placeholderColor = Constants.Colors.gray500

@@ -11,8 +11,14 @@ class SignUpVC : UIViewController {
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     let MemberProvider = MoyaProvider<MemberAPI>(plugins: [ NetworkLoggerPlugin()])
     
+    var textFields: [UITextField] = []
+    
     private lazy var usernameField = CustomLabelTextFieldView(textFieldPlaceholder: "이름을 입력해 주세요", validationText: "이름을 입력해 주세요")
-    private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "사용할 수 없는 이메일입니다")
+    private lazy var emailField: CustomLabelTextFieldView = {
+        let field = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "사용할 수 없는 이메일입니다")
+        field.textField.keyboardType = .emailAddress
+        return field
+    }()
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
         field.textField.isSecureTextEntry = true
@@ -91,7 +97,13 @@ class SignUpVC : UIViewController {
         setupActions()
         validateInputs()
         requestTrackingPermission()
+        
+        textFields = [usernameField.textField, emailField.textField, passwordField.textField, confirmPasswordField.textField]
+        
+        for textField in textFields {
+            textField.delegate = self
         }
+    }
     
     // MARK: - Setup Methods
     private func setupView() {
@@ -100,6 +112,7 @@ class SignUpVC : UIViewController {
         }
         view.backgroundColor = Constants.Colors.white
     }
+    
     private func setupConstraints() {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(superViewWidth * 0.03)
@@ -159,7 +172,7 @@ class SignUpVC : UIViewController {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
-        }
+    }
 
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)
@@ -358,4 +371,15 @@ class SignUpVC : UIViewController {
         }
     }
     
+}
+
+extension SignUpVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+            textFields[index + 1].becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
+    }
 }

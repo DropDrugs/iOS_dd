@@ -21,10 +21,11 @@ class EnterNickNameVC: UIViewController, UITextFieldDelegate {
     private let saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("저장하기", for: .normal)
-        button.setTitleColor(Constants.Colors.gray900, for: .normal)
-        button.backgroundColor = Constants.Colors.skyblue
-        button.layer.cornerRadius = 8
-        button.layer.masksToBounds = true
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        button.backgroundColor = Constants.Colors.gray600
+        button.layer.cornerRadius = superViewWidth * 0.075
+//        button.layer.masksToBounds = true
         return button
     }()
     
@@ -52,15 +53,13 @@ class EnterNickNameVC: UIViewController, UITextFieldDelegate {
         usernameField.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(appTitle.snp.bottom).offset(60)
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(50)
         }
         
         saveButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(40)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(50)
+            make.height.equalTo(superViewWidth * 0.15)
         }
     }
     
@@ -69,11 +68,17 @@ class EnterNickNameVC: UIViewController, UITextFieldDelegate {
     private func setupActions() {
         // TextField Delegate 설정
         // 저장 버튼 액션
+        usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        self.view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        self.view.endEditing(true)
     }
     
     // MARK: - Button Action
-    
     @objc private func saveButtonTapped() {
         guard let nickname = usernameField.text, !nickname.isEmpty else {
             return
@@ -88,6 +93,26 @@ class EnterNickNameVC: UIViewController, UITextFieldDelegate {
                 Toaster.shared.makeToast("닉네임을 다시 저장해주세요.")
             }
         }
+    }
+    
+    lazy var isUsernameValid = false
+    
+    @objc func usernameValidate(){
+        if let username = usernameField.text, !username.isEmpty {
+            usernameField.validationLabel.isHidden = true
+            usernameField.textField.layer.borderColor = Constants.Colors.skyblue?.cgColor
+            isUsernameValid = true
+        } else {
+            usernameField.validationLabel.isHidden = false
+            usernameField.textField.layer.borderColor = Constants.Colors.red?.cgColor
+            isUsernameValid = false
+        }
+        validateInputs()
+    }
+    
+    @objc func validateInputs() {
+        saveButton.isEnabled = isUsernameValid
+        saveButton.backgroundColor = isUsernameValid ? Constants.Colors.skyblue : Constants.Colors.gray600
     }
     
     private func handleNickNameSaveSuccess() {
