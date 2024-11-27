@@ -6,6 +6,8 @@ import SnapKit
 import PinLayout
 import KeychainSwift
 import SwiftyToaster
+import AppTrackingTransparency
+import AdSupport
 
 class SplashVC : UIViewController {
     
@@ -24,6 +26,8 @@ class SplashVC : UIViewController {
         super.viewDidLoad()
         setupViews()
         setConstraints()
+        requestTrackingPermission()
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.tokenPlugin.checkAuthenticationStatus { token in
                 if let token = token {
@@ -56,6 +60,23 @@ class SplashVC : UIViewController {
     func setConstraints() {
         titleLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
+        }
+    }
+    
+    func requestTrackingPermission() {
+        ATTrackingManager.requestTrackingAuthorization { status in
+            switch status {
+            case .authorized:
+                print("Tracking 권한 허용")
+            case .denied:
+                print("Tracking 권한 거부")
+            case .notDetermined:
+                print("Tracking 권한 요청 전 상태")
+            case .restricted:
+                print("Tracking 권한 제한됨")
+            @unknown default:
+                print("알 수 없는 상태")
+            }
         }
     }
     

@@ -98,7 +98,7 @@ extension SelectLoginTypeVC {
         return OAuthAppleLoginRequest(fcmToken: fcmToken, idToken: idToken, authorizationCode: authorizationCode)
     }
     
-    func callAppleLoginAPI(param : OAuthAppleLoginRequest, completion: @escaping (Bool) -> Void) {
+    func callAppleLoginAPI(param : OAuthAppleLoginRequest, completion: @escaping (Bool, Bool) -> Void) {
         provider.request(.postAppleLogin(param: param)) { result in
             switch result {
             case .success(let response):
@@ -106,17 +106,17 @@ extension SelectLoginTypeVC {
                     let data = try response.map(TokenDto.self)
                     SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
-                    completion(true)
+                    completion(true, data.isNewUser ?? false)
                 } catch {
                     Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
-                    completion(false)
+                    completion(false, false)
                 }
             case .failure(let error) :
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                     print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
-                completion(false)
+                completion(false, false)
             }
         }
     }
