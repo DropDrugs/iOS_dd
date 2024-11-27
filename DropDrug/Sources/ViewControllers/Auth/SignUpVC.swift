@@ -4,8 +4,7 @@ import UIKit
 import SnapKit
 import Moya
 import QuickLook
-import AppTrackingTransparency
-import AdSupport
+
 
 class SignUpVC : UIViewController {
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
@@ -19,12 +18,14 @@ class SignUpVC : UIViewController {
         field.textField.keyboardType = .emailAddress
         return field
     }()
+    
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
         field.textField.isSecureTextEntry = true
         field.textField.textContentType = .newPassword
         return field
     }()
+    
     private lazy var confirmPasswordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 다시 입력해 주세요", validationText: "비밀번호를 다시 한 번 확인해 주세요")
         field.textField.isSecureTextEntry = true
@@ -96,7 +97,6 @@ class SignUpVC : UIViewController {
         setupConstraints()
         setupActions()
         validateInputs()
-        requestTrackingPermission()
         
         textFields = [usernameField.textField, emailField.textField, passwordField.textField, confirmPasswordField.textField]
         
@@ -337,22 +337,7 @@ class SignUpVC : UIViewController {
         signUpButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
     }
     
-    func requestTrackingPermission() {
-        ATTrackingManager.requestTrackingAuthorization { status in
-            switch status {
-            case .authorized:
-                print("Tracking 권한 허용")
-            case .denied:
-                print("Tracking 권한 거부")
-            case .notDetermined:
-                print("Tracking 권한 요청 전 상태")
-            case .restricted:
-                print("Tracking 권한 제한됨")
-            @unknown default:
-                print("알 수 없는 상태")
-            }
-        }
-    }
+
     
     func checkEmail(completion: @escaping (Bool) -> Void) {
         guard let email = emailField.text, !email.isEmpty else {

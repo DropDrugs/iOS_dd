@@ -16,7 +16,7 @@ enum LoginService {
     
     // 기타
     case postLogOut(accessToken: String)
-    case postQuit(token: String)
+    case postQuit(param : QuitRequest)
     
     //리프레시
     case refreshAccessToken(refreshToken: String)
@@ -61,8 +61,8 @@ extension LoginService: TargetType {
             return .requestJSONEncodable(param)
         case .postLogOut(let accessToken) :
             return .requestParameters(parameters: ["accessToken": accessToken], encoding: JSONEncoding.default)
-        case .postQuit(let accessToken) :
-            return .requestParameters(parameters: ["token": accessToken], encoding: JSONEncoding.default)
+        case .postQuit(let param) :
+            return .requestJSONEncodable(param)
         case .refreshAccessToken(let refreshToken) :
             return .requestParameters(parameters: ["refreshToken": refreshToken], encoding: JSONEncoding.default)
         }

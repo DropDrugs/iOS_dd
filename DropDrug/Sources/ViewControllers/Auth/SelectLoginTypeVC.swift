@@ -182,6 +182,12 @@ class SelectLoginTypeVC : UIViewController {
         present(mainVC, animated: true, completion: nil)
     }
     
+    func goToHomeVC() {
+        let mainVC = MainTabBarController()
+        mainVC.modalPresentationStyle = .fullScreen
+        present(mainVC, animated: true, completion: nil)
+    }
+    
     private func handleAppleLoginSuccess() {
         let mainVC = EnterNickNameVC()
         mainVC.modalPresentationStyle = .fullScreen
@@ -236,9 +242,13 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                         print("authCode 발급 실패")
                         return }
                     guard let data = setupAppleDTO(identityTokenString, authCode) else { return }
-                    callAppleLoginAPI(param: data) { isSuccess in
+                    callAppleLoginAPI(param: data) { isSuccess, isNewUser in
                         if isSuccess {
-                            self.handleAppleLoginSuccess()
+                            if isNewUser {
+                                self.handleAppleLoginSuccess()
+                            } else {
+                                self.goToHomeVC()
+                            }
                         } else {
                             print("애플 로그인 실패")
                         }
@@ -251,9 +261,13 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                         return
                     }
                     guard let data = setupAppleDTO(idTokenString, authCode) else { return }
-                    callAppleLoginAPI(param: data) { isSuccess in
+                    callAppleLoginAPI(param: data) { isSuccess, isNewUser in
                         if isSuccess {
-                            self.handleAppleLoginSuccess()
+                            if isNewUser {
+                                self.handleAppleLoginSuccess()
+                            } else {
+                                self.goToHomeVC()
+                            }
                         } else {
                             print("애플 로그인 실패")
                         }

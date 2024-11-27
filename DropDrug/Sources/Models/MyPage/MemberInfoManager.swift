@@ -6,7 +6,7 @@ import UIKit
 import SwiftyToaster
 
 extension AccountSettingsVC {
-    func fetchMemberInfo(completion: @escaping (Bool) -> Void) {
+    func fetchMemberInfo(completion: @escaping (Bool, Bool) -> Void) {
         provider.request(.fetchMemberInfo) { result in
             switch result {
             case .success(let response):
@@ -15,16 +15,21 @@ extension AccountSettingsVC {
                     self.nickname = data.nickname ?? ""
                     self.userId = data.email ?? "애플 로그인 상태입니다."
                     let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
-                    completion(true)
+                    if data.email == nil {
+                        // 애플로그인
+                        completion(true, true)
+                        return
+                    }
+                    completion(true, false)
                 } catch {
                     Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
-                    completion(false)
+                    completion(false, false)
                 }
             case .failure(let error):
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
-                completion(false)
+                completion(false, false)
             }
         }
     }
