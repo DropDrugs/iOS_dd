@@ -14,7 +14,9 @@ let project = Project(
                     "UILaunchStoryboardName": "",
                     "CFBundleDisplayName" : "드롭드락",
                     "CFBundleShortVersionString" : "1.0",
-                    "CFBundleVersion" : "1",
+                    "UIUserInterfaceStyle" : "Light",
+                    "CFBundleDevelopmentRegion" : "ko_KR",
+                    "CFBundleVersion" : "2",
                     "CFBundleIcons": [
                                 "CFBundlePrimaryIcon": [
                                     "CFBundleIconFiles": ["AppIcon"],
