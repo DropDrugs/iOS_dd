@@ -74,6 +74,7 @@ extension SelectLoginTypeVC {
             switch result {
             case .success(let response):
                 do {
+                    print("로그인 성공: \(response)")
                     let data = try response.map(TokenDto.self)
                     SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
@@ -84,6 +85,7 @@ extension SelectLoginTypeVC {
                 }
             case .failure(let error) :
                 if let response = error.response {
+                    print("로그인 실패: \(error.localizedDescription)")
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)

@@ -146,7 +146,6 @@ class SelectLoginTypeVC : UIViewController {
             // Kakao 로그인 실행
             self.kakaoAuthVM.KakaoLogin { success in
                 if success {
-                    // Kakao 사용자 정보 가져오기
                     UserApi.shared.me { (user, error) in
                         if let error = error {
                             print("에러 발생: \(error.localizedDescription)")
@@ -160,6 +159,7 @@ class SelectLoginTypeVC : UIViewController {
                         if let loginRequest = self.setupKakaoLoginDTO() {
                             self.callKakaoLoginAPI(loginRequest) { isSuccess in
                                 if isSuccess {
+                                    print("카카오 로그인 성공 - 메인 화면으로 이동 준비")
                                     self.handleKakaoLoginSuccess()
                                 } else {
                                     print("카카오 로그인 실패")
@@ -176,10 +176,12 @@ class SelectLoginTypeVC : UIViewController {
         }
     }
     
-    private func handleKakaoLoginSuccess() {
-        let mainVC = MainTabBarController()
-        mainVC.modalPresentationStyle = .fullScreen
-        present(mainVC, animated: true, completion: nil)
+    func handleKakaoLoginSuccess() {
+        DispatchQueue.main.async {
+            let mainVC = MainTabBarController()
+            mainVC.modalPresentationStyle = .fullScreen
+            self.present(mainVC, animated: true, completion: nil)
+        }
     }
     
     private func handleAppleLoginSuccess() {
