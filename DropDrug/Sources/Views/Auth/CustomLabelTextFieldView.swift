@@ -20,6 +20,7 @@ class CustomLabelTextFieldView: UIView {
         textField.borderStyle = .none
         textField.font = UIFont.systemFont(ofSize: 16)
         textField.backgroundColor = .white
+        textField
         
         textField.layer.borderColor = Constants.Colors.gray300?.cgColor
         textField.layer.borderWidth = 1.0  // 원하는 테두리 두께로 설정

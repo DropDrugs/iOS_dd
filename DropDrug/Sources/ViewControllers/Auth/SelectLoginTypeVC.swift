@@ -10,6 +10,7 @@ import KakaoSDKUser
 
 import KeychainSwift
 import Moya
+import SwiftyToaster
 
 class SelectLoginTypeVC : UIViewController {
     
@@ -181,6 +182,12 @@ class SelectLoginTypeVC : UIViewController {
         present(mainVC, animated: true, completion: nil)
     }
     
+    private func handleAppleLoginSuccess() {
+        let mainVC = EnterNickNameVC()
+        mainVC.modalPresentationStyle = .fullScreen
+        present(mainVC, animated: true, completion: nil)
+    }
+    
     @objc func startTapped() {
         let SignUpVC = SignUpVC()
         SignUpVC.modalPresentationStyle = .fullScreen
@@ -211,32 +218,58 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential :
             let userIdentifier = appleIDCredential.user
-            var authorizationCode : String = ""
+            var authorizationCode : String?
             
             if let authCode = appleIDCredential.authorizationCode,
                let authCodeString = String(data: authCode, encoding: .utf8) {
                 authorizationCode = authCodeString
             } else {
+                authorizationCode = nil
                 print("authcode 발급 실패")
             }
             
             if let identityToken = appleIDCredential.identityToken {
                 if let identityTokenString = String(data: identityToken, encoding: .utf8) {
                     SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
-                    print("idToken: \(identityToken)")
-                    
+                    print("idToken: \(identityTokenString)")
+                    guard let authCode = authorizationCode else {
+                        print("authCode 발급 실패")
+                        return }
+                    guard let data = setupAppleDTO(identityTokenString, authCode) else { return }
+                    callAppleLoginAPI(param: data) { isSuccess in
+                        if isSuccess {
+                            self.handleAppleLoginSuccess()
+                        } else {
+                            print("애플 로그인 실패")
+                        }
+                    }
+                }
+            } else {
+                if let idTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken") {
+                    guard let authCode = authorizationCode else {
+                        print("authCode 발급 실패")
+                        return
+                    }
+                    guard let data = setupAppleDTO(idTokenString, authCode) else { return }
+                    callAppleLoginAPI(param: data) { isSuccess in
+                        if isSuccess {
+                            self.handleAppleLoginSuccess()
+                        } else {
+                            print("애플 로그인 실패")
+                        }
+                    }
                 }
             }
             
         default :
             break
         }
-            
-            if let identityToken = appleIDCredential.identityToken,
-               let identityTokenString = String(data: identityToken, encoding: .utf8),
-               let emailString = email {
-                SelectLoginTypeVC.keychain.set(emailString, forKey: "AppleIDEmail")
-                SelectLoginTypeVC.keychain.set(formattedName, forKey: "AppleIDName")
+//            
+//            if let identityToken = appleIDCredential.identityToken,
+//               let identityTokenString = String(data: identityToken, encoding: .utf8),
+//               let emailString = email {
+//                SelectLoginTypeVC.keychain.set(emailString, forKey: "AppleIDEmail")
+//                SelectLoginTypeVC.keychain.set(formattedName, forKey: "AppleIDName")
 //                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, formattedName, emailString, authorizationCode)!) { isSuccess in
 //                    if isSuccess {
 //                        self.handleKakaoLoginSuccess()
@@ -244,13 +277,13 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
 //                        print("애플 로그인(바로 로그인) 실패")
 //                    }
 //                }
-            } else {
-                guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken"),
-                      let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
-                      let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
-
-                
-            }
+//            } else {
+//                guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken"),
+//                      let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
+//                      let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
+//
+//                
+//            }
         
     }
 }
