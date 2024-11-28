@@ -47,6 +47,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         v.healthCenterFltBtn.addTarget(self, action: #selector(healtCenterTapped), for: .touchUpInside)
         v.etcFltBtn.addTarget(self, action: #selector(etcTapped), for: .touchUpInside)
         v.resetLocaBtn.addTarget(self, action: #selector(doReSearch), for: .touchUpInside)
+        v.resetLocaBtn.addTarget(self, action: #selector(didTapFloatingBtn), for: .touchUpInside)
         return v
     }()
     
@@ -139,8 +140,39 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         mapView.etcFltBtn.isSelected = false
         mapView.etcFltBtn.setImage(UIImage(named: "etcBtnNSelect")?.withRenderingMode(.alwaysOriginal), for: .normal)
         
-        fetchPlaces()
+        let cameraPosition = mapView.backgroundMap.mapView.cameraPosition
+        let latitude = cameraPosition.target.lat
+        let longitude = cameraPosition.target.lng
+        
+        let testLocation = CLLocation(latitude: latitude, longitude: longitude) // 서울 좌표
+        reverseGeocodeAndProcess(location: testLocation) { result in
+            switch result {
+            case .success(let (siDo, siGu)):
+                self.siDo = siDo 
+                self.siGu = siGu
+                self.fetchPlaces(addr1: siDo, addr2: siGu)
+            case .failure(let error):
+                print("에러 발생: \(error.localizedDescription)")
+            }
+        }
     }
+    
+    @objc private func didTapFloatingBtn() {
+        // 눌렸을 때 애니메이션
+        let originalColor = mapView.resetLocaBtn.backgroundColor
+        let highlightColor = Constants.Colors.gray700?.withAlphaComponent(0.7) // 원하는 강조 색상
+        
+        // 버튼 색상을 변경하는 애니메이션
+        UIView.animate(withDuration: 0.1, animations: {
+            self.mapView.resetLocaBtn.backgroundColor = highlightColor // 색상 변경
+        }) { _ in
+            // 애니메이션이 끝난 후 원래 색상으로 돌아오기
+            UIView.animate(withDuration: 0.1) {
+                self.mapView.resetLocaBtn.backgroundColor = originalColor // 원래 색상으로 되돌리기
+            }
+        }
+    }
+
 
     
     //MARK: - 플로팅 버튼 이벤트 설정
@@ -374,41 +406,63 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         lng = currentLocation.coordinate.longitude
         print("현재 위치: \(lat), \(lng)")
         
-        geocoder.reverseGeocodeLocation(currentLocation) { placemarks, error in
-            guard error == nil, let placemark = placemarks?.first else {
+        reverseGeocodeAndProcess(location: currentLocation) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let (siDo, siGu)):
+                self.siDo = siDo
+                self.siGu = siGu
+                
+                if !self.hasFetchedInitialPlaces {
+                    self.hasFetchedInitialPlaces = true
+                    self.fetchPlaces(addr1: siDo, addr2: siGu)
+                }
+            case .failure(let error):
+                print("Reverse geocoding failed: \(error.localizedDescription)")
+            }
+        }
+                
+        // 현재 위치를 지도 중심으로 설정
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
+        cameraUpdate.animation = .easeIn
+        mapView.backgroundMap.mapView.moveCamera(cameraUpdate)
+    }
+    
+    func reverseGeocodeAndProcess(location: CLLocation, completion: @escaping (Result<(String, String), Error>) -> Void) {
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            if let error = error {
+                completion(.failure(error))
                 return
             }
+            
+            guard let placemark = placemarks?.first else {
+                completion(.failure(NSError(domain: "ReverseGeocode", code: -1, userInfo: [NSLocalizedDescriptionKey: "No placemarks found"])))
+                return
+            }
+            
             var strAddr = ""
             var address = ""
+            
             for i in self.processString(placemark.description) {
                 if i.contains("대한민국") {
                     address = i
                 }
             }
+            
             for i in address.components(separatedBy: " ") {
                 if !i.contains("대한민국") {
                     strAddr += " \(i)"
                 }
             }
-            let components = strAddr.split(separator: " ")
             
-            if let first = components.first, let second = components.dropFirst().first {
-                self.siDo = String(first)
-                self.siGu = String(second)
-                
-                if !self.hasFetchedInitialPlaces {
-                    self.hasFetchedInitialPlaces = true
-                    self.fetchPlaces()
-                }
+            let components = strAddr.split(separator: " ")
+            if let siDo = components.first, let siGu = components.dropFirst().first {
+                completion(.success((String(siDo), String(siGu))))
             } else {
-                print("값이 충분하지 않습니다.")
+                completion(.failure(NSError(domain: "ReverseGeocode", code: -1, userInfo: [NSLocalizedDescriptionKey: "Insufficient address components"])))
             }
         }
-        
-        // 현재 위치를 지도 중심으로 설정
-        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
-        cameraUpdate.animation = .easeIn
-        mapView.backgroundMap.mapView.moveCamera(cameraUpdate)
     }
     
     func processString(_ input: String) -> [String] {
@@ -543,11 +597,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
         }
     }
     
-    private func fetchPlaces() {
+    private func fetchPlaces(addr1: String, addr2: String) {
         groupedMarkers = ["동사무소": [], "우체국": [], "약국": [], "보건소": [], "기타": []]
         let types = ["동사무소", "우체국", "약국", "보건소", "기타"]
         for type in types {
-            getPlaceInfo(addrLvl1: siDo, addrLvl2: siGu, type: type) { [weak self] isSuccess in
+            getPlaceInfo(addrLvl1: addr1, addrLvl2: addr2, type: type) { [weak self] isSuccess in
                 if isSuccess {
                     DispatchQueue.main.async {
                         print("\(type) 정보 호출 성공")
