@@ -14,7 +14,6 @@ extension AccountSettingsVC {
                     let data = try response.map(MemberInfo.self)
                     self.nickname = data.nickname ?? ""
                     self.userId = data.email ?? "애플 로그인 상태입니다."
-                    let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
                     if data.email == nil {
                         // 애플로그인
                         completion(true, true)
