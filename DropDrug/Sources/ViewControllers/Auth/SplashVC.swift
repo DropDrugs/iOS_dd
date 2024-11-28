@@ -12,6 +12,7 @@ import AdSupport
 class SplashVC : UIViewController {
     
     let tokenPlugin = BearerTokenPlugin()
+    public static var isTrackingOn : Bool?
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -67,9 +68,11 @@ class SplashVC : UIViewController {
         ATTrackingManager.requestTrackingAuthorization { status in
             switch status {
             case .authorized:
-                print("Tracking 권한 허용")
+//                print("Tracking 권한 허용")
+                SplashVC.isTrackingOn = true
             case .denied:
-                print("Tracking 권한 거부")
+//                print("Tracking 권한 거부")
+                SplashVC.isTrackingOn = false
             case .notDetermined:
                 print("Tracking 권한 요청 전 상태")
             case .restricted:
