@@ -106,7 +106,7 @@ class KakaoAuthVM: ObservableObject {
     func kakaoLogout() {
         Task {
             if await handleKakaoLogOut() {
-                clearToken() // 로그아웃 시 토큰 삭제
+//                clearToken() // 로그아웃 시 토큰 삭제
                 self.isLoggedIn = false
             }
         }
@@ -201,8 +201,8 @@ class KakaoAuthVM: ObservableObject {
 //    }
     
     // 저장된 토큰을 삭제
-    private func clearToken() {
-        SelectLoginTypeVC.keychain.clear()
-        oauthToken = nil
-    }
+//    private func clearToken() {
+//        SelectLoginTypeVC.keychain.clear()
+//        oauthToken = nil
+//    }
 }

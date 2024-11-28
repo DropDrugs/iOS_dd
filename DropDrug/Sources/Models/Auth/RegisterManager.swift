@@ -63,7 +63,10 @@ extension LoginVC {
 
 extension SelectLoginTypeVC {
     func setupKakaoLoginDTO(_ emailString: String, _ nameString: String) -> OAuthKakaoLoginRequest? {
-        guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
+        guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else {
+            print("fcmToken이 없습니다.")
+            return nil
+        }
         return OAuthKakaoLoginRequest(email: emailString, fcmToken: fcmToken, name: nameString)
     }
 

@@ -195,16 +195,15 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 
                 if self.hasKakaoTokens {
                     self.kakaoAuthVM.kakaoLogout()
-                    SelectLoginTypeVC.keychain.delete("serverAccessToken")
-                    SelectLoginTypeVC.keychain.delete("serverRefreshToken")
-                    SelectLoginTypeVC.keychain.delete("KakaoIdToken")
-                    SelectLoginTypeVC.keychain.delete("KakaoTokenExpiredAt")
-                    SelectLoginTypeVC.keychain.delete("KakaoAccessToken")
-                    SelectLoginTypeVC.keychain.delete("KakaoRefreshToken")
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                        SelectLoginTypeVC.keychain.delete(keyName)
+                    }
+                    Toaster.shared.makeToast("로그아웃")
                     self.showSplashScreen()
                 } else {
-                    SelectLoginTypeVC.keychain.delete("serverAccessToken")
-                    SelectLoginTypeVC.keychain.delete("serverRefreshToken")
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                        SelectLoginTypeVC.keychain.delete(keyName)
+                    }
                     Toaster.shared.makeToast("로그아웃")
                     self.showSplashScreen()
                 }
@@ -231,20 +230,22 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                     self.kakaoAuthVM.unlinkKakaoAccount { success in
                             if success {
                                 Toaster.shared.makeToast("계정 삭제 완료")
-                                SelectLoginTypeVC.keychain.clear()
+                                ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                                    SelectLoginTypeVC.keychain.delete(keyName)
+                                }
                                 self.showSplashScreen()
                                 completion(true)
                             } else {
-                                print("카카오 계정 연동 해제 실패")
-                                Toaster.shared.makeToast("계정 삭제 실패")
-                                SelectLoginTypeVC.keychain.clear()
-                                self.goToSelectLoginVC()
+                                Toaster.shared.makeToast("계정 삭제 실패 - 다시 시도해 주세요")
+//                                self.goToSelectLoginVC()
                                 completion(false)
                             }
                         }
                 } else {
                     // 카카오 연동 해제 없이 일반 회원 탈퇴만 처리
-                    SelectLoginTypeVC.keychain.clear()
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                        SelectLoginTypeVC.keychain.delete(keyName)
+                    }
                     self.showSplashScreen()
                     completion(true)
                 }
