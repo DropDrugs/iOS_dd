@@ -71,7 +71,7 @@ class CircularProgressBar: UIView {
                 addSubview(progressText!)
             }
             progressText?.font = UIFont.ptdBoldFont(ofSize: labelSize / 4)
-            progressText?.text = "0%"
+//            progressText?.text = "0%"
             progressText?.center = center
         }
     }
@@ -95,15 +95,38 @@ class CircularProgressBar: UIView {
         return shapeLayer
     }
     
+//    public func updateProgress(to value: CGFloat) {
+//        let clampedValue = min(max(value, 0.0), 1.0) // 0.0 ~ 1.0로 값 제한
+//        
+//        let animation = CABasicAnimation(keyPath: "strokeEnd")
+//        animation.fromValue = subLevelProgressLayer.strokeEnd
+//        animation.toValue = clampedValue
+//        animation.duration = 0.3
+//        subLevelProgressLayer.add(animation, forKey: "progress")
+//        subLevelProgressLayer.strokeEnd = clampedValue
+//        
+//        // Update progress text if enabled
+//        if showProgressText {
+//            let percentage = Int(clampedValue * 100)
+//            progressText?.text = "\(percentage)%"
+//        }
+//    }
     public func updateProgress(to value: CGFloat) {
         let clampedValue = min(max(value, 0.0), 1.0) // 0.0 ~ 1.0로 값 제한
         
+        // 애니메이션 트랜잭션으로 동기화
+        CATransaction.begin()
+        CATransaction.setDisableActions(true) // 자동 애니메이션 방지
+        subLevelProgressLayer.strokeEnd = clampedValue // 실제 레이어 값 설정
+        CATransaction.commit()
+        
+        // 애니메이션 추가
         let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.fromValue = subLevelProgressLayer.strokeEnd
+        animation.fromValue = subLevelProgressLayer.presentation()?.strokeEnd ?? subLevelProgressLayer.strokeEnd
         animation.toValue = clampedValue
+//        print("\(clampedValue) 이게 값으로 들어가는 것 같아요")
         animation.duration = 0.3
         subLevelProgressLayer.add(animation, forKey: "progress")
-        subLevelProgressLayer.strokeEnd = clampedValue
         
         // Update progress text if enabled
         if showProgressText {
