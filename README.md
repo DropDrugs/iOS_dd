@@ -14,11 +14,13 @@
 - tuist graph
 
 ### 브랜치 구조
-- main : release 분기마다 merge
-- Dev
-  - DY
-  - HZ
-  - YS
+```shell
+├── main
+├── Dev ────── Release
+│    ├── DY        └── version 1.0.0
+│    ├── YS
+│    └── HZ
+```
 
 ## 폴더링
 ```shell
