@@ -26,7 +26,7 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupLayout() {
-        contentView.backgroundColor = .black
+        contentView.backgroundColor = Constants.Colors.black
         
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -35,7 +35,7 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
             make.edges.equalToSuperview()
         }
         
-        textOverlayView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        textOverlayView.backgroundColor = Constants.Colors.black?.withAlphaComponent(0.7)
         textOverlayView.layer.cornerRadius = 10
         textOverlayView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
         contentView.addSubview(textOverlayView)

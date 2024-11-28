@@ -73,6 +73,7 @@ struct Constants {
     
     struct Colors {
         static let black = UIColor(named: "black")
+        static let white = UIColor(named: "white")
         static let coralpink = UIColor(named: "coralpink")
         static let gray0 = UIColor(named: "gray0")
         static let gray100 = UIColor(named: "gray100")

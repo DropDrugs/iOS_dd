@@ -19,7 +19,7 @@ class ProfileView: UIView {
         let label = UILabel()
         label.text = ""
         label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        label.textColor = UIColor.label
+        label.textColor = Constants.Colors.gray900
         return label
     }()
     
@@ -27,7 +27,7 @@ class ProfileView: UIView {
         let label = UILabel()
         label.text = ""
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = UIColor.systemGray
+        label.textColor = Constants.Colors.gray500
         return label
     }()
     

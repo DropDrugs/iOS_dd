@@ -10,7 +10,7 @@ class RewardView: UIView {
         let label = UILabel()
         label.text = "리워드"
         label.font = UIFont.ptdSemiBoldFont(ofSize: 17)
-        label.textColor = Constants.Colors.gray800
+        label.textColor = UIColor(hex: "#495153")
         return label
     }()
     
@@ -18,14 +18,14 @@ class RewardView: UIView {
         let label = UILabel()
         label.text = "0 P"
         label.font = UIFont.ptdSemiBoldFont(ofSize: 17)
-        label.textColor = .black
+        label.textColor = UIColor(hex: "#495153")
         return label
     }()
     
     private let chevronImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.right")
-        imageView.tintColor = Constants.Colors.gray700
+        imageView.tintColor = UIColor(hex: "#6F7B7F")
         return imageView
     }()
     

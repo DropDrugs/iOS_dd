@@ -3,6 +3,7 @@
 import Foundation
 import UIKit
 import NMapsMap
+import KakaoSDKAuth
  
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -17,5 +18,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                _ = AuthController.handleOpenUrl(url: url)
+            }
+        }
     }
 }

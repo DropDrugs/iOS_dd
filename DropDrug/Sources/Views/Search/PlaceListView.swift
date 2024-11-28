@@ -6,7 +6,7 @@ class PlaceListView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = .systemBackground
         self.addComponents()
         self.constraints()
     }
@@ -17,7 +17,7 @@ class PlaceListView: UIView {
     
     public lazy var topView: UIView = {
         let v = UIView()
-        v.backgroundColor = .white
+        v.backgroundColor = .systemBackground
         return v
     }()
     

@@ -22,7 +22,7 @@ class RewardVC : UIViewController {
     
     private let headerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         
         let dateLabel = UILabel()
         dateLabel.text = "일시"
@@ -84,7 +84,7 @@ class RewardVC : UIViewController {
     }
     
     func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         [rewardView, headerView, rewardTableView].forEach {
             view.addSubview($0)
         }

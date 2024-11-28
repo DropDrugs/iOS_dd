@@ -29,7 +29,7 @@ class CharacterSettingsVC: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
         collectionView.register(SeoulCollectionViewCell.self, forCellWithReuseIdentifier: "SeoulCollectionViewCell")
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.tag = 0
@@ -50,7 +50,7 @@ class CharacterSettingsVC: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
         collectionView.register(SeoulCollectionViewCell.self, forCellWithReuseIdentifier: "SeoulCollectionViewCell")
         collectionView.tag = 1
         return collectionView
@@ -58,13 +58,13 @@ class CharacterSettingsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         navigationController?.navigationBar.isTranslucent = false
         
         let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground() // 불투명한 배경 설정
-            appearance.backgroundColor = .white        // 원하는 배경색 설정
+            appearance.backgroundColor = .systemBackground       // 원하는 배경색 설정
             appearance.shadowImage = UIImage()         // 구분선 이미지 제거
             appearance.shadowColor = nil
         

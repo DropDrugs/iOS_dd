@@ -75,7 +75,7 @@ class InfoMainViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = Constants.Colors.white
         collectionView.isScrollEnabled = false
         collectionView.register(SeoulCollectionViewCell.self, forCellWithReuseIdentifier: "SeoulCollectionViewCell")
         collectionView.tag = 1
@@ -87,7 +87,7 @@ class InfoMainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         setNavigationBar()
         setCommonCollectionView()
         setCommonCollectionViewLayout()
@@ -115,7 +115,7 @@ class InfoMainViewController: UIViewController {
         commonPageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: commonLayout)
         commonPageCollectionView.dataSource = self
         commonPageCollectionView.delegate = self
-        commonPageCollectionView.backgroundColor = .white
+        commonPageCollectionView.backgroundColor = Constants.Colors.white
         commonPageCollectionView.register(KindCollectionViewCell.self, forCellWithReuseIdentifier: "KindCollectionViewCell")
         commonPageCollectionView.tag = 0
         commonPageCollectionView.showsHorizontalScrollIndicator = false
@@ -226,7 +226,8 @@ extension InfoMainViewController: UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView.tag == 0 {
-            return CGSize(width: 160, height: 160) // 아이템 크기 설정
+            let cardSize = superViewWidth * 0.4
+            return CGSize(width: cardSize, height: cardSize) // 아이템 크기 설정
         }
         else if collectionView.tag == 1 {
             let screenWidth = UIScreen.main.bounds.width

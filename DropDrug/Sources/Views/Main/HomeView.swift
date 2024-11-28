@@ -6,11 +6,13 @@ import MapKit
 import CoreLocation
 
 class HomeView: UIView {
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = Constants.Colors.lightblue
-        self.addComponenets()
+        self.setUpUI()
+        self.setUpConstaraints()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -24,7 +26,7 @@ class HomeView: UIView {
     
     public lazy var floatingBtn: UIButton = {
         let fb = UIButton()
-        fb.backgroundColor = Constants.Colors.gray900
+        fb.backgroundColor = UIColor(hex: "#212526")
         fb.layer.cornerRadius = 20
         fb.layer.shadowColor = UIColor.black.cgColor
         fb.layer.shadowOpacity = 0.3
@@ -36,7 +38,7 @@ class HomeView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .medium) // 원하는 크기와 굵기
         configuration.image = UIImage(systemName: "plus", withConfiguration: imageConfig)?
             .withRenderingMode(.alwaysOriginal)
-            .withTintColor(.white)
+            .withTintColor(UIColor.white)
         configuration.imagePlacement = .leading
         configuration.imagePadding = 8
 
@@ -62,7 +64,7 @@ class HomeView: UIView {
     
     public lazy var locationBackground: UIView = {
         let v = UIView()
-        v.backgroundColor = .white
+        v.backgroundColor = .systemBackground
         v.clipsToBounds = true
         v.layer.cornerRadius = 10
         v.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
@@ -87,7 +89,7 @@ class HomeView: UIView {
     
     public lazy var starter: UIButton = {
         let b = UIButton()
-        b.backgroundColor = .white
+        b.backgroundColor = .systemBackground
         b.layer.cornerRadius = 20
         let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
         attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
@@ -99,7 +101,7 @@ class HomeView: UIView {
     
     public lazy var point: UIButton = {
         let b = UIButton()
-        b.backgroundColor = .white
+        b.backgroundColor = .systemBackground
         b.layer.cornerRadius = 20
         b.setTitle("\(points) P", for: .normal)
         b.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 14)
@@ -174,21 +176,17 @@ class HomeView: UIView {
         return i
     }()
 
-    private func addComponenets() {
-        addSubview(appTitle)
-        addSubview(alarmBtn)
-        addSubview(starter)
-        addSubview(point)
-        addSubview(locationBackground)
-        addSubview(floatingBtn)
-        addSubview(characterView)
+    func setUpUI() {
         characterView.addSubview(character)
-        locationBackground.addSubview(mapView)
-        locationBackground.addSubview(location)
-        locationBackground.addSubview(resetBtn)
-        locationBackground.addSubview(presLoca)
-        locationBackground.addSubview(goToSearchPlaceBtn)
-        
+        [appTitle, alarmBtn, starter, point, locationBackground, floatingBtn, characterView].forEach {
+            addSubview($0)
+        }
+        [mapView, location, resetBtn, presLoca, goToSearchPlaceBtn].forEach {
+            locationBackground.addSubview($0)
+        }
+    }
+    
+    private func setUpConstaraints() {
         appTitle.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(20)
             make.leading.equalTo(safeAreaLayoutGuide.snp.leading).offset(20)
@@ -227,7 +225,7 @@ class HomeView: UIView {
         }
         
         mapView.snp.makeConstraints { make in
-            make.top.leading.bottom.equalToSuperview().inset(20)
+            make.top.leading.bottom.equalTo(locationBackground).inset(20)
             make.width.equalTo(mapView.snp.height)
         }
         
@@ -255,18 +253,19 @@ class HomeView: UIView {
         characterView.snp.makeConstraints { make in
             make.top.equalTo(point.snp.bottom)
             make.bottom.equalTo(floatingBtn.snp.top)
-            make.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            make.leading.trailing.equalTo(safeAreaLayoutGuide)
         }
         
         character.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
+            make.centerX.centerY.equalTo(characterView)
+            make.height.equalTo(characterView.snp.height).multipliedBy(0.7)
         }
     }
     
     public func updateStarter() {
         let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
         attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
-        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
         starter.setAttributedTitle(attributedString, for: .normal)
     }
     

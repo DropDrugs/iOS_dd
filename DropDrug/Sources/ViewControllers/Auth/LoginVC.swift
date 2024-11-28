@@ -9,7 +9,13 @@ class LoginVC : UIViewController {
 
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     
-    private lazy var emailField = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")
+    var textFields: [UITextField] = []
+    
+    private lazy var emailField: CustomLabelTextFieldView = {
+        let field = CustomLabelTextFieldView(textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "아이디 혹은 비밀번호를 확인해 주세요")
+        field.textField.keyboardType = .emailAddress
+        return field
+    }()
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: " ")
         field.textField.isSecureTextEntry = true
@@ -40,7 +46,7 @@ class LoginVC : UIViewController {
         button.setTitle("로그인", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 16)
-        button.backgroundColor = UIColor.systemGray
+        button.backgroundColor = Constants.Colors.gray600
         button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         return button
@@ -53,14 +59,20 @@ class LoginVC : UIViewController {
         setupConstraints()
         setupActions()
         validateInputs()
+        
+        textFields = [emailField.textField, passwordField.textField]
+        
+        for textField in textFields {
+            textField.delegate = self
         }
+    }
     
     // MARK: - Setup Methods
     private func setupView() {
         [backButton, titleLabel, emailField, passwordField, emailSaveCheckBox, loginButton].forEach {
             view.addSubview($0)
         }
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
     }
     
     private func setupConstraints() {
@@ -157,8 +169,7 @@ class LoginVC : UIViewController {
     @objc func checkFormValidity() {
         let email = emailField.textField.text ?? ""
         let password = passwordField.textField.text ?? ""
-//        isFormValid = (ValidationUtility.isValidEmail(email)) && (ValidationUtility.isValidPassword(password))
-        isFormValid = !email.isEmpty && !password.isEmpty
+        isFormValid = (ValidationUtility.isValidEmail(email)) && (ValidationUtility.isValidPassword(password))
         validateInputs()
     }
     
@@ -166,5 +177,16 @@ class LoginVC : UIViewController {
         isValid = isFormValid
         loginButton.isEnabled = isValid
         loginButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
+    }
+}
+
+extension LoginVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+            textFields[index + 1].becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
     }
 }

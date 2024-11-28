@@ -3,6 +3,7 @@
 import Foundation
 import UIKit
 import KakaoSDKCommon
+import KakaoSDKAuth
 import AuthenticationServices
 
 import FirebaseCore
@@ -28,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let kakaoAPIkey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_NATIVE_APP_KEY") as? String {
             KakaoSDK.initSDK(appKey: "\(kakaoAPIkey)")
         }
+    
         FirebaseApp.configure()
         if FirebaseApp.app() == nil {
             print("FirebaseApp is not initialized. Configuring now...")
@@ -55,24 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
         
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        appleIDProvider.getCredentialState(forUserID: "저장해둔유저아이디") { (credentialState, error) in
-            switch credentialState {
-            case .authorized:
-                print("authorized")
-                // The Apple ID credential is valid.
-            case .revoked:
-                print("revoked")
-            case .notFound:
-                // The Apple ID credential is either revoked or was not found, so show the sign-in UI.
-                print("notFound")
-            default:
-                break
-            }
-        }
-
-//        checkAuthenticationStatus()
-        
         return true
     }
     
@@ -84,6 +68,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
     }
+    
+//    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+//        if (AuthApi.isKakaoTalkLoginUrl(url)) {
+//            return AuthController.handleOpenUrl(url: url)
+//        }
+//        return false
+//    }
     
 //    private func checkAuthenticationStatus() {
 //        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken"),
