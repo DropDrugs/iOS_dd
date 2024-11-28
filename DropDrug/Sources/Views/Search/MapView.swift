@@ -57,6 +57,7 @@ class MapView: UIView {
         let m = NMFNaverMapView()
         m.showLocationButton = true
         m.showZoomControls = true
+        m.mapView.positionMode = .disabled
         return m
     }()
     
