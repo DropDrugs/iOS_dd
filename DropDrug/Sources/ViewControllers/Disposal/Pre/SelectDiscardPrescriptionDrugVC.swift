@@ -5,12 +5,13 @@ import SnapKit
 import Moya
 import SwiftyToaster
 
-class DiscardPrescriptionDrugVC: UIViewController {
+class SelectDiscardPrescriptionDrugVC: UIViewController {
     let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    public static var targetDrugId : Int?
     
     // MARK: - UI Elements
     private lazy var backButton: CustomBackButton = {
-        let button = CustomBackButton(title: "  의약품 삭제하기")
+        let button = CustomBackButton(title: "  내 처방약 폐기하기")
         button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         return button
     }()
@@ -21,13 +22,13 @@ class DiscardPrescriptionDrugVC: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .none
-        tableView.allowsMultipleSelection = true
+        tableView.allowsMultipleSelection = false
         return tableView
     }()
     
     private lazy var completeButton: UIButton = {
         let button = UIButton()
-        button.setTitle("삭제하기", for: .normal)
+        button.setTitle("폐기하기", for: .normal)
         button.backgroundColor = Constants.Colors.skyblue
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 25
@@ -38,7 +39,7 @@ class DiscardPrescriptionDrugVC: UIViewController {
     
     // MARK: - Data
     var drugList : [DrugResponse] = []
-    var selectedIndexPaths: Set<IndexPath> = []
+    var selectedIndexPath: IndexPath?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -54,8 +55,6 @@ class DiscardPrescriptionDrugVC: UIViewController {
         getDrugsList { isSuccess in
             if isSuccess {
                 self.tableView.reloadData()
-            } else {
-//                print("약 목록 리스트 호출 실패")
             }
         }
     }
@@ -87,18 +86,13 @@ class DiscardPrescriptionDrugVC: UIViewController {
     }
     
     @objc private func didTapCompleteButton() {
-        var drugids : [Int] = []
-        if selectedIndexPaths.isEmpty {
+        if selectedIndexPath == nil || SelectDiscardPrescriptionDrugVC.targetDrugId == nil {
             showAlert(title: "오류", message: "삭제할 항목을 선택해주세요.")
             return
         } else {
-            for i in selectedIndexPaths {
-                drugids.append(self.drugList[i.row].id)
-            }
+            let SelectDrugTypeVC = SelectDrugTypeVC()
+            navigationController?.pushViewController(SelectDrugTypeVC, animated: true)
         }
-        
-        // delete
-
     }
     
     private func showAlert(title: String, message: String) {
@@ -109,7 +103,7 @@ class DiscardPrescriptionDrugVC: UIViewController {
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
-extension DiscardPrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate {
+extension SelectDiscardPrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return drugList.count
     }
@@ -121,9 +115,9 @@ extension DiscardPrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate 
         
         let drug = drugList[indexPath.row]
         cell.configure(date: drug.date, duration: "\(drug.count)일치")
-        
+
         // 선택 상태에 따라 체크마크 또는 빈 동그라미 설정
-        if selectedIndexPaths.contains(indexPath) {
+        if selectedIndexPath == indexPath {
             let checkmarkIcon = UIImageView(image: UIImage(systemName: "checkmark.circle.fill"))
             checkmarkIcon.tintColor = Constants.Colors.skyblue
             cell.accessoryView = checkmarkIcon
@@ -137,19 +131,14 @@ extension DiscardPrescriptionDrugVC: UITableViewDataSource, UITableViewDelegate 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if selectedIndexPaths.contains(indexPath) {
-            tableView.deselectRow(at: indexPath, animated: true)
-            selectedIndexPaths.remove(indexPath)
-        } else {
-            selectedIndexPaths.insert(indexPath)
-        }
-        
-        // Reload the specific row to update the checkbox appearance
+        self.selectedIndexPath = indexPath
+        SelectDiscardPrescriptionDrugVC.targetDrugId = self.drugList[indexPath.row].id
         tableView.reloadRows(at: [indexPath], with: .none)
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        selectedIndexPaths.remove(indexPath)
+        selectedIndexPath = nil
+        SelectDiscardPrescriptionDrugVC.targetDrugId = nil
         tableView.reloadRows(at: [indexPath], with: .none)
     }
 }
