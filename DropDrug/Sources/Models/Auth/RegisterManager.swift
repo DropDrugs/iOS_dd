@@ -62,14 +62,12 @@ extension LoginVC {
 }
 
 extension SelectLoginTypeVC {
-    func setupKakaoLoginDTO() -> OAuthSocialLoginRequest? {
+    func setupKakaoLoginDTO(_ emailString: String, _ nameString: String) -> OAuthKakaoLoginRequest? {
         guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
-        guard let accessToken = SelectLoginTypeVC.keychain.get("KakaoAccessToken") else { return nil }
-        guard let idToken = SelectLoginTypeVC.keychain.get("KakaoIdToken") else { return nil }
-        return OAuthSocialLoginRequest(accessToken: accessToken, fcmToken: fcmToken, idToken: idToken)
+        return OAuthKakaoLoginRequest(email: emailString, fcmToken: fcmToken, name: nameString)
     }
-    
-    func callKakaoLoginAPI(_ userParameter: OAuthSocialLoginRequest, completion: @escaping (Bool) -> Void) {
+
+    func callKakaoLoginAPI(_ userParameter: OAuthKakaoLoginRequest, completion: @escaping (Bool) -> Void) {
         provider.request(.postKakaoLogin(param: userParameter)) { result in
             switch result {
             case .success(let response):

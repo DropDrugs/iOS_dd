@@ -20,22 +20,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-            if let url = URLContexts.first?.url {
-                // 카카오톡 인증 URL 처리
-                if AuthApi.isKakaoTalkLoginUrl(url) {
-                    _ = AuthController.handleOpenUrl(url: url)
-
-                    // 로그인 성공 시 메인 화면으로 이동
-                    if let accessToken = SelectLoginTypeVC.keychain.get("ServerAccessToken") {
-                        print("카카오 로그인 성공! Access Token: \(accessToken)")
-                        navigateToMainScreen()
-                    } else {
-                        print("카카오 로그인 실패: 토큰 없음")
-                    }
-                }
-            }
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        if AuthApi.isKakaoTalkLoginUrl(url) {
+            return AuthController.handleOpenUrl(url: url, options: options)
         }
+        return false
+    }
 
     private func navigateToMainScreen() {
         let mainVC = MainTabBarController()

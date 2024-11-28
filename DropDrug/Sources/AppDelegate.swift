@@ -109,13 +109,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("APNs 등록 및 디바이스 토큰 받기 실패:" + error.localizedDescription)
     }
-    
-//    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-//        if AuthApi.isKakaoTalkLoginUrl(url) {
-//            return AuthController.handleOpenUrl(url: url)
-//        }
-//        return false
-//    }
 }
 
 extension AppDelegate: MessagingDelegate {

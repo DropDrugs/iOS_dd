@@ -11,7 +11,7 @@ enum LoginService {
     
     // SNS 로그인
     case postGoogleLogin(param: OAuthSocialLoginRequest)
-    case postKakaoLogin(param: OAuthSocialLoginRequest)
+    case postKakaoLogin(param: OAuthKakaoLoginRequest)
     case postAppleLogin(param: OAuthAppleLoginRequest)
     
     // 기타

@@ -19,6 +19,9 @@ class SelectLoginTypeVC : UIViewController {
     static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, serverRefreshToken, KakaoAccessToken, KakaoRefreshToken, KakaoIdToken, accessTokenExpiresIn
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
+    var userName: String = ""
+    var userEmail: String = ""
+    
     fileprivate var currentNonce: String?
     
     lazy var mainLabel: UILabel = {
@@ -139,42 +142,183 @@ class SelectLoginTypeVC : UIViewController {
         }
     }
 
+//    @objc func kakaoButtonTapped() {
+//        
+//        let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
+//        
+//        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//            guard let self = self else { return }
+//            
+//            // Kakao 로그인 실행
+//            if !hasKakaoTokens { // 저장된 카카오 토큰이 없으면 회원가입
+//                print("3")
+//                self.kakaoAuthVM.KakaoLogin { success in
+//                    if success {
+//                        print("4")
+//                        UserApi.shared.me { (user, error) in
+//                            if let error = error {
+//                                print("에러 발생: \(error.localizedDescription)")
+//                                return
+//                            }
+//                            print("5")
+//                            let userName = user?.kakaoAccount?.profile?.nickname! ?? ""
+//                            let userEmail = user?.kakaoAccount?.email! ?? ""
+//                            print("\(userName)")
+//                            print("\(userEmail)")
+//                            SelectLoginTypeVC.keychain.set(userName, forKey: "userName")
+//                            SelectLoginTypeVC.keychain.set(userEmail, forKey: "userEmail")
+//                            print("6")
+//                            self.sendKakaoSignUpRequest()
+//                        }
+//                        
+//                    } else {
+//                        print("7")
+//                    }
+//                }
+//            } else {
+//                self.kakaoAuthVM.KakaoLogin { success in
+//                    if success {
+//                        self.goToHomeVC()
+//                        print("8")
+//                        Toaster.shared.makeToast("카카오 로그인 성공")
+//                    } else {
+//                        print("9")
+//                        Toaster.shared.makeToast("카카오 로그인 실패")
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+//    @objc func kakaoButtonTapped() {
+//        // 카카오 토큰 존재 여부 확인
+//        let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil ||
+//                             SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil ||
+//                             SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
+//
+//        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//            guard let self = self else { return }
+//
+//            if hasKakaoTokens {
+//                // 기존 가입된 유저인 경우 로그인 처리
+//                self.kakaoAuthVM.KakaoLogin { success in
+//                    if success {
+//                        DispatchQueue.main.async {
+//                            print("기존 유저 로그인 성공")
+//                            self.goToHomeVC()
+//                            Toaster.shared.makeToast("카카오 로그인 성공")
+//                        }
+//                    } else {
+//                        print("기존 유저 로그인 실패")
+//                        Toaster.shared.makeToast("카카오 로그인 실패")
+//                    }
+//                }
+//            } else {
+//                // 신규 유저인 경우 회원가입 처리
+//                self.kakaoAuthVM.KakaoLogin { success in
+//                    if success {
+//                        print("신규 유저 로그인 성공")
+//                        UserApi.shared.me { (user, error) in
+//                            if let error = error {
+//                                print("에러 발생: \(error.localizedDescription)")
+//                                DispatchQueue.main.async {
+//                                    Toaster.shared.makeToast("사용자 정보 가져오기 실패")
+//                                }
+//                                return
+//                            }
+//
+//                            // 사용자 정보 가져오기
+//                            let userName = user?.kakaoAccount?.profile?.nickname ?? ""
+//                            let userEmail = user?.kakaoAccount?.email ?? ""
+//                            print("사용자 이름: \(userName), 이메일: \(userEmail)")
+//
+//                            // 키체인에 사용자 정보 저장
+//                            SelectLoginTypeVC.keychain.set(userName, forKey: "userName")
+//                            SelectLoginTypeVC.keychain.set(userEmail, forKey: "userEmail")
+//
+//                            // 회원가입 요청
+//                            self.sendKakaoSignUpRequest()
+//                        }
+//                    } else {
+//                        print("신규 유저 로그인 실패")
+//                        Toaster.shared.makeToast("카카오 회원가입 실패")
+//                    }
+//                }
+//            }
+//        }
+//    }
     @objc func kakaoButtonTapped() {
+        // 카카오 토큰 존재 여부 확인
+        let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil ||
+                             SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil ||
+                             SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
+
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             
-            // Kakao 로그인 실행
+            // 신규 유저인 경우 회원가입 처리
             self.kakaoAuthVM.KakaoLogin { success in
                 if success {
+                    print("신규 유저 로그인 성공")
                     UserApi.shared.me { (user, error) in
                         if let error = error {
                             print("에러 발생: \(error.localizedDescription)")
+                            DispatchQueue.main.async {
+                                Toaster.shared.makeToast("사용자 정보 가져오기 실패")
+                            }
                             return
                         }
                         
-                        guard let kakaoAccount = user?.kakaoAccount else {
-                            print("사용자 정보 없음")
-                            return
-                        }
-                        if let loginRequest = self.setupKakaoLoginDTO() {
-                            self.callKakaoLoginAPI(loginRequest) { isSuccess in
-                                if isSuccess {
-                                    print("카카오 로그인 성공 - 메인 화면으로 이동 준비")
-                                    self.handleKakaoLoginSuccess()
-                                } else {
-                                    print("카카오 로그인 실패")
-                                }
-                            }
-                        }
+                        // 사용자 정보 가져오기
+                        self.userName = user?.kakaoAccount?.profile?.nickname ?? ""
+                        self.userEmail = user?.kakaoAccount?.email ?? ""
+                        print("사용자 이름: \(self.userName), 이메일: \(self.userEmail)")
+                        
+                        // 회원가입 요청
+                        self.sendKakaoSignUpRequest()
                     }
                 } else {
-                    DispatchQueue.main.async {
-                        print("카카오 로그인 실패")
-                    }
+                    print("신규 유저 로그인 실패")
+                    Toaster.shared.makeToast("카카오 회원가입 실패")
                 }
             }
         }
     }
+    
+    
+    
+    private func sendKakaoSignUpRequest() {
+        // 회원가입 요청 생성
+        guard let kakaoSignUpRequest = self.setupKakaoLoginDTO(self.userEmail, self.userName) else {
+            print("카카오 회원가입 Dto 생성 실패")
+            return
+        }
+
+        // API 호출
+        self.callKakaoLoginAPI(kakaoSignUpRequest) { isSuccess in
+            if isSuccess {
+                self.goToHomeVC()
+                Toaster.shared.makeToast("카카오 회원가입 성공")
+            } else {
+                Toaster.shared.makeToast("카카오 회원가입 실패")
+                print("회원 가입 실패")
+            }
+        }
+    }
+
+//    @objc func signUpButtonTapped() {
+//        if isValid {
+//            let signUpRequest = setupSignUpDTO(emailField.textField.text!, passwordField.textField.text!, name: usernameField.textField.text!)
+//            callSignUpAPI(signUpRequest) { isSuccess in
+//                if isSuccess {
+//                    self.loginButtonTapped()
+//                } else {
+//                    print("회원 가입 실패")
+//                }
+//            }
+//        }
+//    }
+//    
     
     func handleKakaoLoginSuccess() {
         DispatchQueue.main.async {
