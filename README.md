@@ -17,9 +17,9 @@
 ```shell
 ├── main
 ├── Dev ────── Release
-│    ├── DY        └── version 1.0.0
-│    ├── YS
-│    └── HZ
+     ├── DY        └── version 1.0.0
+     ├── YS
+     └── HZ
 ```
 
 ## 폴더링
