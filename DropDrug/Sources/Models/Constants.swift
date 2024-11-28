@@ -15,7 +15,7 @@ struct Constants {
     """
     
     struct NetworkManager {
-        static let baseURL = "https://54.180.45.153:8080/"
+        static let baseURL = "http://54.180.45.153:8080/"
         static let OCRSecretKey = "Uk1PYVR2RFVaYWVHRlpxcWpxRVZkQUl0bHRvTGpCU3Q="
         static let OCRAPIURL = "https://slpfshoip0.apigw.ntruss.com/custom/v1/36244/694e6b5877aed073a41eb1c45d2be8b6126ed5808e1311a2e48e5800ccdd233f"
     }
