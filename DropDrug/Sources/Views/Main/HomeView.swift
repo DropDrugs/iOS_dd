@@ -265,7 +265,7 @@ class HomeView: UIView {
     public func updateStarter() {
         let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
         attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
-        attributedString.addAttributes([.foregroundColor: Constants.Colors.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.black ?? .black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
         starter.setAttributedTitle(attributedString, for: .normal)
     }
     
