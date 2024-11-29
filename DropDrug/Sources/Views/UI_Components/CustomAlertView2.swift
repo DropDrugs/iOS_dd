@@ -3,7 +3,7 @@
 import UIKit
 import SnapKit
 
-class CustomAlertView2: UIView {
+class CustomLongAlertView: UIView {
     var onDismiss: (() -> Void)?
     
     // MARK: - UI Elements
@@ -17,8 +17,8 @@ class CustomAlertView2: UIView {
     
     private let messageTextView: UITextView = {
         let textView = UITextView()
-        textView.font = UIFont.systemFont(ofSize: 16)
-        textView.textAlignment = .center
+        textView.font = UIFont.systemFont(ofSize: 15)
+        textView.textAlignment = .left
         textView.textColor = .gray
         textView.isEditable = false
         textView.isScrollEnabled = true
@@ -32,7 +32,7 @@ class CustomAlertView2: UIView {
         let button = UIButton(type: .system)
         button.setTitle("확인", for: .normal)
         button.setTitleColor(Constants.Colors.skyblue, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         return button
     }()
     
@@ -49,7 +49,9 @@ class CustomAlertView2: UIView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        backgroundColor = Constants.Colors.black?.withAlphaComponent(0.5)
+        backgroundColor = .systemBackground
+        layer.cornerRadius = 12
+        clipsToBounds = true
 
         [titleLabel, messageTextView, confirmButton].forEach{ self.addSubview($0) }
         
@@ -68,7 +70,7 @@ class CustomAlertView2: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
-            make.height.lessThanOrEqualTo(160) // 최대 높이 제한
+            make.height.lessThanOrEqualTo(240) // 최대 높이 제한
         }
         
         confirmButton.snp.makeConstraints { make in

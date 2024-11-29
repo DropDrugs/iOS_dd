@@ -3,18 +3,10 @@
 import UIKit
 import SnapKit
 
-class CustomAlertView: UIView {
+class CustomShortAlertView: UIView {
     var onDismiss: (() -> Void)?
     
     // MARK: - UI Elements
-    private let containerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBackground
-        view.layer.cornerRadius = 12
-        view.clipsToBounds = true
-        return view
-    }()
-    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -40,7 +32,7 @@ class CustomAlertView: UIView {
         let button = UIButton(type: .system)
         button.setTitle("확인", for: .normal)
         button.setTitleColor(Constants.Colors.skyblue, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         return button
     }()
     
@@ -57,49 +49,34 @@ class CustomAlertView: UIView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        backgroundColor = Constants.Colors.black?.withAlphaComponent(0.5)
-        
-        addSubview(containerView)
-        containerView.addSubview(titleLabel)
-        containerView.addSubview(messageTextView)
-        containerView.addSubview(confirmButton)
+        backgroundColor = .systemBackground
+        layer.cornerRadius = 12
+        clipsToBounds = true
+
+        [titleLabel, messageTextView, confirmButton].forEach{ self.addSubview($0) }
         
         setupConstraints()
-        
         confirmButton.addTarget(self, action: #selector(didTapConfirmButton), for: .touchUpInside)
     }
     
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        // containerView 외부는 터치 이벤트를 무시
-        if !containerView.frame.contains(point) {
-            return false
-        }
-        return true
-    }
-    
     private func setupConstraints() {
-        containerView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.equalTo(300)
-        }
-        
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(containerView).offset(24)
-            make.leading.equalTo(containerView).offset(16)
-            make.trailing.equalTo(containerView).offset(-16)
+            make.top.equalToSuperview().offset(24)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
         }
         
         messageTextView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
-            make.leading.equalTo(containerView).offset(16)
-            make.trailing.equalTo(containerView).offset(-16)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
             make.height.lessThanOrEqualTo(160) // 최대 높이 제한
         }
         
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(messageTextView.snp.bottom).offset(24)
-            make.bottom.equalTo(containerView).offset(-16)
-            make.centerX.equalTo(containerView)
+            make.bottom.equalToSuperview().offset(-16)
+            make.centerX.equalToSuperview()
         }
     }
     

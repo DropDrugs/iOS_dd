@@ -168,36 +168,43 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     
     @objc private func confirmSelection() {
         guard let selectedIndexPaths = collectionView.indexPathsForSelectedItems else { return }
-        
+
         let selectedCategories = selectedIndexPaths.map { categories[$0.item] }
-        
         print("선택된 약물:")
         for category in selectedCategories {
             print("ID: \(category.id)")
         }
-        
-        let infoAlertView = CustomAlertView()
-        infoAlertView.configure(title: "폐의약품 분리배출 실천 사진 인증 안내", message: Constants.disposalGuide)
-        view.addSubview(infoAlertView)
-        view.bringSubviewToFront(infoAlertView)
-        
-        infoAlertView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+
+        // TouchBlockView 추가
+        let touchBlockView = TouchBlockView()
+        view.addSubview(touchBlockView)
+        touchBlockView.snp.makeConstraints { make in
+            make.edges.equalToSuperview() // 전체 화면 차지
         }
-        
-        
-        // infoAlertView가 닫히면,
+
+        // CustomAlertView2 추가
+        let infoAlertView = CustomLongAlertView()
+        infoAlertView.configure(title: "폐의약품 분리배출 실천 사진 인증 안내", message: Constants.disposalGuide)
+        view.addSubview(infoAlertView) // 터치 차단 뷰 위에 알림 뷰 추가
+        view.bringSubviewToFront(infoAlertView)
+        infoAlertView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(320)
+        }
+
+        // infoAlertView가 닫히면 TouchBlockView도 제거
         infoAlertView.onDismiss = { [weak self] in
             guard let self = self else { return }
-            
+            touchBlockView.removeFromSuperview()
+
             let alert = UIAlertController(
                 title: "폐기 실천 사진 인증",
                 message: "봉투에 '폐의약품'이라고 표시하였는지 사진을 통해 인증할 수 있습니다.\n 인증하시겠습니까?",
                 preferredStyle: .alert
             )
-            
+
             alert.addAction(UIAlertAction(title: "취소", style: .cancel) { _ in
-                self.postSuccessPoint(data: self.setupData(point: 50, type: "GENERAL_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, _  in
+                self.postSuccessPoint(data: self.setupData(point: 50, type: "GENERAL_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, _ in
                     if isSuccess {
                         print("포인트 적립 성공")
                         self.moveToMainScreen()
@@ -206,14 +213,64 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
                     }
                 }
             })
-            
+
             alert.addAction(UIAlertAction(title: "인증하기", style: .default) { _ in
                 self.presentCamera()
             })
-            
+
             self.present(alert, animated: true, completion: nil)
         }
     }
+    
+//    @objc private func confirmSelection() {
+//        guard let selectedIndexPaths = collectionView.indexPathsForSelectedItems else { return }
+//        
+//        let selectedCategories = selectedIndexPaths.map { categories[$0.item] }
+//        
+//        print("선택된 약물:")
+//        for category in selectedCategories {
+//            print("ID: \(category.id)")
+//        }
+//        
+//        let infoAlertView = CustomAlertView2()
+//        infoAlertView.configure(title: "폐의약품 분리배출 실천 사진 인증 안내", message: Constants.disposalGuide)
+//        view.addSubview(infoAlertView)
+//        view.bringSubviewToFront(infoAlertView)
+//        
+//        infoAlertView.snp.makeConstraints { make in
+//            make.center.equalToSuperview()
+//            make.width.equalTo(300)
+//        }
+//        
+//        
+//        // infoAlertView가 닫히면,
+//        infoAlertView.onDismiss = { [weak self] in
+//            guard let self = self else { return }
+//            
+//            let alert = UIAlertController(
+//                title: "폐기 실천 사진 인증",
+//                message: "봉투에 '폐의약품'이라고 표시하였는지 사진을 통해 인증할 수 있습니다.\n 인증하시겠습니까?",
+//                preferredStyle: .alert
+//            )
+//            
+//            alert.addAction(UIAlertAction(title: "취소", style: .cancel) { _ in
+//                self.postSuccessPoint(data: self.setupData(point: 50, type: "GENERAL_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, _  in
+//                    if isSuccess {
+//                        print("포인트 적립 성공")
+//                        self.moveToMainScreen()
+//                    } else {
+//                        print("포인트 적립 실패")
+//                    }
+//                }
+//            })
+//            
+//            alert.addAction(UIAlertAction(title: "인증하기", style: .default) { _ in
+//                self.presentCamera()
+//            })
+//            
+//            self.present(alert, animated: true, completion: nil)
+//        }
+//    }
     
     private func presentCamera() {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
@@ -290,3 +347,6 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     }
 
 }
+
+
+

@@ -89,7 +89,13 @@ extension NoticesVC :  UITableViewDataSource, UITableViewDelegate {
         let contentString = self.NoticeList[indexPath.row].content
         print(titleString)
         
-        let alertView = CustomAlertView()
+        let touchBlockView = TouchBlockView()
+        view.addSubview(touchBlockView)
+        touchBlockView.snp.makeConstraints { make in
+            make.edges.equalToSuperview() // 전체 화면 차지
+        }
+
+        let alertView = CustomShortAlertView()
         alertView.configure(title: titleString, message: contentString)
         
         // Add to the current view and set constraints
@@ -97,8 +103,15 @@ extension NoticesVC :  UITableViewDataSource, UITableViewDelegate {
         view.bringSubviewToFront(alertView)
         
         alertView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.center.equalToSuperview()
+            make.width.equalTo(240)
         }
+        
+        alertView.onDismiss = {
+            touchBlockView.removeFromSuperview()
+        }
+        
+
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
