@@ -76,7 +76,6 @@ class CertificationSuccessVC: UIViewController {
             self.deleteDrugs(self.setupDeleteDrugDTO([selectPrescriptionId])) { isSuccess in
                 if isSuccess {
                     SelectDiscardPrescriptionDrugVC.targetDrugId = nil
-                    // 이거 타입 추가해달라고 요청드리기!
                     self.postSuccessPoint(data: self.setupData(point: 150, type: "DRUG_PHOTO_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, getBadge  in
                         if isSuccess {
                             if let getBadge = getBadge {
