@@ -137,7 +137,20 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
             if AccountSettingsVC.isApple {
                 print("애플 탈퇴")
-                self.reAuthenticateWithApple()
+                if let authorizationCode = SelectLoginTypeVC.keychain.get("AppleAuthToken") {
+                    print("가입/로그인 시 authCode 이미 발급함")
+                    self.callAppleQuit(authorizationCode) { isSuccess in
+                        if isSuccess {
+                            Toaster.shared.makeToast("계정 삭제 완료")
+                            self.showSplashScreen()
+                        } else {
+                            Toaster.shared.makeToast("계정 삭제 실패 - 다시 시도해주세요")
+                        }
+                    }
+                } else {
+                    print("새로 authCode 발급")
+                    self.reAuthenticateWithApple()
+                }
             } else {
                 print("일반, 카카오 탈퇴")
                 self.callQuit { isSuccess in
@@ -269,7 +282,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
             switch result {
             case .success(let response):
                 if response.statusCode == 200 {
-                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken", "AppleAuthToken"].forEach { keyName in
                         SelectLoginTypeVC.keychain.delete(keyName)
                     }
                     completion(true)

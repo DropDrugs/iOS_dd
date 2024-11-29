@@ -141,7 +141,7 @@ class SelectLoginTypeVC : UIViewController {
             make.leading.trailing.equalToSuperview().inset(20)
         }
     }
-
+    
     @objc func kakaoButtonTapped() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
@@ -232,6 +232,7 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
             
             if let authCode = appleIDCredential.authorizationCode,
                let authCodeString = String(data: authCode, encoding: .utf8) {
+                SelectLoginTypeVC.keychain.set(authCodeString, forKey: "AppleAuthToken")
                 authorizationCode = authCodeString
             } else {
                 authorizationCode = nil
