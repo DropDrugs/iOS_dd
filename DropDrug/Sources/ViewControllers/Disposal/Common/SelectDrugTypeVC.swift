@@ -2,8 +2,11 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    let provider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     public var userPickedImageURL : URL?
     
@@ -194,7 +197,14 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
             )
             
             alert.addAction(UIAlertAction(title: "취소", style: .cancel) { _ in
-                self.moveToMainScreen()
+                self.postSuccessPoint(data: self.setupData(point: 50, type: "GENERAL_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, _  in
+                    if isSuccess {
+                        print("포인트 적립 성공")
+                        self.moveToMainScreen()
+                    } else {
+                        print("포인트 적립 실패")
+                    }
+                }
             })
             
             alert.addAction(UIAlertAction(title: "인증하기", style: .default) { _ in
@@ -278,4 +288,5 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
         loadingVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(loadingVC, animated: true)
     }
+
 }

@@ -98,7 +98,20 @@ class DiscardPrescriptionDrugVC: UIViewController {
         }
         
         // delete
-
+        deleteDrugs(setupDeleteDrugDTO(drugids)) { isSucces in
+            if isSucces {
+                self.selectedIndexPaths.removeAll()
+                self.getDrugsList { isSuccess in
+                    if isSuccess {
+                        self.tableView.reloadData()
+                    } else {
+//                        print("약 목록 리스트 호출 실패")
+                    }
+                }
+            } else {
+//                print("데이터 삭제 실페")
+            }
+        }
     }
     
     private func showAlert(title: String, message: String) {

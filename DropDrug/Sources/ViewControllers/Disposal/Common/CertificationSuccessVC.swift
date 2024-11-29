@@ -77,7 +77,7 @@ class CertificationSuccessVC: UIViewController {
                 if isSuccess {
                     SelectDiscardPrescriptionDrugVC.targetDrugId = nil
                     // 이거 타입 추가해달라고 요청드리기!
-                    self.postSuccessPoint(data: self.setupData(point: 150, type: "GENERAL_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, getBadge  in
+                    self.postSuccessPoint(data: self.setupData(point: 150, type: "DRUG_PHOTO_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, getBadge  in
                         if isSuccess {
                             if let getBadge = getBadge {
                             }
@@ -90,19 +90,9 @@ class CertificationSuccessVC: UIViewController {
                 }
             }
         } else {
-            postSuccessPoint(data: setupData(point: 100, type: "PHOTO_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, getBadge  in
+            postSuccessPoint(data: setupData(point: 100, type: "GENERAL_PHOTO_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, _  in
                 if isSuccess {
                     print("포인트 적립 성공")
-                    if let getBadge = getBadge {
-    //                    // 카드 확인하러가기
-    //                    if getBadge {
-    //                        // 카드 확인
-    //                        self.goToMyPage()
-    //                    } else {
-    //                        // 포인트 적립 내역 확인
-    //                        self.goToRewardPage()
-    //                    }
-                    }
                 } else {
                     print("포인트 적립 실패")
                 }
