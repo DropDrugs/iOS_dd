@@ -15,8 +15,8 @@ struct NotificationSetting: Codable {
     let disposal: Bool
     let noticeboard: Bool
     let reward: Bool
-    var takeDrug : Bool = true
-    var lastIntake : Bool = true
+    let takeDrug : Bool
+    let lastIntake : Bool
 }
 
 struct NotificationResponse: Codable {
