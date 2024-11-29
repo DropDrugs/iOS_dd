@@ -242,10 +242,7 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
                 if let identityTokenString = String(data: identityToken, encoding: .utf8) {
                     SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
                     print("idToken: \(identityTokenString)")
-                    guard let authCode = authorizationCode else {
-                        print("authCode 발급 실패")
-                        return }
-                    guard let data = setupAppleDTO(identityTokenString, authCode) else { return }
+                    guard let data = setupAppleDTO(identityTokenString, authorizationCode ?? "") else { return }
                     callAppleLoginAPI(param: data) { isSuccess, isNewUser in
                         if isSuccess {
                             if isNewUser {
