@@ -58,12 +58,19 @@ class LoginVC : UIViewController {
         setupView()
         setupConstraints()
         setupActions()
+        fillSavedEmail()
         validateInputs()
         
         textFields = [emailField.textField, passwordField.textField]
         
         for textField in textFields {
             textField.delegate = self
+        }
+    }
+    
+    func fillSavedEmail() {
+        if let email = SelectLoginTypeVC.keychain.get("savedUserEmail") {
+            emailField.textField.text = email
         }
     }
     
@@ -107,7 +114,7 @@ class LoginVC : UIViewController {
     private func setupActions() {
         emailField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingChanged)
         passwordField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingChanged)
-        emailSaveCheckBox.addTarget(self, action: #selector(termsTapped), for: .touchUpInside)
+        emailSaveCheckBox.addTarget(self, action: #selector(emailSaveButtonTapped), for: .touchUpInside)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(tapGesture)
@@ -137,6 +144,9 @@ class LoginVC : UIViewController {
                 callLoginAPI(loginRequest) { isSuccess in
                     if isSuccess {
                         self.proceedLoginSuccessful()
+                        if self.isEmailSaveValid {
+                            SelectLoginTypeVC.keychain.set(self.emailField.textField.text!, forKey: "savedUserEmail")
+                        }
                     } else {
                         print("로그인 실패")
                     }
@@ -151,18 +161,17 @@ class LoginVC : UIViewController {
             present(tabBarController, animated: true, completion: nil)
     }
     
-    @objc func termsTapped() {
-        // TODO: 아이디 저장 api?
+    @objc func emailSaveButtonTapped() {
         emailSaveCheckBox.isSelected.toggle()
-        if emailSaveCheckBox.isSelected {
-            isTermsAgreeValid = true
+        if emailSaveCheckBox.isSelected{
+            isEmailSaveValid = true
         } else {
-            isTermsAgreeValid = false
+            isEmailSaveValid = false
         }
         validateInputs()
     }
     
-    lazy var isTermsAgreeValid = false
+    lazy var isEmailSaveValid = false
     lazy var isFormValid = false
     lazy var isValid = false
     
