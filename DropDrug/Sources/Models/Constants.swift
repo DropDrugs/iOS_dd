@@ -22,14 +22,14 @@ struct Constants {
     }
     
     static let CharacterList: [CharacterModel] = [
-        CharacterModel(id: 0, name: "웃는 드롭이", image: "char0" , price: 0),
-        CharacterModel(id: 1, name: "화난 드롭이", image: "char1", price: 0),
-        CharacterModel(id: 2, name: "난처 드롭이", image: "char2", price: 0),
-        CharacterModel(id: 3, name: "미안 드롭이", image: "char3", price: 0),
-        CharacterModel(id: 4, name: "웃는 드럭이", image: "char4", price: 0),
-        CharacterModel(id: 5, name: "화난 드럭이", image: "char5", price: 0),
-        CharacterModel(id: 6, name: "난처 드럭이", image: "char6", price: 0),
-        CharacterModel(id: 7, name: "미안 드럭이", image: "char7", price: 0)
+        CharacterModel(id: 0, name: "웃는 파란 드롭이", image: "char0"),
+        CharacterModel(id: 1, name: "화난 파란 드롭이", image: "char1"),
+        CharacterModel(id: 2, name: "난처한 파란 드롭이", image: "char2"),
+        CharacterModel(id: 3, name: "미안한 파란 드롭이", image: "char3"),
+        CharacterModel(id: 4, name: "웃는 분홍 드롭이", image: "char4"),
+        CharacterModel(id: 5, name: "붐따 분홍 드롭이", image: "char5"),
+        CharacterModel(id: 6, name: "난처한 분홍 드롭이", image: "char6"),
+        CharacterModel(id: 7, name: "미안한 분홍 드롭이", image: "char7")
     ]
 
     static let seoulDistrictsList: [DistrictsDataModel] = [
