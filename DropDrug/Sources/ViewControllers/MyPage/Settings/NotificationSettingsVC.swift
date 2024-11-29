@@ -22,7 +22,9 @@ class NotificationSettingsVC: UIViewController {
         "푸시 알림",  // 마스터 토글
         "리워드 적립",
         "공지사항",
-        "폐기 안내"
+        "폐기 인증",
+//        "복용 알림",
+//        "정기적 폐기 리마인드 알림"
     ]
     
     private var notificationStates = Array(repeating: false, count: 4)
