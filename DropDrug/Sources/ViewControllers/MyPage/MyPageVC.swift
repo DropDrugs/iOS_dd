@@ -54,6 +54,8 @@ class MyPageVC : UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = true
+        
         fetchMemberInfo { success in
             if success {
                 print("fetch Profile successfully")

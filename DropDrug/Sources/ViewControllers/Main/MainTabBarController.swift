@@ -2,7 +2,7 @@
 
 import UIKit
 
-class MainTabBarController: UITabBarController {
+class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     private let HomeVC = UINavigationController(rootViewController: HomeViewController())
     private let SearchVC = UINavigationController(rootViewController: PrescriptionDrugVC())
@@ -12,6 +12,7 @@ class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.delegate = self
         setupTabBar()
     }
     
@@ -37,4 +38,13 @@ class MainTabBarController: UITabBarController {
         
         viewControllers = [HomeVC, SearchVC, LocationVC, InfoVC, MyVC]
     }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if let navigationController = viewController as? UINavigationController {
+            navigationController.popToRootViewController(animated: true)
+        }
+    }
+
 }
+
+
