@@ -79,6 +79,7 @@ extension SelectLoginTypeVC {
                     let data = try response.map(TokenDto.self)
                     SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
                     completion(true)
                 } catch {
                     Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
@@ -107,6 +108,8 @@ extension SelectLoginTypeVC {
                     let data = try response.map(TokenDto.self)
                     SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
+                    print("\(data.isNewUser)")
                     completion(true, data.isNewUser ?? false)
                 } catch {
                     Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")

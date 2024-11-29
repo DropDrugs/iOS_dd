@@ -241,7 +241,7 @@ extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
             if let identityToken = appleIDCredential.identityToken {
                 if let identityTokenString = String(data: identityToken, encoding: .utf8) {
                     SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
-                    print("idToken: \(identityTokenString)")
+//                    print("idToken: \(identityTokenString)")
                     guard let authCode = authorizationCode else {
                         print("authCode 발급 실패")
                         return }

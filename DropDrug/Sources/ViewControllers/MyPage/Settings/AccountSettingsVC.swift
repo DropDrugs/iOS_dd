@@ -43,6 +43,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 // 토스트 메세지 띄워서 에러 알려주기
             }
             AccountSettingsVC.isApple = isApple
+            print("애플로그인? : \(isApple)")
         }
     }
     
@@ -229,10 +230,10 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
                 if self.hasKakaoTokens {
                     self.kakaoAuthVM.unlinkKakaoAccount { success in
                             if success {
-                                Toaster.shared.makeToast("계정 삭제 완료")
                                 ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
                                     SelectLoginTypeVC.keychain.delete(keyName)
                                 }
+                                Toaster.shared.makeToast("계정 삭제 완료")
                                 self.showSplashScreen()
                                 completion(true)
                             } else {
@@ -270,7 +271,9 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
             switch result {
             case .success(let response):
                 if response.statusCode == 200 {
-                    SelectLoginTypeVC.keychain.clear()
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                        SelectLoginTypeVC.keychain.delete(keyName)
+                    }
                     completion(true)
                 }
             case .failure(let error):
