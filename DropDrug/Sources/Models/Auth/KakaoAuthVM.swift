@@ -32,6 +32,7 @@ class KakaoAuthVM: ObservableObject {
                     print("카카오톡 로그인 실패: \(error.localizedDescription)")
                     completion(false)
                 } else if let oauthToken = oauthToken {
+                    AccountSettingsVC.hasKakaoTokens = true
                     print("카카오톡 로그인 성공")
                     completion(true)
                 }
@@ -42,6 +43,7 @@ class KakaoAuthVM: ObservableObject {
                     print("카카오 계정 로그인 실패: \(error.localizedDescription)")
                     completion(false)
                 } else if let oauthToken = oauthToken {
+                    AccountSettingsVC.hasKakaoTokens = true
                     print("카카오 계정 로그인 성공")
                     completion(true)
                 }

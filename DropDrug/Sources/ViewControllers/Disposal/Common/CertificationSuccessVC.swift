@@ -6,6 +6,7 @@ import Moya
 
 class CertificationSuccessVC: UIViewController {
     let provider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    let DrugProvider = MoyaProvider<DrugAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     // MARK: - UI Elements
     private let imageView: UIImageView = {
@@ -71,22 +72,29 @@ class CertificationSuccessVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // call post api
-        postSuccessPoint(data: setupData(point: 100, type: "PHOTO_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, getBadge  in
-            if isSuccess {
-                print("포인트 적립 성공")
-                if let getBadge = getBadge {
-//                    // 카드 확인하러가기
-//                    if getBadge {
-//                        // 카드 확인
-//                        self.goToMyPage()
-//                    } else {
-//                        // 포인트 적립 내역 확인
-//                        self.goToRewardPage()
-//                    }
+        if let selectPrescriptionId = SelectDiscardPrescriptionDrugVC.targetDrugId {
+            self.deleteDrugs(self.setupDeleteDrugDTO([selectPrescriptionId])) { isSuccess in
+                if isSuccess {
+                    SelectDiscardPrescriptionDrugVC.targetDrugId = nil
+                    self.postSuccessPoint(data: self.setupData(point: 150, type: "DRUG_PHOTO_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, getBadge  in
+                        if isSuccess {
+                            if let getBadge = getBadge {
+                            }
+                        } else {
+                            // 포인트 적립 실패
+                        }
+                    }
+                } else {
+                    // 처방약 데이터 삭제 실패..
                 }
-            } else {
-                print("포인트 적립 실패")
+            }
+        } else {
+            postSuccessPoint(data: setupData(point: 100, type: "GENERAL_PHOTO_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, _  in
+                if isSuccess {
+                    print("포인트 적립 성공")
+                } else {
+                    print("포인트 적립 실패")
+                }
             }
         }
     }

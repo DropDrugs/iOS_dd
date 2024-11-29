@@ -5,7 +5,7 @@ let project = Project(
     targets: [
         .target(
             name: "DropDrug",
-            destinations: .init([.iPhone]),
+            destinations: .init([.iPhone, .iPad]),
             product: .app,
             bundleId: "io.tuist.DropDrug",
             deploymentTargets: .iOS("16.6"),
@@ -16,7 +16,7 @@ let project = Project(
                     "CFBundleShortVersionString" : "1.0",
                     "UIUserInterfaceStyle" : "Light",
                     "CFBundleDevelopmentRegion" : "ko_KR",
-                    "CFBundleVersion" : "2",
+                    "CFBundleVersion" : "3",
                     "CFBundleIcons": [
                                 "CFBundlePrimaryIcon": [
                                     "CFBundleIconFiles": ["AppIcon"],

@@ -22,10 +22,12 @@ class NotificationSettingsVC: UIViewController {
         "푸시 알림",  // 마스터 토글
         "리워드 적립",
         "공지사항",
-        "폐기 안내"
+        "폐기 인증",
+        "복용 알림",
+        "정기적 폐기 리마인드 알림",
     ]
     
-    private var notificationStates = Array(repeating: false, count: 4)
+    private var notificationStates = Array(repeating: false, count: 6)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,10 +64,14 @@ class NotificationSettingsVC: UIViewController {
                     self?.notificationStates = [
                         memberInfo.notificationSetting.reward ||
                         memberInfo.notificationSetting.noticeboard ||
-                        memberInfo.notificationSetting.disposal,
+                        memberInfo.notificationSetting.disposal ||
+                        memberInfo.notificationSetting.takeDrug ||
+                        memberInfo.notificationSetting.lastIntake,
                         memberInfo.notificationSetting.reward,
                         memberInfo.notificationSetting.noticeboard,
-                        memberInfo.notificationSetting.disposal
+                        memberInfo.notificationSetting.disposal,
+                        memberInfo.notificationSetting.takeDrug,
+                        memberInfo.notificationSetting.lastIntake
                     ]
                     self?.tableView.reloadData()
                 } catch {
@@ -81,9 +87,11 @@ class NotificationSettingsVC: UIViewController {
     
     private func updateNotificationSetting() {
         let updatedSettings = NotificationSetting(
-            disposal: notificationStates[3],
+            disposal: notificationStates[1],
             noticeboard: notificationStates[2],
-            reward: notificationStates[1]
+            reward: notificationStates[3],
+            takeDrug : notificationStates[4],
+            lastIntake : notificationStates[5]
         )
         
         provider.request(.updateNotificationSettings(param: updatedSettings)) { result in
@@ -125,7 +133,7 @@ extension NotificationSettingsVC: UITableViewDataSource {
                 self.tableView.reloadData()
             } else {
                 self.notificationStates[indexPath.row] = isOn
-                self.notificationStates[0] = self.notificationStates[1...3].contains(true)
+                self.notificationStates[0] = self.notificationStates[1...5].contains(true)
             }
 
             self.updateNotificationSetting()

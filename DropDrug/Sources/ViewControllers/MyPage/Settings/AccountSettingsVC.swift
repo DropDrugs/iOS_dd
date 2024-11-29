@@ -12,10 +12,8 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     let Authprovider = MoyaProvider<LoginService>(plugins: [NetworkLoggerPlugin(), BearerTokenPlugin()])
     
-    let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
-    
-    
     static var isApple : Bool = false
+    static var hasKakaoTokens : Bool = false
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
@@ -194,7 +192,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
             switch result {
             case .success(let response):
                 
-                if self.hasKakaoTokens {
+                if AccountSettingsVC.hasKakaoTokens {
                     self.kakaoAuthVM.kakaoLogout()
                     ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
                         SelectLoginTypeVC.keychain.delete(keyName)
@@ -227,7 +225,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
             switch result {
             case .success(let response):
                 
-                if self.hasKakaoTokens {
+                if AccountSettingsVC.hasKakaoTokens {
                     self.kakaoAuthVM.unlinkKakaoAccount { success in
                             if success {
                                 ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in

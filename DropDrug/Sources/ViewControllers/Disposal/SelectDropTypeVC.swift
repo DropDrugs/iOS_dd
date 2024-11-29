@@ -94,10 +94,8 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
             let SelectDrugTypeVC = SelectDrugTypeVC()
             navigationController?.pushViewController(SelectDrugTypeVC, animated: true)
         case 1:
-            let SelectDrugTypeVC = SelectDrugTypeVC()
-            navigationController?.pushViewController(SelectDrugTypeVC, animated: true)
-//            let prescriptionDrugVC = PrescriptionDrugVC()
-//            navigationController?.pushViewController(prescriptionDrugVC, animated: true)
+            let SelectPrescriptionTypeVC = SelectDiscardPrescriptionDrugVC()
+            navigationController?.pushViewController(SelectPrescriptionTypeVC, animated: true)
         default:
             print("알 수 없는 카테고리 선택됨")
         }
