@@ -45,7 +45,7 @@ class HomeView: UIView {
         // 타이틀 속성 설정
         let attributes: AttributeContainer = AttributeContainer([
             .font: UIFont.ptdSemiBoldFont(ofSize: 14), .foregroundColor: UIColor.white])
-        configuration.attributedTitle = AttributedString("의약품 드롭하기", attributes: attributes)
+        configuration.attributedTitle = AttributedString("의약품 폐기하기", attributes: attributes)
         configuration.titleAlignment = .center
         
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8) // 여백 설정
