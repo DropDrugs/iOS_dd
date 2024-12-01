@@ -5,7 +5,7 @@ let project = Project(
     targets: [
         .target(
             name: "DropDrug",
-            destinations: .init([.iPhone, .iPad]),
+            destinations: .init([.iPhone]),
             product: .app,
             bundleId: "io.tuist.DropDrug",
             deploymentTargets: .iOS("16.6"),
