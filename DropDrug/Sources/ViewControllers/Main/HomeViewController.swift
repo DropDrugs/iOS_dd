@@ -53,15 +53,28 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         return hv
     }()
     
+    private var isFront: Bool = true {
+        didSet {
+            homeView.character.image = isFront ? UIImage(named: "body\(homeView.selectedCharacterNum)") : UIImage(named: "back\(homeView.selectedCharacterNum)")
+        }
+    }
+    
     @objc private func handleImageTap(_ sender: UITapGestureRecognizer) {
-        guard let tappedView = sender.view else { return }
-        
-        UIView.animate(withDuration: 0.1, animations: {
-            tappedView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-        }) { _ in
-            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: [], animations: {
-                tappedView.transform = .identity
-            }, completion: nil)
+        if isFront {
+            isFront = false
+            UIView.transition(with: homeView.characterView,
+                              duration: 0.5,
+                              options: .transitionFlipFromLeft,
+                              animations: nil,
+                              completion: nil)
+            
+        } else {
+            isFront = true
+            UIView.transition(with: homeView.characterView,
+                              duration: 0.5,
+                              options: .transitionFlipFromLeft,
+                              animations: nil,
+                              completion: nil)
         }
     }
     

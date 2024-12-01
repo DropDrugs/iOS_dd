@@ -4,8 +4,9 @@ import UIKit
 import NMapsMap
 import CoreLocation
 import Moya
+import SwiftyToaster
 
-class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapViewTouchDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapViewTouchDelegate, NMFMapViewCameraDelegate {
     
     let provider = MoyaProvider<MapAPI>(plugins: [ BearerTokenPlugin(), NetworkLoggerPlugin() ])
     
@@ -29,6 +30,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
     private var siGu = ""
     private var selectedMarker: NMFMarker? // 현재 선택된 마커
     private var currentBottomSheet: UIViewController? // 현재 띄워진 장소상세뷰
+    private var isUserInteracting: Bool = false
     
     public var groupedMarkers: [String: [NMFMarker]] = [
         "동사무소": [],
@@ -40,7 +42,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
 
     private lazy var mapView: MapView = {
         let v = MapView()
-        //v.backgroundMap.positionMode = .direction
         v.townOfficeFltBtn.addTarget(self, action: #selector(townTapped), for: .touchUpInside)
         v.mailboxFltBtn.addTarget(self, action: #selector(mailTapped), for: .touchUpInside)
         v.pharmFltBtn.addTarget(self, action: #selector(pharmTapped), for: .touchUpInside)
@@ -401,7 +402,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
     // 위치 업데이트
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let currentLocation = locations.last else { return }
-        mapView.backgroundMap.mapView.positionMode = .direction
         lat = currentLocation.coordinate.latitude
         lng = currentLocation.coordinate.longitude
         print("현재 위치: \(lat), \(lng)")
@@ -423,10 +423,22 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             }
         }
                 
-        // 현재 위치를 지도 중심으로 설정
-        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
-        cameraUpdate.animation = .easeIn
-        mapView.backgroundMap.mapView.moveCamera(cameraUpdate)
+        // 사용자 조작 중이 아니면 카메라 이동
+        if !isUserInteracting {
+            let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
+            cameraUpdate.animation = .easeIn
+            mapView.backgroundMap.mapView.moveCamera(cameraUpdate)
+        }
+    }
+    
+    func mapViewCameraWillChange(_ mapView: NMFMapView, byReason reason: Int, animated: Bool) {
+        if reason == -1 { // 사용자 조작
+            isUserInteracting = true
+        }
+    }
+    
+    func mapViewCameraIdle(_ mapView: NMFMapView) {
+        isUserInteracting = false // 사용자 조작 종료
     }
     
     func reverseGeocodeAndProcess(location: CLLocation, completion: @escaping (Result<(String, String), Error>) -> Void) {
@@ -604,10 +616,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             getPlaceInfo(addrLvl1: addr1, addrLvl2: addr2, type: type) { [weak self] isSuccess in
                 if isSuccess {
                     DispatchQueue.main.async {
+                        Toaster.shared.makeToast("\(type) 정보 호출 성공")
                         print("\(type) 정보 호출 성공")
                     }
                 } else {
                     print("\(type) 정보 호출 실패")
+                    Toaster.shared.makeToast("\(type) 정보 호출 실패")
                 }
             }
         }
