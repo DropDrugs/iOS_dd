@@ -192,7 +192,7 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
             
             let alert = UIAlertController(
                 title: "폐기 실천 사진 인증",
-                message: "봉투에 '폐의약품'이라고 표시하였는지 사진을 통해 인증할 수 있습니다.\n 인증하시겠습니까?",
+                message: "봉투에 '폐의약품'이라고 표시하였는지\n 사진을 통해 인증할 수 있습니다.\n 인증하시겠습니까?",
                 preferredStyle: .alert
             )
             

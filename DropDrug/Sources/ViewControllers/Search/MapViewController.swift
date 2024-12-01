@@ -616,7 +616,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, NMFMapView
             getPlaceInfo(addrLvl1: addr1, addrLvl2: addr2, type: type) { [weak self] isSuccess in
                 if isSuccess {
                     DispatchQueue.main.async {
-                        Toaster.shared.makeToast("\(type) 정보 호출 성공")
+//                        Toaster.shared.makeToast("\(type) 정보 호출 성공")
                         print("\(type) 정보 호출 성공")
                     }
                 } else {

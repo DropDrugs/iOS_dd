@@ -82,9 +82,7 @@ class SelectDiscardPrescriptionDrugVC: UIViewController {
     // MARK: - Actions
     @objc private func didTapBackButton() {
         navigationController?.popViewController(animated: true)
-        navigationController?.navigationBar.isHidden = true
     }
-    
     @objc private func didTapCompleteButton() {
         if selectedIndexPath == nil || SelectDiscardPrescriptionDrugVC.targetDrugId == nil {
             showAlert(title: "오류", message: "삭제할 항목을 선택해주세요.")

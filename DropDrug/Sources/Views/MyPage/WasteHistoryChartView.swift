@@ -35,11 +35,11 @@ struct WasteChartView: View {
                             ZStack(alignment: .leading) {
                                 RoundedRectangle(cornerRadius: 3)
                                     .fill(Color(Constants.Colors.gray200 ?? UIColor.gray))
-                                    .frame(height: 15)
+                                    .frame(height: 16)
                                 
                                 RoundedRectangle(cornerRadius: 3)
                                     .fill(Color(Constants.Colors.skyblue ?? UIColor.blue))
-                                    .frame(width: barWidth * scaleFactor, height: 15)
+                                    .frame(width: barWidth * scaleFactor, height: 16)
                             }
                         }
                         .frame(height: 15) // 막대 높이 고정
