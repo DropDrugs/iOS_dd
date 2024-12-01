@@ -1,15 +1,26 @@
 // Copyright © 2024 RT4. All rights reserved
 
 import UIKit
+import SwiftUI
 import SnapKit
 import Moya
-import Charts
 import SwiftyToaster
+import Combine
+
+class WasteStatsViewModel: ObservableObject {
+    @Published var stats: [MonthlyStatsResponse] = []
+}
 
 class MyPageVC : UIViewController {
     
     let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     let PointProvider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
+    
+    var viewModel = WasteStatsViewModel()
+    lazy var wasteChartView = WasteChartView(viewModel: viewModel)
+    lazy var hostingController: UIHostingController<WasteChartView> = {
+        return UIHostingController(rootView: wasteChartView)
+    }()
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -61,6 +72,13 @@ class MyPageVC : UIViewController {
                 print("Failed to fetch Profile")
             }
         }
+        fetchPoint { success in
+            if success {
+                print("fetch Point successfully")
+            } else {
+                print("Failed to fetch Point")
+            }
+        }
     }
     
     func setComponents() {
@@ -73,9 +91,11 @@ class MyPageVC : UIViewController {
 //        [titleLabel, settingButton, myPageProfileView, rewardView, dropCardLabel, disposalStateLabel].forEach {
 //            view.addSubview($0)
 //        }
-        [titleLabel, settingButton, myPageProfileView, rewardView].forEach {
+        [titleLabel, settingButton, myPageProfileView, rewardView, disposalStateLabel].forEach {
             view.addSubview($0)
         }
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
     }
     
     func setConstraints() {
@@ -90,7 +110,7 @@ class MyPageVC : UIViewController {
         }
         myPageProfileView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(superViewHeight * 0.07)
-            make.left.equalTo(view.safeAreaLayoutGuide).offset(25)
+            make.left.equalTo(view.safeAreaLayoutGuide).offset(16)
         }
         rewardView.snp.makeConstraints { make in
             make.top.equalTo(myPageProfileView.snp.bottom).offset(superViewHeight * 0.07)
@@ -102,11 +122,15 @@ class MyPageVC : UIViewController {
 //            make.top.equalTo(rewardView.snp.bottom).offset(superViewHeight * 0.05)
 //            make.left.equalTo(view.safeAreaLayoutGuide).offset(25)
 //        }
-//        disposalStateLabel.snp.makeConstraints { make in
-//            make.top.equalTo(dropCardLabel.snp.bottom).offset(superViewHeight * 0.05)
-//            make.left.equalTo(view.safeAreaLayoutGuide).offset(25)
-//        }
-        
+        disposalStateLabel.snp.makeConstraints { make in
+            make.top.equalTo(rewardView.snp.bottom).offset(superViewHeight * 0.05)
+            make.left.equalTo(view.safeAreaLayoutGuide).offset(20)
+        }
+        hostingController.view.snp.makeConstraints { make in
+            make.top.equalTo(disposalStateLabel.snp.bottom).offset(superViewHeight * 0.05)
+            make.centerX.equalTo(rewardView)
+            make.width.equalTo(superViewWidth)
+        }
     }
     
     func setupGestures() {
@@ -131,4 +155,3 @@ class MyPageVC : UIViewController {
     }
     
 }
-

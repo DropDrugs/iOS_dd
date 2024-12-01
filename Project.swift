@@ -81,6 +81,7 @@ let project = Project(
             resources: ["DropDrug/Resources/**"],
             entitlements: "DropDrug/DropDrug.entitlements",
             dependencies: [
+                .xcframework(path: "DropDrug/Frameworks/SwiftUI_ChartView.xcframework", status: .required),
                 .external(name: "Moya"),
                 .external(name: "SnapKit"),
                 .external(name: "PinLayout"),
@@ -109,7 +110,9 @@ let project = Project(
 //                .external(name: "GoogleSignIn"),
 //                .external(name: "NMapsGeometry"),
 //                .external(name: "NMapsMap")
-            ]
+            ],
+            settings: .settings(base: SettingsDictionary().merging(["OTHER_LDFLAGS" : "-framework SwiftUI_ChartView", "SWIFT_VERSION" : "5.0",
+                                                                                "DEVELOPMENT_TEAM" : "7L9YFLK4UM", "CODE_SIGN_STYLE" : "Automatic"]))
         ),
         .target(
             name: "DropDrugTests",

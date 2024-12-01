@@ -1,0 +1,113 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "SwiftUI_ChartView",
+    "printedName": "SwiftUI_ChartView",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "SwiftUI",
+        "printedName": "SwiftUI",
+        "declKind": "Import",
+        "moduleName": "SwiftUI_ChartView",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Charts",
+        "printedName": "Charts",
+        "declKind": "Import",
+        "moduleName": "SwiftUI_ChartView"
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": [
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 420,
+      "length": 2,
+      "value": "13"
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "StringLiteral",
+      "offset": 431,
+      "length": 6,
+      "value": "\"1월\""
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 484,
+      "length": 1,
+      "value": "1"
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "StringLiteral",
+      "offset": 494,
+      "length": 6,
+      "value": "\"2월\""
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 547,
+      "length": 1,
+      "value": "5"
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "StringLiteral",
+      "offset": 557,
+      "length": 6,
+      "value": "\"3월\""
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 610,
+      "length": 1,
+      "value": "9"
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "StringLiteral",
+      "offset": 620,
+      "length": 6,
+      "value": "\"4월\""
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 673,
+      "length": 2,
+      "value": "17"
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "StringLiteral",
+      "offset": 684,
+      "length": 6,
+      "value": "\"5월\""
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 737,
+      "length": 1,
+      "value": "2"
+    },
+    {
+      "filePath": "\/Users\/iyeseong\/Documents\/GitHub\/DropDrug_SwfitUI_ChartView\/SwiftUI_ChartView\/WasteHistoryChartView.swift",
+      "kind": "StringLiteral",
+      "offset": 747,
+      "length": 6,
+      "value": "\"6월\""
+    }
+  ]
+}
