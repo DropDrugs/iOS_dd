@@ -53,15 +53,28 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         return hv
     }()
     
+    private var isFront: Bool = true {
+        didSet {
+            homeView.character.image = isFront ? UIImage(named: "body\(homeView.selectedCharacterNum)") : UIImage(named: "back\(homeView.selectedCharacterNum)")
+        }
+    }
+    
     @objc private func handleImageTap(_ sender: UITapGestureRecognizer) {
-        guard let tappedView = sender.view else { return }
-        
-        UIView.animate(withDuration: 0.1, animations: {
-            tappedView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-        }) { _ in
-            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 1, options: [], animations: {
-                tappedView.transform = .identity
-            }, completion: nil)
+        if isFront {
+            isFront = false
+            UIView.transition(with: homeView.characterView,
+                              duration: 0.5,
+                              options: .transitionFlipFromLeft,
+                              animations: nil,
+                              completion: nil)
+            
+        } else {
+            isFront = true
+            UIView.transition(with: homeView.characterView,
+                              duration: 0.5,
+                              options: .transitionFlipFromLeft,
+                              animations: nil,
+                              completion: nil)
         }
     }
     
@@ -89,7 +102,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
     @objc private func didTapFloatingBtn() {
         // 눌렸을 때 애니메이션
         let originalColor = homeView.floatingBtn.backgroundColor
-        let highlightColor = UIColor(named: "Gray700")?.withAlphaComponent(0.7) // 원하는 강조 색상
+        let highlightColor = Constants.Colors.gray700?.withAlphaComponent(0.7) // 원하는 강조 색상
         
         // 버튼 색상을 변경하는 애니메이션
         UIView.animate(withDuration: 0.1, animations: {
@@ -108,7 +121,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, MKMapView
         // 이름 길이 계산
         let attributedString = NSMutableAttributedString(string: "스타터  \(name)")
         attributedString.addAttributes([.foregroundColor: Constants.Colors.gray700 ?? .gray, .font: UIFont.ptdRegularFont(ofSize: 12)], range: ("스타터  \(name)" as NSString).range(of: "스타터"))
-        attributedString.addAttributes([.foregroundColor: UIColor.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
+        attributedString.addAttributes([.foregroundColor: Constants.Colors.black, .font: UIFont.ptdSemiBoldFont(ofSize: 18)], range: ("스타터  \(name)" as NSString).range(of: "\(name)"))
 
         let textSize = attributedString.boundingRect(
             with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40),

@@ -14,7 +14,7 @@ class KindCollectionViewCell: UICollectionViewCell {
     
     private let gradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
-        layer.colors = [UIColor(named: "gray500")?.withAlphaComponent(0.3).cgColor ?? UIColor.gray, UIColor.black.withAlphaComponent(0.3).cgColor]
+        layer.colors = [Constants.Colors.gray500?.withAlphaComponent(0.3).cgColor ?? UIColor.gray, UIColor.black.withAlphaComponent(0.3).cgColor]
         layer.locations = [0.0, 1.0]
         return layer
     }()

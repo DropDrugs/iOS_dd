@@ -18,7 +18,7 @@ class MapView: UIView {
     
     public lazy var topView: UIView = {
         let v = UIView()
-        v.backgroundColor = .white
+        v.backgroundColor = .systemBackground
         return v
     }()
     
@@ -57,14 +57,15 @@ class MapView: UIView {
         let m = NMFNaverMapView()
         m.showLocationButton = true
         m.showZoomControls = true
+        m.mapView.positionMode = .disabled
         return m
     }()
     
     public lazy var resetLocaBtn: UIButton = {
         let fb = UIButton()
-        fb.backgroundColor = .white
+        fb.backgroundColor = .systemBackground
         fb.layer.cornerRadius = 15
-        fb.layer.shadowColor = UIColor.black.cgColor
+        fb.layer.shadowColor = Constants.Colors.black?.cgColor
         fb.layer.shadowOpacity = 0.3
         fb.layer.shadowOffset = CGSize(width: 0, height: 5)
         fb.layer.shadowRadius = 5

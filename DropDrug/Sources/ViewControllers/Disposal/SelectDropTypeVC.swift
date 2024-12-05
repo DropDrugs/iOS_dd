@@ -14,7 +14,7 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     ]
     
     private lazy var backButton: CustomBackButton = {
-        let button = CustomBackButton(title: "  의약품 드롭하기")
+        let button = CustomBackButton(title: "  의약품 폐기하기")
         button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         return button
     }()
@@ -30,13 +30,13 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     
     
     private func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(KindCollectionViewCell.self, forCellWithReuseIdentifier: "KindCell")
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = Constants.Colors.white
         collectionView.isScrollEnabled = false
         
         view.addSubview(collectionView)
@@ -94,10 +94,8 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
             let SelectDrugTypeVC = SelectDrugTypeVC()
             navigationController?.pushViewController(SelectDrugTypeVC, animated: true)
         case 1:
-            let SelectDrugTypeVC = SelectDrugTypeVC()
-            navigationController?.pushViewController(SelectDrugTypeVC, animated: true)
-//            let prescriptionDrugVC = PrescriptionDrugVC()
-//            navigationController?.pushViewController(prescriptionDrugVC, animated: true)
+            let SelectPrescriptionTypeVC = SelectDiscardPrescriptionDrugVC()
+            navigationController?.pushViewController(SelectPrescriptionTypeVC, animated: true)
         default:
             print("알 수 없는 카테고리 선택됨")
         }

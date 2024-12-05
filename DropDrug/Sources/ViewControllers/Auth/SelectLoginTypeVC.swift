@@ -10,14 +10,18 @@ import KakaoSDKUser
 
 import KeychainSwift
 import Moya
+import SwiftyToaster
 
 class SelectLoginTypeVC : UIViewController {
     
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
     
-    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, serverRefreshToken, KakaoAccessToken, KakaoRefreshToken, KakaoIdToken, accessTokenExpiresIn
+    static let keychain = KeychainSwift() // For storing tokens like GoogleAccessToken, GoogleRefreshToken, FCMToken, serverAccessToken, serverRefreshToken, accessTokenExpiresIn
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
+    var userName: String = ""
+    var userEmail: String = ""
+    
     fileprivate var currentNonce: String?
     
     lazy var mainLabel: UILabel = {
@@ -35,7 +39,7 @@ class SelectLoginTypeVC : UIViewController {
         button.backgroundColor = UIColor(hex: "#FEE500")
         button.setTitle("   카카오로 시작하기", for: .normal)
         button.setTitleColor(UIColor(hex: "#191919"), for: .normal)
-        button.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         return button
@@ -46,7 +50,7 @@ class SelectLoginTypeVC : UIViewController {
         button.setTitle("E-mail로 시작하기", for: .normal)
         button.backgroundColor = Constants.Colors.gray900
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         button.layer.cornerRadius = superViewWidth * 0.075
         button.addTarget(self, action: #selector(startTapped), for: .touchUpInside)
         return button
@@ -137,46 +141,59 @@ class SelectLoginTypeVC : UIViewController {
             make.leading.trailing.equalToSuperview().inset(20)
         }
     }
-
+    
     @objc func kakaoButtonTapped() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
             
-            // Kakao 로그인 실행
             self.kakaoAuthVM.KakaoLogin { success in
                 if success {
-                    // Kakao 사용자 정보 가져오기
                     UserApi.shared.me { (user, error) in
                         if let error = error {
                             print("에러 발생: \(error.localizedDescription)")
+                            DispatchQueue.main.async {
+                                Toaster.shared.makeToast("사용자 정보 가져오기 실패")
+                            }
                             return
                         }
                         
-                        guard let kakaoAccount = user?.kakaoAccount else {
-                            print("사용자 정보 없음")
-                            return
-                        }
-                        if let loginRequest = self.setupKakaoLoginDTO() {
-                            self.callKakaoLoginAPI(loginRequest) { isSuccess in
-                                if isSuccess {
-                                    self.handleKakaoLoginSuccess()
-                                } else {
-                                    print("카카오 로그인 실패")
-                                }
-                            }
-                        }
+                        self.userName = user?.kakaoAccount?.profile?.nickname ?? ""
+                        self.userEmail = user?.kakaoAccount?.email ?? ""
+                        
+                        self.sendKakaoSignUpRequest()
                     }
                 } else {
-                    DispatchQueue.main.async {
-                        print("카카오 로그인 실패")
-                    }
+                    print("카카오 회원가입 실패")
                 }
             }
         }
     }
     
-    private func handleKakaoLoginSuccess() {
+    
+    
+    private func sendKakaoSignUpRequest() {
+        guard let kakaoSignUpRequest = self.setupKakaoLoginDTO(self.userEmail, self.userName) else {
+            print("카카오 회원가입 Dto 생성 실패")
+            return
+        }
+        
+        self.callKakaoLoginAPI(kakaoSignUpRequest) { isSuccess in
+            if isSuccess {
+                self.goToHomeVC()
+            } else {
+                print("회원 가입 실패")
+            }
+        }
+    }
+    
+    func goToHomeVC() {
         let mainVC = MainTabBarController()
+        mainVC.modalPresentationStyle = .fullScreen
+        present(mainVC, animated: true, completion: nil)
+    }
+    
+    private func handleAppleLoginSuccess() {
+        let mainVC = EnterNickNameVC()
         mainVC.modalPresentationStyle = .fullScreen
         present(mainVC, animated: true, completion: nil)
     }
@@ -209,60 +226,58 @@ class SelectLoginTypeVC : UIViewController {
 extension SelectLoginTypeVC : ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
-        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+        case let appleIDCredential as ASAuthorizationAppleIDCredential :
             let userIdentifier = appleIDCredential.user
-            var formattedName: String = ""
-            var authorizationCode : String = ""
-            if let fullName = appleIDCredential.fullName, ((fullName.givenName?.isEmpty) == nil) && ((fullName.familyName?.isEmpty) == nil) {
-                let givenName = fullName.givenName ?? ""
-                let familyName = fullName.familyName ?? ""
-                
-                formattedName = "\(familyName)\(givenName)"
-                
-                print("Formatted Full Name: \(formattedName)")
-            } else {
-                print("Full name is nil")
-            }
-            
-            let email = appleIDCredential.email
+            var authorizationCode : String?
             
             if let authCode = appleIDCredential.authorizationCode,
-               let codeString = String(data: authCode, encoding: .utf8) {
-                authorizationCode = codeString
-                print("Authorization Code: \(codeString)")
+               let authCodeString = String(data: authCode, encoding: .utf8) {
+                SelectLoginTypeVC.keychain.set(authCodeString, forKey: "AppleAuthToken")
+                authorizationCode = authCodeString
             } else {
-                print("Authorization Code is nil or could not be decoded.")
-                // login 불가능 처리 로직
+                authorizationCode = nil
+                print("authcode 발급 실패")
             }
             
-            if let identityToken = appleIDCredential.identityToken,
-               let identityTokenString = String(data: identityToken, encoding: .utf8),
-               let emailString = email {
-                SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
-                SelectLoginTypeVC.keychain.set(emailString, forKey: "AppleIDEmail")
-                SelectLoginTypeVC.keychain.set(formattedName, forKey: "AppleIDName")
-                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, formattedName, emailString, authorizationCode)!) { isSuccess in
-                    if isSuccess {
-                        self.handleKakaoLoginSuccess()
-                    } else {
-                        print("애플 로그인(바로 로그인) 실패")
+            if let identityToken = appleIDCredential.identityToken {
+                if let identityTokenString = String(data: identityToken, encoding: .utf8) {
+                    SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
+                    print("idToken: \(identityTokenString)")
+                    guard let data = setupAppleDTO(identityTokenString, authorizationCode ?? "") else { return }
+                    callAppleLoginAPI(param: data) { isSuccess, isNewUser in
+                        if isSuccess {
+                            if isNewUser {
+                                self.handleAppleLoginSuccess()
+                            } else {
+                                self.goToHomeVC()
+                            }
+                        } else {
+                            print("애플 로그인 실패")
+                        }
                     }
                 }
             } else {
-                guard let identityTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken"),
-                      let emailString = SelectLoginTypeVC.keychain.get("AppleIDEmail"),
-                      let nameString = SelectLoginTypeVC.keychain.get("AppleIDName") else { return }
-                
-                callAppleLoginAPI(param: setupAppleDTO(identityTokenString, nameString, emailString, authorizationCode)!) { isSuccess in
-                    if isSuccess {
-                        self.handleKakaoLoginSuccess()
-                    } else {
-                        print("애플 로그인 실패")
+                if let idTokenString = SelectLoginTypeVC.keychain.get("AppleIDToken") {
+                    guard let authCode = authorizationCode else {
+                        print("authCode 발급 실패")
+                        return
+                    }
+                    guard let data = setupAppleDTO(idTokenString, authCode) else { return }
+                    callAppleLoginAPI(param: data) { isSuccess, isNewUser in
+                        if isSuccess {
+                            if isNewUser {
+                                self.handleAppleLoginSuccess()
+                            } else {
+                                self.goToHomeVC()
+                            }
+                        } else {
+                            print("애플 로그인 실패")
+                        }
                     }
                 }
-                
             }
-        default:
+            
+        default :
             break
         }
         

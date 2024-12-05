@@ -9,7 +9,7 @@ class CustomAlertView: UIView {
     // MARK: - UI Elements
     private let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 12
         view.clipsToBounds = true
         return view
@@ -29,7 +29,7 @@ class CustomAlertView: UIView {
         textView.textAlignment = .center
         textView.textColor = .gray
         textView.isEditable = false
-        textView.isScrollEnabled = true // 긴 텍스트 스크롤 가능
+        textView.isScrollEnabled = true
         textView.showsVerticalScrollIndicator = true
         textView.textContainerInset = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
         textView.backgroundColor = .clear
@@ -57,7 +57,7 @@ class CustomAlertView: UIView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        backgroundColor = Constants.Colors.black?.withAlphaComponent(0.5)
         
         addSubview(containerView)
         containerView.addSubview(titleLabel)

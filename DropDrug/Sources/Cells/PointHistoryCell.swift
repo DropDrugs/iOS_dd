@@ -63,14 +63,15 @@ class PointHistoryCell: UITableViewCell {
     
     func configure(with item: PointDetail) {
         dateLabel.text = formatDate(item.date)
-        
         switch item.type {
         case "CHARACTER_PURCHASE":
             descriptionLabel.text = "캐릭터 구매"
-        case "PHOTO_CERTIFICATION":
-            descriptionLabel.text = "사진 인증 성공"
-        case "폐기 장소 문의":
-            descriptionLabel.text = "장소 문의 완료"
+        case "GENERAL_PHOTO_CERTIFICATION":
+            descriptionLabel.text = "폐기 사진 인증 완료"
+        case "DRUG_PHOTO_CERTIFICATION":
+            descriptionLabel.text = "처방약 폐기 인증 완료"
+        case "GENERAL_CERTIFICATION":
+            descriptionLabel.text = "폐기 인증 완료"
         default:
             descriptionLabel.text = item.type
         }

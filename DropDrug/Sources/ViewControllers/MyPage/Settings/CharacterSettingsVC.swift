@@ -8,7 +8,7 @@ import SwiftyToaster
 class CharacterSettingsVC: UIViewController {
     let MemberProvider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
-    var ownedChar : [Int] = []
+    var ownedChar : [Int] = [0]
     var selectedChar : Int = 0
     
     private lazy var backButton: CustomBackButton = {
@@ -29,28 +29,19 @@ class CharacterSettingsVC: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
         collectionView.register(SeoulCollectionViewCell.self, forCellWithReuseIdentifier: "SeoulCollectionViewCell")
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isScrollEnabled = false
         collectionView.tag = 0
         return collectionView
-    }()
-    
-    private let emptyStateLabel: UILabel = {
-        let label = UILabel()
-        label.text = "보유한 캐릭터가 없습니다."
-        label.textColor = .gray
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textAlignment = .center
-        label.isHidden = true
-        return label
     }()
     
     private lazy var allCharCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .systemBackground
         collectionView.register(SeoulCollectionViewCell.self, forCellWithReuseIdentifier: "SeoulCollectionViewCell")
         collectionView.tag = 1
         return collectionView
@@ -58,13 +49,13 @@ class CharacterSettingsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         navigationController?.navigationBar.isTranslucent = false
         
         let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground() // 불투명한 배경 설정
-            appearance.backgroundColor = .white        // 원하는 배경색 설정
+            appearance.backgroundColor = .systemBackground       // 원하는 배경색 설정
             appearance.shadowImage = UIImage()         // 구분선 이미지 제거
             appearance.shadowColor = nil
         
@@ -77,6 +68,7 @@ class CharacterSettingsVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateChars()
+        updateCollectionViewHeight()
     }
 
     func setupUI() {
@@ -85,7 +77,7 @@ class CharacterSettingsVC: UIViewController {
         [contentView].forEach {
             view.addSubview($0)
         }
-        [ownedCharLabel, ownedCharCollectionView, emptyStateLabel, allCharLabel, allCharCollectionView].forEach {
+        [ownedCharLabel, ownedCharCollectionView, allCharLabel, allCharCollectionView].forEach {
             contentView.addSubview($0)
         }
     }
@@ -95,7 +87,6 @@ class CharacterSettingsVC: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.width.equalTo(superViewWidth)
         }
-        
         ownedCharLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview().inset(20)
@@ -106,11 +97,8 @@ class CharacterSettingsVC: UIViewController {
             make.horizontalEdges.equalToSuperview()
             make.height.equalTo(superViewHeight * 0.2)
         }
-        emptyStateLabel.snp.makeConstraints { make in
-            make.center.equalTo(ownedCharCollectionView)
-        }
         allCharLabel.snp.makeConstraints { make in
-            make.top.equalTo(ownedCharCollectionView.snp.bottom).offset(20)
+            make.top.equalTo(ownedCharCollectionView.snp.bottom)
             make.leading.equalToSuperview().inset(20)
             make.height.equalTo(20)
         }
@@ -130,16 +118,15 @@ class CharacterSettingsVC: UIViewController {
     private func updateChars() {
         fetchMemberInfo { success in
             if success {
+                self.updateCollectionViewHeight()
                 self.ownedCharCollectionView.reloadData()
-//                print(" \(self.ownedChar)")
             } else {
-//                print("Failed to update profile")
+                
             }
         }
     }
     private func showPurchaseAlert(currentValue: Int) {
-//        let alert = UIAlertController(title: "\(Constants.CharacterList[currentValue].name) 캐릭터를 구매하시겠습니까?", message: nil, preferredStyle: .alert)
-        let alert = UIAlertController(title: "캐릭터를 구매하시겠습니까?", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "해당 캐릭터를 구매하시겠습니까?", message: "\(Constants.CharacterList[currentValue].name)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "구매", style: .default, handler: {_ in
             print("선택된 전체 캐릭터의 인덱스는 \(currentValue)입니다.")
@@ -162,10 +149,10 @@ class CharacterSettingsVC: UIViewController {
             print("선택된 보유 캐릭터의 인덱스는 \(currentValue)입니다.")
             self.updateCharacter(currentValue) { success in
                 if success {
-                    self.showCustomAlert(title: "변경 성공", message: "캐릭터가 성공적으로 변경되었습니다.")
+                    self.showCustomAlert(title: "변경 성공", message: "캐릭터가 성공적으로 변경되었어요.")
                     self.updateChars()
                 } else {
-                    self.showCustomAlert(title: "변경 실패", message: "캐릭터 변경에 실패했습니다. 다시 시도해 주세요.")
+                    self.showCustomAlert(title: "변경 실패", message: "캐릭터 변경에 실패했어요. 다시 시도해 주세요.")
                 }
             }
         }))
@@ -180,6 +167,11 @@ class CharacterSettingsVC: UIViewController {
         present(customAlert, animated: true, completion: nil)
     }
     
+    private func showOwnedCharacterAlert(characterID: Int) {
+        guard let character = findCharacter(by: characterID) else { return }
+        showCustomAlert(title: "구매 불가", message: "\(character.name)를 이미 보유하고 있어요.")
+    }
+    
     // MARK: - Compositional Layout 생성
     private func createCompositionalLayout() -> UICollectionViewCompositionalLayout {
         let padding: CGFloat = 8
@@ -187,7 +179,7 @@ class CharacterSettingsVC: UIViewController {
 
         let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(cardSize), heightDimension: .absolute(cardSize))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(cardSize))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item, item, item, item])
@@ -195,9 +187,22 @@ class CharacterSettingsVC: UIViewController {
 
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 8, trailing: 0)
 
         return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    private func updateCollectionViewHeight() {
+        contentView.layoutIfNeeded()
+        let maxHeight = (contentView.frame.height / 2) - 20
+        let itemHeight: CGFloat = (UIScreen.main.bounds.width - (8 * 5)) / 4
+        let rows = (ownedChar.count + 3) / 4
+        let sectionHeight = CGFloat(rows) * (itemHeight + 8)
+        let calculatedHeight = min(sectionHeight, maxHeight)
+
+        ownedCharCollectionView.snp.updateConstraints { make in
+            make.height.equalTo(calculatedHeight)
+        }
     }
 }
 
@@ -206,17 +211,19 @@ extension CharacterSettingsVC: UICollectionViewDataSource, UICollectionViewDeleg
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 {
-//            print("보유 캐릭터 변경, 인덱스: \(ownedChar[indexPath.row])")
             self.showUpdateAlert(currentValue: ownedChar[indexPath.row])
         } else if collectionView.tag == 1 {
-//            print("캐릭터 구매, 인덱스: \(indexPath.row)")
-            self.showPurchaseAlert(currentValue: indexPath.row)
+            let selectedCharacterID = Constants.CharacterList[indexPath.row].id
+            if ownedChar.contains(selectedCharacterID) {
+                self.showOwnedCharacterAlert(characterID: selectedCharacterID)
+            } else {
+                self.showPurchaseAlert(currentValue: selectedCharacterID)
+            }
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.tag == 0 {
-            emptyStateLabel.isHidden = ownedChar.count > 0
             return ownedChar.count
         } else if collectionView.tag == 1 {
             return Constants.CharacterList.count

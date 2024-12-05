@@ -9,7 +9,7 @@ import KeychainSwift
 class KakaoAuthVM: ObservableObject {
     
     var subscriptions = Set<AnyCancellable>()
-    
+
     @Published var isLoggedIn: Bool = false
     @Published var errorMessage: String? // 에러 메시지를 저장하는 변수
     
@@ -22,36 +22,8 @@ class KakaoAuthVM: ObservableObject {
     
     init() {
         print("KakaoAuthVM - init() called")
-        loadToken() // 초기화 시 저장된 토큰 로드
     }
     
-    // 저장된 토큰을 로드하여 자동 로그인 시도
-    private func loadToken() {
-        if let tokenString = SelectLoginTypeVC.keychain.get("KakaoAccessToken") {
-            oauthToken = tokenString
-            isLoggedIn = true
-            print("토큰 로드 성공, 자동 로그인 시도 중")
-        } else {
-            print("저장된 토큰이 없습니다.")
-        }
-    }
-    
-    // 토큰을 안전하게 저장
-    private func saveAccessToken(_ token: String) {
-        oauthToken = token
-        SelectLoginTypeVC.keychain.set(token, forKey: "KakaoAccessToken")
-    }
-    
-    private func saveRefreshToken(_ token: String) {
-        oauthToken = token
-        SelectLoginTypeVC.keychain.set(token, forKey: "KakaoRefreshToken")
-    }
-    
-    private func saveIdToken(_ token: String?) {
-        let tokenToSave = token ?? "DefaultToken"
-        SelectLoginTypeVC.keychain.set(tokenToSave, forKey: "KakaoIdToken")
-    }
-
     @MainActor
     func KakaoLogin(completion: @escaping (Bool) -> Void) {
         if UserApi.isKakaoTalkLoginAvailable() {
@@ -60,9 +32,7 @@ class KakaoAuthVM: ObservableObject {
                     print("카카오톡 로그인 실패: \(error.localizedDescription)")
                     completion(false)
                 } else if let oauthToken = oauthToken {
-                    self?.saveAccessToken(oauthToken.accessToken)
-                    self?.saveRefreshToken(oauthToken.refreshToken)
-                    self?.saveIdToken(oauthToken.idToken)
+                    AccountSettingsVC.hasKakaoTokens = true
                     print("카카오톡 로그인 성공")
                     completion(true)
                 }
@@ -73,9 +43,7 @@ class KakaoAuthVM: ObservableObject {
                     print("카카오 계정 로그인 실패: \(error.localizedDescription)")
                     completion(false)
                 } else if let oauthToken = oauthToken {
-                    self?.saveAccessToken(oauthToken.accessToken)
-                    self?.saveRefreshToken(oauthToken.refreshToken)
-                    self?.saveIdToken(oauthToken.idToken)
+                    AccountSettingsVC.hasKakaoTokens = true
                     print("카카오 계정 로그인 성공")
                     completion(true)
                 }
@@ -87,7 +55,6 @@ class KakaoAuthVM: ObservableObject {
     func kakaoLogout() {
         Task {
             if await handleKakaoLogOut() {
-                clearToken() // 로그아웃 시 토큰 삭제
                 self.isLoggedIn = false
             }
         }
@@ -108,36 +75,14 @@ class KakaoAuthVM: ObservableObject {
         }
     }
     
-    @MainActor
-    func unlinkKakaoAccount(completion: @escaping (Bool) -> Void) {
-        Task {
-            let success = await handleKakaoUnlink()
-            if success {
-                clearToken() // 연동 해제 성공 시 토큰 삭제
-                self.isLoggedIn = false
+    func unlinkKakaoAccount(completion : @escaping (Bool) -> Void) {
+        UserApi.shared.unlink { error in
+            if let error = error {
+                print("🔴 카카오 계정 연동 해제 실패: \(error.localizedDescription)")
+                completion(false)
             }
-            completion(success)
+            print("🟢 카카오 계정 연동 해제 성공")
+            completion(true)
         }
-    }
-
-    func handleKakaoUnlink() async -> Bool {
-        await withCheckedContinuation { continuation in
-            UserApi.shared.unlink { [weak self] error in
-                if let error = error {
-                    print("카카오 계정 연동 해제 실패: \(error.localizedDescription)")
-                    self?.errorMessage = "연동 해제 실패: \(error.localizedDescription)"
-                    continuation.resume(returning: false)
-                } else {
-                    print("카카오 계정 연동 해제 성공")
-                    continuation.resume(returning: true)
-                }
-            }
-        }
-    }
-    
-    // 저장된 토큰을 삭제
-    private func clearToken() {
-        SelectLoginTypeVC.keychain.clear()
-        oauthToken = nil
     }
 }

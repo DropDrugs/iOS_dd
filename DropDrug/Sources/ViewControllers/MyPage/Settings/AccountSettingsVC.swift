@@ -12,6 +12,9 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     let provider = MoyaProvider<MemberAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     let Authprovider = MoyaProvider<LoginService>(plugins: [NetworkLoggerPlugin(), BearerTokenPlugin()])
     
+    static var isApple : Bool = false
+    static var hasKakaoTokens : Bool = false
+    
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
     private lazy var backButton: CustomBackButton = {
@@ -31,17 +34,19 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         setupView()
-        fetchMemberInfo { isSucess in
+        fetchMemberInfo { isSucess, isApple  in
             if isSucess {
                 self.tableView.reloadData()
             } else {
                 // 토스트 메세지 띄워서 에러 알려주기
             }
+            AccountSettingsVC.isApple = isApple
+            print("애플로그인? : \(isApple)")
         }
     }
     
     private func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         
         // TableView 설정
         tableView.rowHeight = view.bounds.height * 0.06
@@ -49,7 +54,7 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         tableView.delegate = self
         tableView.register(AccountOptionCell.self, forCellReuseIdentifier: "AccountOptionCell")
         tableView.separatorStyle = .none
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .systemBackground
         tableView.isScrollEnabled = false
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
@@ -130,12 +135,31 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         let alert = UIAlertController(title: "계정 삭제", message: "계정을 정말 삭제하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
-            self.callQuit { isSuccess in
-                if isSuccess {
-                    Toaster.shared.makeToast("계정 삭제 완료")
-                    self.showSplashScreen()
+            if AccountSettingsVC.isApple {
+                print("애플 탈퇴")
+                if let authorizationCode = SelectLoginTypeVC.keychain.get("AppleAuthToken") {
+                    print("가입/로그인 시 authCode 이미 발급함")
+                    self.callAppleQuit(authorizationCode) { isSuccess in
+                        if isSuccess {
+                            Toaster.shared.makeToast("계정 삭제 완료")
+                            self.showSplashScreen()
+                        } else {
+                            Toaster.shared.makeToast("계정 삭제 실패 - 다시 시도해주세요")
+                        }
+                    }
                 } else {
-                    Toaster.shared.makeToast("계정 삭제 실패 - 다시 시도해주세요")
+                    print("새로 authCode 발급")
+                    self.reAuthenticateWithApple()
+                }
+            } else {
+                print("일반, 카카오 탈퇴")
+                self.callQuit { isSuccess in
+                    if isSuccess {
+                        Toaster.shared.makeToast("계정 삭제 완료")
+                    } else {
+                        Toaster.shared.makeToast("계정 삭제 실패 - 다시 시도해주세요")
+                        
+                    }
                 }
             }
         }))
@@ -149,7 +173,6 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
     
     private func updateNickname(newNickname: String, completion: @escaping (Bool) -> Void) {
         guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
-            Toaster.shared.makeToast("계정 삭제 완료")
             completion(false)
             return
         }
@@ -181,10 +204,22 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         Authprovider.request(.postLogOut(accessToken: accessToken)) { result in
             switch result {
             case .success(let response):
-                SelectLoginTypeVC.keychain.delete("serverAccessToken")
-                SelectLoginTypeVC.keychain.delete("serverRefreshToken")
-                Toaster.shared.makeToast("로그아웃")
-                self.showSplashScreen()
+                
+                if AccountSettingsVC.hasKakaoTokens {
+                    self.kakaoAuthVM.kakaoLogout()
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                        SelectLoginTypeVC.keychain.delete(keyName)
+                    }
+                    Toaster.shared.makeToast("로그아웃")
+                    self.showSplashScreen()
+                } else {
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                        SelectLoginTypeVC.keychain.delete(keyName)
+                    }
+                    Toaster.shared.makeToast("로그아웃")
+                    self.showSplashScreen()
+                }
+                
             case .failure(let error):
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
@@ -198,27 +233,34 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
             print("Access Token 없음")
             return
         }
-        
-        Authprovider.request(.postQuit(token: accessToken)) { result in
+
+        Authprovider.request(.postQuit(param: QuitRequest(accessToken: accessToken, authCode: nil))) { result in
             switch result {
             case .success(let response):
                 
-                let hasKakaoTokens = SelectLoginTypeVC.keychain.get("KakaoAccessToken") != nil || SelectLoginTypeVC.keychain.get("KakaoRefreshToken") != nil || SelectLoginTypeVC.keychain.get("KakaoIdToken") != nil
-                
-                SelectLoginTypeVC.keychain.clear()
-                
-                // 카카오 연동 해제
-                if hasKakaoTokens {
+                if AccountSettingsVC.hasKakaoTokens {
                     self.kakaoAuthVM.unlinkKakaoAccount { success in
-                        if success {
-                            print("카카오 계정 연동 해제 성공")
-                        } else {
-                            print("카카오 계정 연동 해제 실패")
+                            if success {
+                                ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                                    SelectLoginTypeVC.keychain.delete(keyName)
+                                }
+                                Toaster.shared.makeToast("계정 삭제 완료")
+                                self.showSplashScreen()
+                                completion(true)
+                            } else {
+                                Toaster.shared.makeToast("계정 삭제 실패 - 다시 시도해 주세요")
+//                                self.goToSelectLoginVC()
+                                completion(false)
+                            }
                         }
+                } else {
+                    // 카카오 연동 해제 없이 일반 회원 탈퇴만 처리
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken"].forEach { keyName in
+                        SelectLoginTypeVC.keychain.delete(keyName)
                     }
+                    self.showSplashScreen()
+                    completion(true)
                 }
-                
-                completion(true)
             case .failure(let error):
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
@@ -228,7 +270,40 @@ class AccountSettingsVC: UIViewController, UITableViewDataSource, UITableViewDel
         }
     }
     
-    private func showSplashScreen() {
+    
+    func callAppleQuit(_ authCode: String, completion: @escaping (Bool) -> Void) {
+        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken") else {
+            print("Access Token 없음")
+            return
+        }
+        print("authCode: \(authCode)")
+
+        Authprovider.request(.postQuit(param: QuitRequest(accessToken: accessToken, authCode: authCode))) { result in
+            switch result {
+            case .success(let response):
+                if response.statusCode == 200 {
+                    ["serverAccessToken", "accessTokenExpiresIn", "serverRefreshToken", "AppleAuthToken"].forEach { keyName in
+                        SelectLoginTypeVC.keychain.delete(keyName)
+                    }
+                    completion(true)
+                }
+            case .failure(let error):
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
+                }
+                completion(false)
+            }
+        }
+    }
+    
+    func goToSelectLoginVC() {
+        let mainVC = SelectLoginTypeVC()
+        mainVC.modalPresentationStyle = .fullScreen
+        present(mainVC, animated: true, completion: nil)
+    }
+    
+    func showSplashScreen() {
         let splashViewController = SplashVC()
 
         // 현재 윈도우 가져오기

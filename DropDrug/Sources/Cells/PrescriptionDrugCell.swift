@@ -8,14 +8,14 @@ class PrescriptionDrugCell: UITableViewCell {
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .darkGray
+        label.textColor = Constants.Colors.gray800
         return label
     }()
     
     private let durationLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .black
+        label.textColor = Constants.Colors.black
         return label
     }()
     

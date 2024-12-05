@@ -62,21 +62,24 @@ extension LoginVC {
 }
 
 extension SelectLoginTypeVC {
-    func setupKakaoLoginDTO() -> OAuthSocialLoginRequest? {
-        guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
-        guard let accessToken = SelectLoginTypeVC.keychain.get("KakaoAccessToken") else { return nil }
-        guard let idToken = SelectLoginTypeVC.keychain.get("KakaoIdToken") else { return nil }
-        return OAuthSocialLoginRequest(accessToken: accessToken, fcmToken: fcmToken, idToken: idToken)
+    func setupKakaoLoginDTO(_ emailString: String, _ nameString: String) -> OAuthKakaoLoginRequest? {
+        guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else {
+            print("fcmToken이 없습니다.")
+            return nil
+        }
+        return OAuthKakaoLoginRequest(email: emailString, fcmToken: fcmToken, name: nameString)
     }
-    
-    func callKakaoLoginAPI(_ userParameter: OAuthSocialLoginRequest, completion: @escaping (Bool) -> Void) {
+
+    func callKakaoLoginAPI(_ userParameter: OAuthKakaoLoginRequest, completion: @escaping (Bool) -> Void) {
         provider.request(.postKakaoLogin(param: userParameter)) { result in
             switch result {
             case .success(let response):
                 do {
+                    print("로그인 성공: \(response)")
                     let data = try response.map(TokenDto.self)
                     SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
+                    SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
                     completion(true)
                 } catch {
                     Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
@@ -84,6 +87,7 @@ extension SelectLoginTypeVC {
                 }
             case .failure(let error) :
                 if let response = error.response {
+                    print("로그인 실패: \(error.localizedDescription)")
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
                 }
                 completion(false)
@@ -91,11 +95,12 @@ extension SelectLoginTypeVC {
         }
     }
     
-    func setupAppleDTO(_ idToken: String, _ name: String, _ email: String, _ authorizationCode : String) -> OAuthAppleLoginRequest? {
+    func setupAppleDTO(_ idToken: String, _ authorizationCode : String) -> OAuthAppleLoginRequest? {
         guard let fcmToken = SelectLoginTypeVC.keychain.get("FCMToken") else { return nil }
-        return OAuthAppleLoginRequest(fcmToken: fcmToken, name: name, email: email, authorizationCode: authorizationCode)
+        return OAuthAppleLoginRequest(fcmToken: fcmToken, idToken: idToken, authorizationCode: authorizationCode)
     }
-    func callAppleLoginAPI(param : OAuthAppleLoginRequest, completion: @escaping (Bool) -> Void) {
+    
+    func callAppleLoginAPI(param : OAuthAppleLoginRequest, completion: @escaping (Bool, Bool) -> Void) {
         provider.request(.postAppleLogin(param: param)) { result in
             switch result {
             case .success(let response):
@@ -103,16 +108,19 @@ extension SelectLoginTypeVC {
                     let data = try response.map(TokenDto.self)
                     SelectLoginTypeVC.keychain.set(data.refreshToken, forKey: "serverRefreshToken")
                     SelectLoginTypeVC.keychain.set(data.accessToken, forKey: "serverAccessToken")
-                    completion(true)
+                    SelectLoginTypeVC.keychain.set(String(data.accessTokenExpiresIn), forKey: "accessTokenExpiresIn")
+                    print("\(data.isNewUser)")
+                    completion(true, data.isNewUser ?? false)
                 } catch {
                     Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")
-                    completion(false)
+                    completion(false, false)
                 }
             case .failure(let error) :
                 if let response = error.response {
                     Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                    print("Response Body: \(String(data: response.data, encoding: .utf8) ?? "")")
                 }
-                completion(false)
+                completion(false, false)
             }
         }
     }

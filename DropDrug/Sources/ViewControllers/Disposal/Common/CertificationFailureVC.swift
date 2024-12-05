@@ -71,7 +71,7 @@ class CertificationFailureVC: UIViewController {
     
     // MARK: - Setup UI
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         [ checkImageView, titleLabel].forEach {
             failureAlertLabel.addArrangedSubview($0)
         }
@@ -107,8 +107,6 @@ class CertificationFailureVC: UIViewController {
     
     // MARK: - Actions
     @objc private func retryButtonTapped() {
-        print("retryButtonTapped@!!!!!!")
-        
         var currentVC: UIViewController? = self
         while let parentVC = currentVC?.navigationController?.viewControllers.first(where: { $0 is SelectDrugTypeVC }) {
             
@@ -121,6 +119,5 @@ class CertificationFailureVC: UIViewController {
             }
             print("SelectDrugTypeVC not found")
         }
-//        navigationController?.navigationBar.isHidden = false
     }
 }

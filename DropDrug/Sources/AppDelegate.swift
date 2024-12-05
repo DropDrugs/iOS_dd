@@ -3,6 +3,7 @@
 import Foundation
 import UIKit
 import KakaoSDKCommon
+import KakaoSDKAuth
 import AuthenticationServices
 
 import FirebaseCore
@@ -12,6 +13,7 @@ import FirebaseFirestore
 import FirebaseMessaging
 
 import Moya
+import SwiftyToaster
 
 
 @main
@@ -28,12 +30,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let kakaoAPIkey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_NATIVE_APP_KEY") as? String {
             KakaoSDK.initSDK(appKey: "\(kakaoAPIkey)")
         }
+    
         FirebaseApp.configure()
         if FirebaseApp.app() == nil {
-            print("FirebaseApp is not initialized. Configuring now...")
+            Toaster.shared.makeToast("FirebaseApp 시작 에러 : 어플을 재실행 해주세요")
+//            print("FirebaseApp is not initialized. Configuring now...")
             FirebaseApp.configure()
-        } else {
-            print("FirebaseApp is initialized successfully.")
         }
         
         UNUserNotificationCenter.current().delegate = self
@@ -55,24 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
         
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        appleIDProvider.getCredentialState(forUserID: "저장해둔유저아이디") { (credentialState, error) in
-            switch credentialState {
-            case .authorized:
-                print("authorized")
-                // The Apple ID credential is valid.
-            case .revoked:
-                print("revoked")
-            case .notFound:
-                // The Apple ID credential is either revoked or was not found, so show the sign-in UI.
-                print("notFound")
-            default:
-                break
-            }
-        }
-
-//        checkAuthenticationStatus()
-        
         return true
     }
     
@@ -84,6 +68,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
     }
+    
+//    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+//        if (AuthApi.isKakaoTalkLoginUrl(url)) {
+//            return AuthController.handleOpenUrl(url: url)
+//        }
+//        return false
+//    }
     
 //    private func checkAuthenticationStatus() {
 //        guard let accessToken = SelectLoginTypeVC.keychain.get("serverAccessToken"),
@@ -114,7 +105,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     // 백그라운드에서 푸시 알림을 탭했을 때 실행
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-//        print("APNS token: \(deviceToken.debugDescription)")
         Messaging.messaging().apnsToken = deviceToken
     }
     
@@ -123,14 +113,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("APNs 등록 및 디바이스 토큰 받기 실패:" + error.localizedDescription)
+        Toaster.shared.makeToast("APNs 등록 및 디바이스 토큰 받기 실패 : 어플을 재실행 해주세요")
     }
 }
 
 extension AppDelegate: MessagingDelegate {
     // 파이어베이스 MessagingDelegate 설정
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-//        print("Firebase registration token: \(String(describing: fcmToken))")
         SelectLoginTypeVC.keychain.set(fcmToken!, forKey: "FCMToken")
         
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
@@ -146,7 +135,6 @@ extension AppDelegate: MessagingDelegate {
       
             } else if let token = token {
                 print("----FCM registration token: \(token)")
-                
             }
         }
     }

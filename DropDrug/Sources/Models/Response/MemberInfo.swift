@@ -3,8 +3,8 @@
 import Foundation
 
 struct MemberInfo: Codable {
-    let email: String
-    let nickname: String
+    let email: String?
+    let nickname: String?
     let notificationSetting: NotificationSetting
     let ownedChars: [Int]
     let point: Int
@@ -15,6 +15,8 @@ struct NotificationSetting: Codable {
     let disposal: Bool
     let noticeboard: Bool
     let reward: Bool
+    let takeDrug : Bool
+    let lastIntake : Bool
 }
 
 struct NotificationResponse: Codable {

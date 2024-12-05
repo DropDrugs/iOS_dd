@@ -14,7 +14,9 @@ let project = Project(
                     "UILaunchStoryboardName": "",
                     "CFBundleDisplayName" : "드롭드락",
                     "CFBundleShortVersionString" : "1.0",
-                    "CFBundleVersion" : "1",
+                    "UIUserInterfaceStyle" : "Light",
+                    "CFBundleDevelopmentRegion" : "ko_KR",
+                    "CFBundleVersion" : "3",
                     "CFBundleIcons": [
                                 "CFBundlePrimaryIcon": [
                                     "CFBundleIconFiles": ["AppIcon"],
@@ -45,6 +47,7 @@ let project = Project(
                                    "Pretendard-Thin.otf",
                                    "RussoOne-Regular.ttf"
                     ],
+                    "NSUserTrackingUsageDescription" : "사용자 맞춤 정보 제공 및 서비스 개선을 위해 데이터를 사용합니다.",
                     "KAKAO_NATIVE_APP_KEY" : "74177ce7b14b89614c47ac7d51464b95",
                     "NSLocationAlwaysAndWhenInUseUsageDescription" : "주변 폐의약품 수거함 정보 제공을 위한 위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationWhenInUseUsageDescription" : "주변 폐의약품 수거함 정보 제공을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
@@ -78,6 +81,7 @@ let project = Project(
             resources: ["DropDrug/Resources/**"],
             entitlements: "DropDrug/DropDrug.entitlements",
             dependencies: [
+                .xcframework(path: "DropDrug/Frameworks/SwiftUI_ChartView.xcframework", status: .required),
                 .external(name: "Moya"),
                 .external(name: "SnapKit"),
                 .external(name: "PinLayout"),
@@ -106,7 +110,9 @@ let project = Project(
 //                .external(name: "GoogleSignIn"),
 //                .external(name: "NMapsGeometry"),
 //                .external(name: "NMapsMap")
-            ]
+            ],
+            settings: .settings(base: SettingsDictionary().merging(["OTHER_LDFLAGS" : "-framework SwiftUI_ChartView", "SWIFT_VERSION" : "5.0",
+                                                                                "DEVELOPMENT_TEAM" : "7L9YFLK4UM", "CODE_SIGN_STYLE" : "Automatic"]))
         ),
         .target(
             name: "DropDrugTests",

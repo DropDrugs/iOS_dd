@@ -2,18 +2,8 @@
 
 import Foundation
 
-struct MonthlyStats: Codable {
-    let data: [MonthlyStatsResponse]
-}
-
-struct MonthlyStatsResponse: Codable {
-    let disposalCount: Int // 폐기 횟수
-    let monthData : [Stats]
-}
-
-struct Stats: Codable {
-    let leapYear : Bool
-    let month: String // 예: "2024-03"
-    let monthValue: Int
-    let year: Int
+struct MonthlyStatsResponse: Identifiable, Codable {
+    var id: String { month }
+    let disposalCount: Int
+    let month: String
 }

@@ -7,7 +7,7 @@ class AnimationTestVC: UIViewController {
  
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         
         let animationView: LottieAnimationView = .init(name: "TestAni")
         animationView.backgroundColor = .clear

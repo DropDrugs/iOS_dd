@@ -6,15 +6,14 @@ import Moya
 import SwiftyToaster
 
 class ImageDisplayVC: UIViewController {
-    lazy var progressBar: CircularProgressBar = CircularProgressBar()
-    var currentProgress: CGFloat = 0.0
-    
+//    lazy var progressBar: CircularProgressBar = CircularProgressBar()
+//    var currentProgress: CGFloat = 0.0
     var imageURL: URL?
-    
     var extractedTexts : [String] = []
     
     let provider = MoyaProvider<OCRService>(plugins: [ NetworkLoggerPlugin() ])
     
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     public lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "인증 사진을\n확인하고 있어요"
@@ -36,28 +35,28 @@ class ImageDisplayVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         
         setupProgressBar()
-        loadImage()
-        
+        startProcessing()
+//        testProcessing()
     }
     
     private func setupProgressBar() {
         // Add progress bar to the view
+        view.addSubview(activityIndicator)
         view.addSubview(titleLabel)
         view.addSubview(descriptionLabel)
-        view.addSubview(progressBar)
         
         // SnapKit Constraints
-        progressBar.snp.makeConstraints { make in
+        activityIndicator.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(80)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(superViewWidth*0.8) // 크기 200x200
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressBar.snp.bottom).offset(100)
+            make.top.equalTo(activityIndicator.snp.bottom).offset(80)
             make.centerX.equalToSuperview()
         }
         
@@ -67,55 +66,92 @@ class ImageDisplayVC: UIViewController {
         }
         
         // Configure progress bar properties
-        progressBar.innerProgressColor = Constants.Colors.skyblue! // 색상 설정
-        progressBar.innerThickness = 25
-        progressBar.showProgressText = true // 중앙에 텍스트 표시
+        activityIndicator.color = Constants.Colors.skyblue! // 색상 설정
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.transform = CGAffineTransform(scaleX: 2, y: 2)
     }
     
-    func loadImage() {
-        // URL of the PNG image
-        updateProgressManually(to: 0.1)
-        guard let url = self.imageURL else { return }
-        self.compressImage(UIImage(contentsOfFile: url.path)!)
+    private func testProcessing() {
+        activityIndicator.startAnimating() // 인디케이터 시작
+        
+        // 테스트용: 10초 뒤에 activityIndicator를 중지
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
+            guard let self = self else { return }
+            self.activityIndicator.stopAnimating()
+            print("Activity Indicator Stopped after 10 seconds (Test)")
+        }
     }
     
-    func updateProgressManually(to value: CGFloat) {
-        progressBar.updateProgress(to: value)
-    }
-    
-    func compressImage(_ image: UIImage) {
-        ImageCompressionModel.shared.compressImageToUnder50MB(image: image) { [weak self] compressedData in
+    private func startProcessing() {
+        activityIndicator.startAnimating()  // 인디케이터 시작
+        
+        // loadImage
+        guard let url = imageURL else {
+            activityIndicator.stopAnimating()
+            Toaster.shared.makeToast("Image를 변환할 수 없습니다.")
+            return
+        }
+        
+        compressImage(UIImage(contentsOfFile: url.path)!) { [weak self] compressedData in
             guard let self = self else { return }
             guard let compressedData = compressedData else {
-                self.presentCertificationFailureVC()
+                self.activityIndicator.stopAnimating()
+                Toaster.shared.makeToast("Image를 변환할 수 없습니다.")
                 return
             }
-            print("압축된 이미지 크기: \(compressedData.count / 1024 / 1024)MB")
-            updateProgressManually(to: 0.25)
             
-            // 압축된 이미지를 저장하거나 다른 작업 수행
             let imageString = ImageCompressionModel.shared.convertToBase64(data: compressedData)
-            let requestData = setOCRRequestData(imageData: imageString)
-            updateProgressManually(to: 0.5)
-            sendCompressedImage(requestData: requestData) { isSuccess in
-                self.updateProgressManually(to: 0.6)
+            let requestData = self.setOCRRequestData(imageData: imageString)
+            
+            self.sendCompressedImage(requestData: requestData) { isSuccess in
+                self.activityIndicator.stopAnimating() // 작업 완료 시 중지
                 if isSuccess {
-                    let combinedString = self.extractedTexts.joined().replacingOccurrences(of: " ", with: "")
-                    print(combinedString)
-                    self.updateProgressManually(to: 0.75)
-                    if combinedString.contains("폐의약품") {
-                        self.updateProgressManually(to: 0.99)
-                        self.presentCertificationSuccessVC()
-                    } else {
-                        self.presentCertificationFailureVC()
-                    }
+                    self.presentCertificationSuccessVC()
                 } else {
                     self.presentCertificationFailureVC()
                 }
             }
-            
         }
+        
     }
+    
+//    func loadImage() {
+//        // URL of the PNG image
+//        guard let url = self.imageURL else { return }
+//        self.compressImage(UIImage(contentsOfFile: url.path)!)
+//    }
+    
+    private func compressImage(_ image: UIImage, completion: @escaping (Data?) -> Void) {
+            ImageCompressionModel.shared.compressImageToUnder50MB(image: image, completion: completion)
+        }
+    
+//    func compressImage(_ image: UIImage) {
+//        ImageCompressionModel.shared.compressImageToUnder50MB(image: image) { [weak self] compressedData in
+//            guard let self = self else { return }
+//            guard let compressedData = compressedData else {
+//                self.presentCertificationFailureVC()
+//                return
+//            }
+//            print("압축된 이미지 크기: \(compressedData.count / 1024 / 1024)MB")
+//            
+//            // 압축된 이미지를 저장하거나 다른 작업 수행
+//            let imageString = ImageCompressionModel.shared.convertToBase64(data: compressedData)
+//            let requestData = setOCRRequestData(imageData: imageString)
+//            sendCompressedImage(requestData: requestData) { isSuccess in
+//                if isSuccess {
+//                    let combinedString = self.extractedTexts.joined().replacingOccurrences(of: " ", with: "")
+//                    if combinedString.contains("폐의약품") {
+//                        self.presentCertificationSuccessVC()
+//                    } else {
+//                        self.presentCertificationFailureVC()
+//                    }
+//                } else {
+//                    self.presentCertificationFailureVC()
+//                }
+//            }
+//            
+//        }
+//    }
     
     func presentCertificationFailureVC() {
 //        let failureVC = CertificationFailureVC()

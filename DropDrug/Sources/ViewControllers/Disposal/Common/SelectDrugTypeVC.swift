@@ -2,8 +2,11 @@
 
 import UIKit
 import SnapKit
+import Moya
 
 class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    let provider = MoyaProvider<PointAPI>(plugins: [BearerTokenPlugin(), NetworkLoggerPlugin()])
     
     public var userPickedImageURL : URL?
     
@@ -57,13 +60,13 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     private func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.white
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(DrugTypeCollectionViewCell.self, forCellWithReuseIdentifier: "DrugTypeCell")
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = Constants.Colors.white
         collectionView.isScrollEnabled = false
         collectionView.allowsMultipleSelection = true
         
@@ -189,12 +192,19 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
             
             let alert = UIAlertController(
                 title: "폐기 실천 사진 인증",
-                message: "봉투에 '폐의약품'이라고 표시하였는지 사진을 통해 인증할 수 있습니다.\n 인증하시겠습니까?",
+                message: "봉투에 '폐의약품'이라고 표시하였는지\n 사진을 통해 인증할 수 있습니다.\n 인증하시겠습니까?",
                 preferredStyle: .alert
             )
             
             alert.addAction(UIAlertAction(title: "취소", style: .cancel) { _ in
-                self.moveToMainScreen()
+                self.postSuccessPoint(data: self.setupData(point: 50, type: "GENERAL_CERTIFICATION", location: Constants.currentPosition)) { isSuccess, _  in
+                    if isSuccess {
+                        print("포인트 적립 성공")
+                        self.moveToMainScreen()
+                    } else {
+                        print("포인트 적립 실패")
+                    }
+                }
             })
             
             alert.addAction(UIAlertAction(title: "인증하기", style: .default) { _ in
@@ -278,4 +288,5 @@ class SelectDrugTypeVC: UIViewController, UICollectionViewDataSource, UICollecti
         loadingVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(loadingVC, animated: true)
     }
+
 }

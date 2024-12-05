@@ -97,3 +97,46 @@ extension DiscardPrescriptionDrugVC { //delete
         }
     }
 }
+
+extension SelectDiscardPrescriptionDrugVC {
+    func getDrugsList(completion: @escaping (Bool) -> Void) {
+        DrugProvider.request(.getDrug) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let response = try response.map([DrugResponse].self)
+                    self.drugList = response
+                    completion(true)
+                } catch {
+                    Toaster.shared.makeToast("데이터를 불러오는데 실패했습니다.")
+                    completion(false)
+                }
+            case .failure(let error):
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
+                completion(false)
+            }
+        }
+    }
+}
+
+extension CertificationSuccessVC { //delete
+    func setupDeleteDrugDTO(_ drugIDs : [Int]) -> drugDeleteRequest {
+        return drugDeleteRequest(id: drugIDs)
+    }
+    
+    func deleteDrugs(_ userParameter: drugDeleteRequest, completion: @escaping (Bool) -> Void) {
+        DrugProvider.request(.deleteDrug(param: userParameter)) { result in
+            switch result {
+            case .success(_):
+                completion(true)
+            case .failure(let error):
+                if let response = error.response {
+                    Toaster.shared.makeToast("\(response.statusCode) : \(error.localizedDescription)")
+                }
+                completion(false)
+            }
+        }
+    }
+}

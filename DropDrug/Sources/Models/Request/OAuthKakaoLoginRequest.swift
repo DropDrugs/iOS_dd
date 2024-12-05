@@ -3,7 +3,7 @@
 import Foundation
 
 struct OAuthKakaoLoginRequest : Codable{
-    let accessToken: String
+    let email: String
     let fcmToken : String
-    let idToken : String
+    let name : String
 }
