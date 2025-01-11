@@ -23,8 +23,7 @@ let project = Project(
                                     "UIPrerenderedIcon": true
                                 ]
                             ],
-                    "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"
-                                                         ],
+                    "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"],
                     "UIApplicationSceneManifest": [
                         "UIApplicationSupportsMultipleScenes": false,
                         "UISceneConfigurations": [
