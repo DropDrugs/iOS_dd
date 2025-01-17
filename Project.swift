@@ -103,6 +103,7 @@ let project = Project(
 //                .external(name: "Toast"),
                 .external(name: "SwiftyToaster"),
                 .external(name: "Lottie"),
+                .external(name: "Then"),
 //                .external(name: "Charts")
 //                .sdk(name: "Charts", type: .framework)
 //                .external(name: "GoogleSignIn"),

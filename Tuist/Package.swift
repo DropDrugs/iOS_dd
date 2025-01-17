@@ -15,7 +15,6 @@
                        "KakaoSDKCert": .staticLibrary,
                        "KakaoSDKCertCore": .staticLibrary,
                        "KakaoSDKCommon": .staticLibrary,
-//                       "GoogleSignIn" : .staticLibrary,
                        "FirebaseCore" : .staticLibrary,
                        "FirebaseAuth" : .staticLibrary,
                        "FirebaseMessaging" : .staticLibrary,
@@ -28,6 +27,7 @@
 //                       "Toast" : .framework,
                        "Lottie" : .framework,
                        "SwiftyToaster" : .framework,
+                       "Then" : .framework,
 //                       "Charts" : .framework
                       ]
     )
@@ -49,7 +49,6 @@ let package = Package(
 //        .package(url: "https://github.com/scalessec/Toast-Swift.git", from: "5.1.1"),
         .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
         .package(url: "https://github.com/noeyiz/SwiftyToaster.git", from: "1.0.2"),
-        
-//        .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0")
+        .package(url: "https://github.com/devxoul/Then", from: "3.0.0"),
     ]
 )
