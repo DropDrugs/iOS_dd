@@ -68,7 +68,7 @@ class PointHistoryCell: UITableViewCell {
             descriptionLabel.text = "캐릭터 구매"
         case "GENERAL_PHOTO_CERTIFICATION":
             descriptionLabel.text = "폐기 사진 인증 완료"
-        case "DRUG_PHOTOLCERTIFICATION":
+        case "DRUG_PHOTO_CERTIFICATION":
             descriptionLabel.text = "처방약 폐기 인증 완료"
         case "GENERAL_CERTIFICATION":
             descriptionLabel.text = "폐기 인증 완료"

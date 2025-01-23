@@ -1,0 +1,6 @@
+framework module SwiftUI_ChartView {
+  umbrella header "SwiftUI_ChartView.h"
+  export *
+
+  module * { export * }
+}

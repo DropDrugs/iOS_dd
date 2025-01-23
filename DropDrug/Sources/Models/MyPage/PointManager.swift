@@ -33,11 +33,12 @@ extension RewardVC {
 
 extension MyPageVC {
     func fetchPoint(completion: @escaping (Bool) -> Void) {
-        PointProvider.request(.getPointHistory) { result in
+        PointProvider.request(.getMonthlyStats) { result in
             switch result {
             case .success(let response):
                 do {
-                    let data = try response.map(MonthlyStatsResponse.self)
+                    let data = try response.map([MonthlyStatsResponse].self)
+                    self.viewModel.stats = data
                     completion(true)
                 } catch {
                     Toaster.shared.makeToast("\(response.statusCode) : 데이터를 불러오는데 실패했습니다.")

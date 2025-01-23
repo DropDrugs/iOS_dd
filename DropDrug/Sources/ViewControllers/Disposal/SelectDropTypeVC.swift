@@ -14,7 +14,7 @@ class SelectDropTypeVC : UIViewController, UICollectionViewDataSource, UICollect
     ]
     
     private lazy var backButton: CustomBackButton = {
-        let button = CustomBackButton(title: "  의약품 드롭하기")
+        let button = CustomBackButton(title: "  의약품 폐기하기")
         button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         return button
     }()
