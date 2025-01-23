@@ -73,7 +73,6 @@ class OnboardingVC: UIViewController, UICollectionViewDelegate, UICollectionView
                 make.leading.equalToSuperview().offset(superViewWidth * 0.05)
             }
         }
-        
         view.layoutIfNeeded()
     }
     

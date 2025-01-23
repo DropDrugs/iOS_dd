@@ -23,8 +23,7 @@ let project = Project(
                                     "UIPrerenderedIcon": true
                                 ]
                             ],
-                    "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"
-                                                         ],
+                    "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"],
                     "UIApplicationSceneManifest": [
                         "UIApplicationSupportsMultipleScenes": false,
                         "UISceneConfigurations": [
@@ -104,6 +103,7 @@ let project = Project(
 //                .external(name: "Toast"),
                 .external(name: "SwiftyToaster"),
                 .external(name: "Lottie"),
+                .external(name: "Then"),
 //                .external(name: "Charts")
 //                .sdk(name: "Charts", type: .framework)
 //                .external(name: "GoogleSignIn"),

@@ -8,7 +8,7 @@ import QuickLook
 
 class SignUpVC : UIViewController {
     let provider = MoyaProvider<LoginService>(plugins: [ NetworkLoggerPlugin() ])
-    let MemberProvider = MoyaProvider<MemberAPI>(plugins: [ NetworkLoggerPlugin()])
+    let MemberProvider = MoyaProvider<MemberAPI>(plugins: [ NetworkLoggerPlugin() ])
     
     var textFields: [UITextField] = []
     

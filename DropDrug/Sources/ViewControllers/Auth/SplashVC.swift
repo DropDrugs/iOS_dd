@@ -68,11 +68,10 @@ class SplashVC : UIViewController {
         ATTrackingManager.requestTrackingAuthorization { status in
             switch status {
             case .authorized:
-//                print("Tracking 권한 허용")
                 SplashVC.isTrackingOn = true
             case .denied:
-//                print("Tracking 권한 거부")
                 SplashVC.isTrackingOn = false
+                // alert창 띄우기
             case .notDetermined:
                 print("Tracking 권한 요청 전 상태")
             case .restricted:
