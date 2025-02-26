@@ -1,5 +1,5 @@
 {
-  "originHash" : "d9673c2421734f492ab5a53d07401769cceded98c0e02f69967426f44d410e71",
+  "originHash" : "7ac3b4dd8a1743d7018dad01a115f6390699c16c23a0011d2002025371cb92e1",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -35,15 +35,6 @@
       "state" : {
         "revision" : "8328630971a8fdd8072b36bb22bef732eb15e1f0",
         "version" : "11.4.0"
-      }
-    },
-    {
-      "identity" : "flexlayout",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/layoutBox/FlexLayout.git",
-      "state" : {
-        "revision" : "9b46c098c0471b847e6feee49692ae239633bae3",
-        "version" : "2.0.10"
       }
     },
     {
@@ -164,12 +155,12 @@
       }
     },
     {
-      "identity" : "pinlayout",
+      "identity" : "nvactivityindicatorview",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/layoutBox/PinLayout.git",
+      "location" : "https://github.com/ninjaprox/NVActivityIndicatorView.git",
       "state" : {
-        "revision" : "8eaa3a15e4dcabaca4c95aea4c0ff0c9b4a67213",
-        "version" : "1.10.5"
+        "revision" : "121455c4e630fcb95aaefd7e4257b0c2e3cfe6d5",
+        "version" : "5.2.0"
       }
     },
     {

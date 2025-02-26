@@ -1,14 +1,21 @@
 import ProjectDescription
+import Foundation
+
+let bundleId = "io"
+let bundleMid = "tuist"
+let releaseBundleFin = "DropDrug"
+let minimunTarget = "17.0"
+let projectName = "DropDrug"
 
 let project = Project(
-    name: "DropDrug",
+    name: "\(projectName)",
     targets: [
         .target(
-            name: "DropDrug",
-            destinations: .init([.iPhone, .iPad]),
+            name: "\(projectName)",
+            destinations: .init([.iPhone]),
             product: .app,
-            bundleId: "io.tuist.DropDrug",
-            deploymentTargets: .iOS("16.6"),
+            bundleId: "\(bundleId).\(bundleMid).\(releaseBundleFin)",
+            deploymentTargets: .iOS(minimunTarget),
             infoPlist: .extendingDefault(
                 with: [
                     "UILaunchStoryboardName": "",
@@ -82,9 +89,8 @@ let project = Project(
             dependencies: [
                 .external(name: "Moya"),
                 .external(name: "SnapKit"),
-                .external(name: "PinLayout"),
-                .external(name: "FlexLayout"),
                 .external(name: "KeychainSwift"),
+                .external(name: "NVActivityIndicatorView"),
                 
                 .external(name: "KakaoSDK"),
                 .external(name: "KakaoSDKAuth"),
@@ -94,21 +100,13 @@ let project = Project(
                 
                 .external(name: "FirebaseAuth"),
                 .external(name: "FirebaseCore"),
-                .external(name: "FirebaseMessaging"),
-                .external(name: "FirebaseFirestore"),
 //                .external(name: "FirebaseAnalytics"),
                 
                 .external(name: "NaverMapSDK"),
                 .external(name: "SDWebImage"),
-//                .external(name: "Toast"),
                 .external(name: "SwiftyToaster"),
                 .external(name: "Lottie"),
                 .external(name: "Then"),
-//                .external(name: "Charts")
-//                .sdk(name: "Charts", type: .framework)
-//                .external(name: "GoogleSignIn"),
-//                .external(name: "NMapsGeometry"),
-//                .external(name: "NMapsMap")
             ]
         ),
         .target(
